@@ -15,16 +15,16 @@ importers:
         specifier: ^15.3.1
         version: 15.3.1(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(react@19.1.0)
       '@payloadcms/db-postgres':
-        specifier: ^3.34.0
+        specifier: ^3.35.1
         version: 3.35.1(@types/react@19.1.2)(payload@3.35.1(graphql@16.11.0)(typescript@5.8.3))(react@19.1.0)
       '@payloadcms/next':
-        specifier: ^3.34.0
+        specifier: ^3.35.1
         version: 3.35.1(@types/react@19.1.2)(graphql@16.11.0)(monaco-editor@0.52.2)(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.35.1(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       '@payloadcms/plugin-multi-tenant':
         specifier: ^3.35.1
         version: 3.35.1(@payloadcms/ui@3.35.1(@types/react@19.1.2)(monaco-editor@0.52.2)(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.35.1(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3))(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.35.1(graphql@16.11.0)(typescript@5.8.3))
       '@payloadcms/richtext-lexical':
-        specifier: ^3.34.0
+        specifier: ^3.35.1
         version: 3.35.1(@faceless-ui/modal@3.0.0-beta.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@faceless-ui/scroll-info@2.0.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@payloadcms/next@3.35.1(@types/react@19.1.2)(graphql@16.11.0)(monaco-editor@0.52.2)(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.35.1(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3))(@types/react@19.1.2)(monaco-editor@0.52.2)(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.35.1(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)(yjs@13.6.26)
       '@payloadcms/storage-vercel-blob':
         specifier: ^3.35.1
@@ -141,7 +141,7 @@ importers:
         specifier: ^6.10.1
         version: 6.10.1
       payload:
-        specifier: ^3.34.0
+        specifier: ^3.35.1
         version: 3.35.1(graphql@16.11.0)(typescript@5.8.3)
       react:
         specifier: ^19.0.0
@@ -7238,7 +7238,7 @@ snapshots:
   tsx@4.19.2:
     dependencies:
       esbuild: 0.23.1
-      get-tsconfig: 4.8.1
+      get-tsconfig: 4.10.0
     optionalDependencies:
       fsevents: 2.3.3
 
