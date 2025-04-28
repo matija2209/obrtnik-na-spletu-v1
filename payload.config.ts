@@ -24,6 +24,7 @@ import type { GlobalAfterChangeHook } from 'payload';
 import type { PayloadRequest } from 'payload';
 import type { CollectionAfterChangeHook } from 'payload';
 import type { Config } from './payload-types'
+import { s3Storage } from '@payloadcms/storage-s3'
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -111,8 +112,8 @@ if (!process.env.PAYLOAD_SECRET) {
   throw new Error('PAYLOAD_SECRET is not set')
 }
 
-if (!process.env.PAYLOAD_PUBLIC_SERVER_URL) {
-  throw new Error('PAYLOAD_PUBLIC_SERVER_URL is not set')
+if (!process.env.NEXT_PUBLIC_SERVER_URL) {
+  throw new Error('NEXT_PUBLIC_SERVER_URL is not set')
 }
 
 export default buildConfig({
@@ -142,13 +143,20 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    vercelBlobStorage({
-      enabled: true,
+    s3Storage({
       collections: {
         [Media.slug]: true,
       },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
-      clientUploads: true,
+      bucket: process.env.S3_BUCKET || '',
+      config: {
+        endpoint: process.env.S3_ENDPOINT || '',
+        region: 'auto',
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.S3_SECRET || '',
+        },
+        forcePathStyle: true,
+      },
     }),
     multiTenantPlugin<Config>({
       enabled: true,
@@ -170,5 +178,5 @@ export default buildConfig({
     }),
   ],
   secret: process.env.PAYLOAD_SECRET,
-  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL
+  serverURL: process.env.NEXT_PUBLIC_SERVER_URL
 })

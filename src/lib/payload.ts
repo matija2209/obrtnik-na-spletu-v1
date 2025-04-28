@@ -20,7 +20,7 @@ import config from '../../payload.config'
 import { getImageUrl } from '@/utils/getImageUrl'
 
 
-const PAYLOAD_API_URL = process.env.PAYLOAD_PUBLIC_SERVER_URL
+const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
 
 // Initialize Payload instance

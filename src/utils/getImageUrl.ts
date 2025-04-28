@@ -1,7 +1,7 @@
 // --- Image URL Helper --- 
 
 import { Media } from "@payload-types";
-const PAYLOAD_API_URL = process.env.PAYLOAD_PUBLIC_SERVER_URL
+const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
 // Type representing one of the size objects within Media.sizes
 // This extracts the type of `thumbnail`, `card`, or `tablet` if they exist

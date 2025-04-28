@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: new URL(process.env.PAYLOAD_PUBLIC_SERVER_URL as string).hostname, // Use env var
+        hostname: new URL(process.env.NEXT_PUBLIC_SERVER_URL as string).hostname, // Use env var
         pathname: '/api/media/**', // Adjust path if needed
       },
     ],
