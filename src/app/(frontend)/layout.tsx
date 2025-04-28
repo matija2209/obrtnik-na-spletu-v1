@@ -35,17 +35,17 @@ export default async function MyAppLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const navbarData = await getNavbar()
-  const businessData = await getBusinessInfo()
+  // const navbarData = await getNavbar()
+  // const businessData = await getBusinessInfo()
 
-  // Calculate logo URLs on the server
-  const logoLightUrl = getLogoUrl(businessData, 'light');
-  const logoDarkUrl = getLogoUrl(businessData, 'dark');
+
+  // const logoLightUrl = getLogoUrl(businessData, 'light');
+  // const logoDarkUrl = getLogoUrl(businessData, 'dark');
 
   return (
     <html lang="sl" className={`${oswald.variable} ${roboto.variable}`}>
       <head>
-        <Script
+        {/* <Script
           id="service-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
@@ -55,7 +55,6 @@ export default async function MyAppLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
-        {/* Add AggregateRating schema if it exists */}
         {aggregateRatingSchema && (
           <Script
             id="aggregate-rating-schema"
@@ -67,10 +66,10 @@ export default async function MyAppLayout({
           id="website-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }}
-        />
+        /> */}
       </head>
       <body>
-        <Navbar 
+        {/* <Navbar 
           navbarData={navbarData} 
           logoLightUrl={logoLightUrl} 
           logoDarkUrl={logoDarkUrl} 
@@ -78,7 +77,7 @@ export default async function MyAppLayout({
           phoneNumber={businessData.phoneNumber}
           email={businessData.email}
           location={businessData.location}
-        />
+        /> */}
         {children}
         <Footer />
       </body>

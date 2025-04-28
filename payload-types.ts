@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    tenants: Tenant;
     users: User;
     media: Media;
     projects: Project;
@@ -82,6 +83,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    tenants: TenantsSelect<false> | TenantsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
@@ -136,6 +138,20 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants".
+ */
+export interface Tenant {
+  id: number;
+  name: string;
+  /**
+   * Unique identifier for the tenant, used in URLs etc.
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Uporabniki za prijavo v administracijo.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -144,6 +160,12 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   roles?: ('admin' | 'user')[] | null;
+  tenants?:
+    | {
+        tenant: number | Tenant;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   enableAPIKey?: boolean | null;
@@ -164,6 +186,7 @@ export interface User {
  */
 export interface Media {
   id: number;
+  tenant?: (number | null) | Tenant;
   alt?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -211,6 +234,7 @@ export interface Media {
  */
 export interface Project {
   id: number;
+  tenant?: (number | null) | Tenant;
   title: string;
   description?: string | null;
   location?: string | null;
@@ -230,6 +254,7 @@ export interface Project {
  */
 export interface Service {
   id: number;
+  tenant?: (number | null) | Tenant;
   /**
    * ID se generira samodejno iz naslova.
    */
@@ -255,6 +280,7 @@ export interface Service {
  */
 export interface Testimonial {
   id: number;
+  tenant?: (number | null) | Tenant;
   name: string;
   /**
    * Relativni čas ali specifični datum podaje mnenja.
@@ -278,6 +304,7 @@ export interface Testimonial {
  */
 export interface FaqItem {
   id: number;
+  tenant?: (number | null) | Tenant;
   question: string;
   answer: string;
   updatedAt: string;
@@ -291,6 +318,7 @@ export interface FaqItem {
  */
 export interface Cta {
   id: number;
+  tenant?: (number | null) | Tenant;
   /**
    * Besedilo, ki bo prikazano na gumbu.
    */
@@ -316,6 +344,7 @@ export interface Cta {
  */
 export interface Inquiry {
   id: number;
+  tenant?: (number | null) | Tenant;
   firstName: string;
   lastName: string;
   email: string;
@@ -335,6 +364,7 @@ export interface Inquiry {
  */
 export interface Machinery {
   id: number;
+  tenant?: (number | null) | Tenant;
   tabName: string;
   /**
    * Npr. Volvo EL70, Komatsu PC210
@@ -369,6 +399,10 @@ export interface Machinery {
 export interface PayloadLockedDocument {
   id: number;
   document?:
+    | ({
+        relationTo: 'tenants';
+        value: number | Tenant;
+      } | null)
     | ({
         relationTo: 'users';
         value: number | User;
@@ -449,10 +483,26 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants_select".
+ */
+export interface TenantsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
   roles?: T;
+  tenants?:
+    | T
+    | {
+        tenant?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   enableAPIKey?: T;
@@ -471,6 +521,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  tenant?: T;
   alt?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -523,6 +574,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "projects_select".
  */
 export interface ProjectsSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   description?: T;
   location?: T;
@@ -541,6 +593,7 @@ export interface ProjectsSelect<T extends boolean = true> {
  * via the `definition` "services_select".
  */
 export interface ServicesSelect<T extends boolean = true> {
+  tenant?: T;
   serviceId?: T;
   title?: T;
   description?: T;
@@ -560,6 +613,7 @@ export interface ServicesSelect<T extends boolean = true> {
  * via the `definition` "testimonials_select".
  */
 export interface TestimonialsSelect<T extends boolean = true> {
+  tenant?: T;
   name?: T;
   time?: T;
   location?: T;
@@ -574,6 +628,7 @@ export interface TestimonialsSelect<T extends boolean = true> {
  * via the `definition` "faq-items_select".
  */
 export interface FaqItemsSelect<T extends boolean = true> {
+  tenant?: T;
   question?: T;
   answer?: T;
   updatedAt?: T;
@@ -584,6 +639,7 @@ export interface FaqItemsSelect<T extends boolean = true> {
  * via the `definition` "ctas_select".
  */
 export interface CtasSelect<T extends boolean = true> {
+  tenant?: T;
   ctaText?: T;
   ctaHref?: T;
   ctaClassname?: T;
@@ -596,6 +652,7 @@ export interface CtasSelect<T extends boolean = true> {
  * via the `definition` "inquiries_select".
  */
 export interface InquiriesSelect<T extends boolean = true> {
+  tenant?: T;
   firstName?: T;
   lastName?: T;
   email?: T;
@@ -612,6 +669,7 @@ export interface InquiriesSelect<T extends boolean = true> {
  * via the `definition` "machinery_select".
  */
 export interface MachinerySelect<T extends boolean = true> {
+  tenant?: T;
   tabName?: T;
   name?: T;
   description?: T;
