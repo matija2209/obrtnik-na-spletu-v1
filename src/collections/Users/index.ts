@@ -39,7 +39,9 @@ const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
   },
-  auth: true,
+  auth: {
+    useAPIKey: true,
+  },
   endpoints: [externalUsersLogin],
   fields: [
     {
@@ -57,6 +59,11 @@ const Users: CollectionConfig = {
     {
       name: 'address',
       label: 'Naslov',
+      type: 'text',
+    },
+    {
+      name: 'phoneNumber',
+      label: 'Telefonska številka',
       type: 'text',
     },
     {
