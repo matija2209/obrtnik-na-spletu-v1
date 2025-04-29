@@ -7,7 +7,7 @@
   "packageManager": "pnpm@10.2.1",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next builsd",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "generate:types": "payload generate:types",
