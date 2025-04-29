@@ -1,6 +1,7 @@
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { CollectionConfig, Access } from 'payload';
 import slugify from 'slugify';
+import { Wrench } from 'lucide-react';
 
 // Define access control - allowing anyone to read, admin to create/update/delete
 const anyone: Access = () => true;

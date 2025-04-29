@@ -3,3 +3,102 @@ description:
 globs:
 alwaysApply: false
 ---
+# Globals Access Control in Payload CMS
+
+Global Access Control is used to restrict access to Global Documents and control visibility within the Admin Panel for that Global.
+
+## General Access Control Concepts
+
+*   **Default Behavior:** By default, Payload restricts `read` and `update` operations on Globals to logged-in users (`({ req: { user } }) => Boolean(user)`). You override this by defining specific access functions.
+*   **Admin Panel Integration (Access Operation):** The Admin Panel UI dynamically adapts based on these access rules. When a user logs in, Payload runs all access functions (without specific `data`) to determine what the user can see and do in the UI. **Important:** Your `update` access function should check if `data` is defined before using it, as it will be `undefined` during this initial Access Operation check.
+*   **Local API:** Access control is skipped by default when using the Local API. Set `overrideAccess: false` in your Local API calls to enforce rules.
+*   **Types:** Payload offers Collection, Global, and Field Access Control.
+*   **Locale-Specific Access:** Use the `req.locale` property within your access function to implement rules based on the request's locale.
+
+```typescript
+// Example: Locale-specific access
+const localeSpecificAccess = ({ req }) => {
+  // Grant access only if the locale is 'en'
+  return req.locale === 'en';
+}
+```
+
+## Adding Access Control
+
+To add Access Control to a Global, use the `access` property in your Global Config (usually defined in `src/globals/` like `[src/globals/ExampleGlobal.ts](mdc:src/globals/ExampleGlobal.ts)` - *replace with actual global file if known*).
+
+```typescript
+import type { GlobalConfig } from 'payload'
+
+export const MyGlobal: GlobalConfig = {
+  slug: 'my-global',
+  // ... other config ...
+  access: {
+    // Access control functions go here
+  },
+  // ... other config ...
+}
+```
+
+## Configuration Options
+
+Access Control is specific to the operation (`read`, `update`, `readVersions`). Define functions for each operation you want to control within the `access` object.
+
+```typescript
+import type { GlobalConfig } from 'payload'
+
+export const MyGlobalWithAccess: GlobalConfig = {
+  slug: 'my-global',
+  // ... other config ...
+  access: {
+    read: ({ req: { user } }) => { /* logic */ },  // Controls reading the global
+    update: ({ req: { user }, data }) => { /* logic */ }, // Controls updating the global
+
+    // --- Version-enabled Globals only ---
+    readVersions: ({ req: { user } }) => { /* logic */ }, // Controls reading global versions
+  },
+  // ... other config ...
+}
+```
+
+## Access Control Functions
+
+Each function receives specific arguments and should return:
+-   `true`: Allow access.
+-   `false`: Deny access.
+-   A [Payload Query Constraint](https://payloadcms.com/docs/access-control/overview#query-constraints) (for `read`, `update`): Limit the operation based on the global's current properties (though less common for globals than collections).
+
+### `read`
+
+Controls who can read the global data.
+-   Receives: `req` (with `user`).
+-   Returns: `boolean` or Query Constraint.
+
+```typescript
+// Example: Only logged-in users can read the global
+read: ({ req: { user } }) => Boolean(user),
+```
+
+### `update`
+
+Controls who can update the global data.
+-   Receives: `req` (with `user`), `data` (update data).
+-   Returns: `boolean` or Query Constraint.
+
+```typescript
+// Example: Only admins can update the global
+update: ({ req: { user } }) => user.roles?.includes('admin'),
+```
+
+### `readVersions` (Version-enabled Globals)
+
+Controls who can view the version history of the global.
+-   Receives: `req` (with `user`).
+-   Returns: `boolean`.
+
+```typescript
+// Example: Only admins can view global history
+readVersions: ({ req: { user } }) => user.roles?.includes('admin'),
+```
+
+Refer to the official [Payload CMS Access Control Documentation](https://payloadcms.com/docs/access-control/overview) for more general details, adapting collection concepts to globals where applicable.

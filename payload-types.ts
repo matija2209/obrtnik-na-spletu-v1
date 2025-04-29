@@ -110,7 +110,7 @@ export interface Config {
     navbar: NavbarSelect<false> | NavbarSelect<true>;
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
   };
-  locale: 'sl';
+  locale: null;
   user: User & {
     collection: 'users';
   };
@@ -165,8 +165,12 @@ export interface Tenant {
  */
 export interface User {
   id: number;
+  firstName: string;
+  lastName: string;
+  address?: string | null;
+  vatId?: string | null;
+  companyName?: string | null;
   roles?: ('super-admin' | 'user')[] | null;
-  username?: string | null;
   tenants?:
     | {
         tenant: number | Tenant;
@@ -584,8 +588,12 @@ export interface TenantsSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  address?: T;
+  vatId?: T;
+  companyName?: T;
   roles?: T;
-  username?: T;
   tenants?:
     | T
     | {

@@ -43,6 +43,33 @@ const Users: CollectionConfig = {
   endpoints: [externalUsersLogin],
   fields: [
     {
+      name: 'firstName',
+      label: 'Ime',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'lastName',
+      label: 'Priimek',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'address',
+      label: 'Naslov',
+      type: 'text',
+    },
+    {
+      name: 'vatId',
+      label: 'Davčna številka',
+      type: 'text',
+    },
+    {
+      name: 'companyName',
+      label: 'Naziv podjetja',
+      type: 'text',
+    },
+    {
       admin: {
         position: 'sidebar',
       },
@@ -59,14 +86,6 @@ const Users: CollectionConfig = {
           return isSuperAdmin(req.user)
         },
       },
-    },
-    {
-      name: 'username',
-      type: 'text',
-      hooks: {
-        beforeValidate: [ensureUniqueUsername],
-      },
-      index: true,
     },
     {
       ...defaultTenantArrayField,

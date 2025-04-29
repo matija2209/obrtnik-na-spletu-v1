@@ -3,3 +3,196 @@ description:
 globs:
 alwaysApply: false
 ---
+# Collection Access Control in Payload CMS
+
+Collection Access Control is used to restrict access to Documents within a Collection, as well as what users can see and do within the Admin Panel related to that Collection.
+
+## General Access Control Concepts
+
+*   **Default Behavior:** By default, Payload restricts most operations (`read`, `update`, `delete`, etc.) to logged-in users (`({ req: { user } }) => Boolean(user)`). You override this by defining specific access functions.
+*   **Admin Panel Integration (Access Operation):** The Admin Panel UI dynamically adapts based on these access rules. When a user logs in, Payload runs all access functions (without specific `id` or `data`) to determine what the user can see and do in the UI. **Important:** Your access functions should check if `id` or `data` are defined before using them, as they will be `undefined` during this initial Access Operation check.
+*   **Local API:** Access control is skipped by default when using the Local API. Set `overrideAccess: false` in your Local API calls to enforce rules.
+*   **Types:** Payload offers Collection, Global, and Field Access Control.
+*   **Locale-Specific Access:** Use the `req.locale` property within your access function to implement rules based on the request's locale.
+
+```typescript
+// Example: Locale-specific access
+const localeSpecificAccess = ({ req }) => {
+  // Grant access only if the locale is 'en'
+  return req.locale === 'en';
+}
+```
+
+## Adding Access Control
+
+To add Access Control to a Collection, use the `access` property in your Collection Config, typically defined in files like `[src/collections/Tenants.ts](mdc:src/collections/Tenants.ts)`.
+
+```typescript
+import type { CollectionConfig } from 'payload'
+
+export const CollectionWithAccessControl: CollectionConfig = {
+  slug: 'my-collection',
+  // ... other config ...
+  access: {
+    // Access control functions go here
+  },
+  // ... other config ...
+}
+```
+
+## Configuration Options
+
+Access Control is specific to the operation (create, read, update, delete, etc.). Define functions for each operation you want to control within the `access` object.
+
+```typescript
+import type { CollectionConfig } from 'payload';
+
+export const CollectionWithAccessControl: CollectionConfig = {
+  slug: 'my-collection',
+  // ... other config ...
+  access: {
+    create: ({ req: { user }, data }) => { /* logic */ }, // Controls creation
+    read: ({ req: { user }, id }) => { /* logic */ },     // Controls reading (find, findByID)
+    update: ({ req: { user }, id, data }) => { /* logic */ }, // Controls updates
+    delete: ({ req: { user }, id }) => { /* logic */ }, // Controls deletion
+
+    // --- Auth-enabled Collections only ---
+    admin: ({ req: { user } }) => { /* logic */ },   // Controls Admin Panel access
+    unlock: ({ req: { user } }) => { /* logic */ },  // Controls user unlock operation
+
+    // --- Version-enabled Collections only ---
+    readVersions: ({ req: { user } }) => { /* logic */ }, // Controls reading document versions
+  },
+  // ... other config ...
+}
+```
+
+## Access Control Functions
+
+Each function receives specific arguments and should return:
+-   `true`: Allow access.
+-   `false`: Deny access.
+-   A [Payload Query Constraint](https://payloadcms.com/docs/access-control/overview#query-constraints) (for `read`, `update`, `delete`): Limit the operation to documents matching the query.
+
+### `create`
+
+Controls who can create new documents.
+-   Receives: `req` (with `user`), `data` (incoming document data).
+-   Returns: `boolean`.
+
+```typescript
+// Example: Only logged-in users can create
+create: ({ req: { user } }) => Boolean(user),
+```
+
+### `read`
+
+Controls who can read documents (`find`, `findByID`).
+-   Receives: `req` (with `user`), `id` (if `findByID`).
+-   Returns: `boolean` or Query Constraint.
+
+```typescript
+import type { Access } from 'payload'
+
+// Example: Allow logged-in users to read all, guests to read only public documents
+export const canReadDocuments: Access = ({ req: { user } }) => {
+  if (user) {
+    return true // Logged-in users can read anything
+  }
+  // Guests can only read documents where `isPublic` is true
+  return {
+    isPublic: {
+      equals: true,
+    },
+  }
+}
+
+// In Collection Config:
+// access: { read: canReadDocuments }
+```
+
+### `update`
+
+Controls who can update existing documents.
+-   Receives: `req` (with `user`), `id` (document ID), `data` (update data).
+-   Returns: `boolean` or Query Constraint.
+
+```typescript
+import type { Access } from 'payload'
+
+// Example: Admins can update any user, others can only update themselves
+export const canUpdateUser: Access = ({ req: { user }, id }) => {
+  if (user.roles?.includes('admin')) {
+    return true // Admins can update anyone
+  }
+  return user.id === id // Others can only update their own profile
+}
+
+// In Collection Config:
+// access: { update: canUpdateUser }
+```
+
+### `delete`
+
+Controls who can delete documents.
+-   Receives: `req` (with `user`), `id` (document ID).
+-   Returns: `boolean` or Query Constraint.
+
+```typescript
+import type { Access } from 'payload'
+
+// Example: Only allow deleting a customer if they have no active contracts
+export const canDeleteCustomer: Access = async ({ req, id }) => {
+  if (!id) {
+    // Allow Admin UI delete controls to show initially
+    return true
+  }
+  // Check if any contracts exist for this customer
+  const { totalDocs } = await req.payload.find({
+    collection: 'contracts',
+    where: { customer: { equals: id } },
+    limit: 0,
+    depth: 0,
+  })
+  return totalDocs === 0 // Allow delete only if no contracts found
+}
+
+// In Collection Config:
+// access: { delete: canDeleteCustomer }
+```
+
+### `admin` (Auth Collections)
+
+Controls access to the Admin Panel UI elements related to this collection.
+-   Receives: `req` (with `user`).
+-   Returns: `boolean`.
+
+```typescript
+// Example: Only logged-in users can see this collection in the Admin Panel
+admin: ({ req: { user } }) => Boolean(user),
+```
+
+### `unlock` (Auth Collections)
+
+Controls who can unlock users blocked due to failed login attempts.
+-   Receives: `req` (with `user`).
+-   Returns: `boolean`.
+
+```typescript
+// Example: Only admins can unlock users
+unlock: ({ req: { user } }) => user.roles?.includes('admin'),
+```
+
+### `readVersions` (Version-enabled Collections)
+
+Controls who can view the version history of documents.
+-   Receives: `req` (with `user`).
+-   Returns: `boolean`.
+
+```typescript
+// Example: Only admins can view document history
+readVersions: ({ req: { user } }) => user.roles?.includes('admin'),
+```
+
+For more complex logic, define access control functions in separate files and import them into your Collection Config.
+Refer to the official [Payload CMS Access Control Documentation](https://payloadcms.com/docs/access-control/overview) for more details.

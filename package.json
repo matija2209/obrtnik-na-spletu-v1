@@ -10,7 +10,8 @@
     "build": "next builsd",
     "start": "next start",
     "lint": "next lint",
-    "generate:types": "payload generate:types"
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -64,6 +65,7 @@
     "react-day-picker": "^8.10.1",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",
+    "react-icons": "^5.5.0",
     "react-resizable-panels": "^2.1.7",
     "recharts": "^2.15.2",
     "sharp": "^0.34.1",

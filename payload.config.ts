@@ -1,5 +1,5 @@
 import { buildConfig } from 'payload'
-import path from 'path'
+import path, { dirname } from 'path'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp'
@@ -122,7 +122,47 @@ if (!process.env.NEXT_PUBLIC_SERVER_URL) {
 
 export default buildConfig({
   admin: {
+    importMap: {
+      baseDir: path.resolve(__dirname, 'src'),
+    },
+    meta: {
+      title: 'Obrtnik na spletu',
+      description: 'Obrtnik na spletu',
+
+      icons:[
+        {
+          rel: 'favicon',
+          url: '/favicon.ico',
+        },
+        {
+          rel:"32x32",
+          url: '/favicon-32x32.png',
+        },
+        {
+          rel:"16x16",
+          url: '/favicon-16x16.png',
+        },
+        {
+          rel:"apple-touch-icon",
+          url: '/apple-touch-icon.png',
+        },
+        {
+          rel:"android-chrome-192x192",
+          url: '/android-chrome-192x192.png',
+        },
+        {
+          rel:"android-chrome-512x512",
+          url: '/android-chrome-512x512.png',
+        },
+        
+      ],
+    },
     user: Users.slug,
+    components: {
+      graphics: {
+        Logo: '/graphics/Logo/index.tsx#Logo',
+      },
+    },
   },
   editor: lexicalEditor({}),
   i18n: {
@@ -131,13 +171,7 @@ export default buildConfig({
   },
   collections: allCollections.map(addDeployHook),
   globals: allGlobals.map(addDeployHook),
-  localization: {
-    locales: [
-      { label: 'Slovenščina', code: 'sl' },
-    ],
-    defaultLocale: 'sl',
-    fallback: true,
-  },
+
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
