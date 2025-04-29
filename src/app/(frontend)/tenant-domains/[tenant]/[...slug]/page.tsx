@@ -10,7 +10,7 @@ import RenderPage from '@/components/payload/RenderPage'
 
 
 // eslint-disable-next-line no-restricted-exports
-export default async function Page({
+export default async function TenantDomainPage({
   params: paramsPromise,
 }: {
   params: Promise<{ slug?: string[]; tenant: string }>

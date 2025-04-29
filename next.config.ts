@@ -34,6 +34,16 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: '/((?!admin|api|tenant-domains):path*)',
+        destination: '/tenant-domains/:tenant/:path*',
+        has: [
+          {
+            type: 'host',
+            value: '(?<tenant>.*)',
+          },
+        ],
+      },
     ]
   },
   webpack: (config: WebpackConfig, { webpack }) => {
