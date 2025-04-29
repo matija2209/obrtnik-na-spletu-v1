@@ -85,7 +85,7 @@ export const BusinessInfo: GlobalConfig = {
       label: 'Logotip (Temna varianta)',
       type: 'upload',
       relationTo: 'media',
-      required: true,
+      required: false,
       admin: {
         description: 'Temna varianta logotipa, ki se uporablja na svetlih ozadjih.',
       },

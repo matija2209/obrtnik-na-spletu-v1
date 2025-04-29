@@ -1,58 +1,30 @@
-import AboutMeSection from "@/components/sections/home/about-me-section";
-import ContactSection from "@/components/sections/home/contact-section";
-import HeroSection from "@/components/sections/home/hero-section";
-import ServiceAreaSection from "@/components/sections/home/service-area-section";
-import TestimonialsSection from "@/components/sections/home/testimonials-section";
-
-import { getHomePage} from "@/lib/payload";
-import { Cta, Media, Project, Service, Machinery, Testimonial } from "@payload-types";
-import ServicesSectionV3 from "@/components/sections/home/services-section-v3";
-import ProjectsSection from "@/components/sections/home/projects-section";
-import MachinerySection from "@/components/sections/home/machinery-section";
-import { getImageUrl } from "@/utils/getImageUrl";
-
-export default async function Home() {
-  const page = await getHomePage()
-  
-  // Map selectedMachinery from page data if it exists
- 
-  // Map selectedTestimonials from page data to the structure expected by the component
-  // const testimonialsData = (page.selectedTestimonials as Testimonial[] | undefined)?.map(testimonial => ({
-  //   id: String(testimonial.id),
-  //   name: testimonial.name,
-  //   rating: testimonial.rating,
-  //   quote: testimonial.content, // Map content to quote
-  //   timeAgo: testimonial.time || '' // Map time to timeAgo, provide fallback
-  // })) || [];
-
+export default async ({ params: paramsPromise }: { params: Promise<{ slug: string[] }> }) => {
   return (
-    <div className="relative">
-      {/* <HeroSection  ctas={page?.heroCtas as Cta[]} imageUrl={getImageUrl(page.heroImage as Media)} title={page?.heroTitle} subtitle={page?.heroSubtitle as string} />
-      <ServicesSectionV3 services={page.selectedServices as Service[]} title={page.servicesTitle} description={page.servicesDescription as string} />
-      <TestimonialsSection 
-        title={page.testimonialsTitle ?? undefined} 
-        testimonials={page.selectedTestimonials as Testimonial[] || []} // Pass directly
-        cta={page.testimonialsCta as Cta | undefined} // Pass the optional CTA
-      />
-      <MachinerySection 
-        title={page.machineryTitle}
-        description={page.machineryDescription ?? undefined}
-        machinery={machineryData}
-      />
-      <ServiceAreaSection 
-        title={page.serviceAreaTitle}
-        description={page.serviceAreaDescription || undefined}
-        mapImage={page.serviceAreaMapImage as Media}
-        locations={page.serviceAreaLocations || undefined}
-        additionalInfo={page.serviceAreaAdditionalInfo || undefined}
-      />
-      <AboutMeSection  imageUrl={getImageUrl(page.aboutImage as Media)} title={page.aboutTitle} content={page.aboutDescription} cta={page.aboutCta as Cta} />
-      <div className="relative z-50">
-      <ProjectsSection projects={page.highlightedProjects as Project[]} />
+    <div>
+      <h1>Multi-Tenant Example</h1>
+      <p>
+        This multi-tenant example allows you to explore multi-tenancy with domains and with slugs.
+      </p>
 
-      </div>
-      <ContactSection /> */}
-      {/* <FaqSection faqData={faqData} /> */}
+      <h2>Domains</h2>
+      <p>When you visit a tenant by domain, the domain is used to determine the tenant.</p>
+      <p>
+        For example, visiting{' '}
+        <a href="http://gold.localhost:3000/tenant-domains/login">
+          http://gold.localhost:3000/tenant-domains/login
+        </a>{' '}
+        will show the tenant with the domain "gold.localhost".
+      </p>
+
+      <h2>Slugs</h2>
+      <p>When you visit a tenant by slug, the slug is used to determine the tenant.</p>
+      <p>
+        For example, visiting{' '}
+        <a href="http://localhost:3000/tenant-slugs/silver/login">
+          http://localhost:3000/tenant-slugs/silver/login
+        </a>{' '}
+        will show the tenant with the slug "silver".
+      </p>
     </div>
-  );
+  )
 }

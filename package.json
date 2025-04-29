@@ -10,8 +10,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
+    "generate:schema": "payload-graphql generate:schema",
     "generate:types": "payload generate:types",
-    "generate:importmap": "payload generate:importmap"
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "seed": "npm run payload migrate:fresh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

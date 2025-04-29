@@ -143,13 +143,28 @@ export const getNavbar = async (query = {}) => {
   })
 }
 
-export const getHomePage = async (query = {}) => {
-  const payload = await getPayloadClient()
+export const getHomePage = async (tenantSlug?: string, query = {}) => {
+  const payload = await getPayloadClient();
+
+  // Construct the req object to pass tenant context
+  // The multi-tenant plugin typically uses headers or a context object
+  // For server-side calls, we manually provide the tenant slug.
+  // The exact header name (`X-Payload-Tenant`) might depend on plugin config, but this is common.
+  const req = {
+    headers: {
+      'X-Payload-Tenant': tenantSlug || '', // Use slug or empty string if none provided
+    },
+    payload, // Pass the payload instance for context
+    user: undefined, // Assuming no specific user context is needed for this public fetch
+  };
+
   return payload.findGlobal({
     slug: 'home-page',
     ...query,
-  })
-}
+    // Pass the constructed request object with tenant info
+    req: req as any, // Cast to any if needed, depending on exact Payload types
+  });
+};
 
 
 // Logo utilities

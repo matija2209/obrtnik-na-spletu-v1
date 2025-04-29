@@ -165,6 +165,7 @@ export interface Tenant {
  */
 export interface User {
   id: number;
+  username?: string | null;
   firstName: string;
   lastName: string;
   address?: string | null;
@@ -592,6 +593,7 @@ export interface TenantsSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  username?: T;
   firstName?: T;
   lastName?: T;
   address?: T;
@@ -879,7 +881,7 @@ export interface BusinessInfo {
   /**
    * Temna varianta logotipa, ki se uporablja na svetlih ozadjih.
    */
-  logo: number | Media;
+  logo?: (number | null) | Media;
   /**
    * Svetla varianta logotipa, ki se uporablja na temnih ozadjih. Če ni izbrana, se uporabi temna varianta.
    */
@@ -974,7 +976,11 @@ export interface Navbar {
  */
 export interface HomePage {
   id: number;
-  heroTitle: string;
+  /**
+   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   */
+  heroHideSection?: boolean | null;
+  heroTitle?: string | null;
   heroSubtitle?: string | null;
   /**
    * Izberite CTA gumbe za naslovno sekcijo. Vrstni red je pomemben.
@@ -984,23 +990,39 @@ export interface HomePage {
   heroFeatures?:
     | {
         iconText?: string | null;
-        text: string;
+        text?: string | null;
         id?: string | null;
       }[]
     | null;
-  servicesTitle: string;
+  /**
+   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   */
+  servicesHideSection?: boolean | null;
+  servicesTitle?: string | null;
   servicesDescription?: string | null;
   /**
    * Izberite storitve, ki se prikažejo na domači strani. Vrstni red je pomemben.
    */
   selectedServices?: (number | Service)[] | null;
-  machineryTitle: string;
+  /**
+   * Izberite CTA gumb za sekcijo Storitve (neobvezno).
+   */
+  servicesCta?: (number | null) | Cta;
+  /**
+   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   */
+  machineryHideSection?: boolean | null;
+  machineryTitle?: string | null;
   machineryDescription?: string | null;
   /**
    * Izberite stroje, ki se prikažejo na domači strani. Vrstni red je pomemben.
    */
   selectedMachinery?: (number | Machinery)[] | null;
-  projectHighlightsTitle: string;
+  /**
+   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   */
+  projectsHideSection?: boolean | null;
+  projectHighlightsTitle?: string | null;
   projectHighlightsDescription?: string | null;
   projectHighlightsButtonText?: string | null;
   projectHighlightsButtonHref?: string | null;
@@ -1008,17 +1030,21 @@ export interface HomePage {
    * Izberite projekte, ki se prikažejo na domači strani. Priporočljivo 3-4 projekte.
    */
   highlightedProjects?: (number | Project)[] | null;
-  aboutTitle: string;
-  aboutDescription: string;
-  aboutImage: number | Media;
+  /**
+   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   */
+  aboutHideSection?: boolean | null;
+  aboutTitle?: string | null;
+  aboutDescription?: string | null;
+  aboutImage?: (number | null) | Media;
   aboutBenefits?:
     | {
         /**
          * Interni ID, mora biti unikaten.
          */
-        benefitId: string;
-        title: string;
-        description: string;
+        benefitId?: string | null;
+        title?: string | null;
+        description?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1026,7 +1052,11 @@ export interface HomePage {
    * Izberite CTA gumb za sekcijo O nas (neobvezno).
    */
   aboutCta?: (number | null) | Cta;
-  testimonialsTitle: string;
+  /**
+   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   */
+  testimonialsHideSection?: boolean | null;
+  testimonialsTitle?: string | null;
   /**
    * Izberite mnenja, ki se prikažejo na domači strani. Vrstni red je pomemben.
    */
@@ -1035,42 +1065,68 @@ export interface HomePage {
    * Izberite CTA gumb za sekcijo Mnenja strank (neobvezno).
    */
   testimonialsCta?: (number | null) | Cta;
-  galleryTitle: string;
+  /**
+   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   */
+  galleryHideSection?: boolean | null;
+  galleryTitle?: string | null;
   galleryDescription?: string | null;
   galleryButtonText?: string | null;
-  galleryButtonHref?: string | null;
+  /**
+   * Izberite CTA gumb za galerijo (neobvezno).
+   */
+  galleryCta?: (number | null) | Cta;
   /**
    * Izberite slike iz medijske knjižnice, ki se prikažejo v galeriji na domači strani. Vrstni red je pomemben.
    */
   galleryImages?: (number | Media)[] | null;
-  serviceAreaTitle: string;
-  serviceAreaDescription: string;
-  serviceAreaMapImage: number | Media;
+  /**
+   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   */
+  serviceAreaHideSection?: boolean | null;
+  serviceAreaTitle?: string | null;
+  serviceAreaDescription?: string | null;
+  /**
+   * Če je označeno, bo prikazan zemljevid. Preverite, ali so 'Koordinate sedeža' pravilno nastavljene v splošnih nastavitvah strani.
+   */
+  showMap?: boolean | null;
   serviceAreaLocations?:
     | {
-        name: string;
+        name?: string | null;
         id?: string | null;
       }[]
     | null;
   serviceAreaAdditionalInfo?: string | null;
-  contactTitle: string;
+  /**
+   * Izberite CTA gumb za kontaktno sekcijo (neobvezno).
+   */
+  contactCta?: (number | null) | Cta;
+  /**
+   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   */
+  contactHideSection?: boolean | null;
+  contactTitle?: string | null;
   contactDescription?: string | null;
   contactWorkingHours?:
     | {
-        day: string;
-        hours: string;
+        day?: string | null;
+        hours?: string | null;
         id?: string | null;
       }[]
     | null;
-  contactPhoneNumber: string;
-  contactAddress: string;
-  faqTitle: string;
+  contactPhoneNumber?: string | null;
+  contactAddress?: string | null;
+  /**
+   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   */
+  faqHideSection?: boolean | null;
+  faqTitle?: string | null;
   faqDescription?: string | null;
   faqDefaultOpenItem?: (number | null) | FaqItem;
   /**
    * Izberite pogosta vprašanja, ki se prikažejo na domači strani. Vrstni red je pomemben.
    */
-  selectedFaqItems: (number | FaqItem)[];
+  selectedFaqItems?: (number | FaqItem)[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1144,6 +1200,7 @@ export interface NavbarSelect<T extends boolean = true> {
  * via the `definition` "home-page_select".
  */
 export interface HomePageSelect<T extends boolean = true> {
+  heroHideSection?: T;
   heroTitle?: T;
   heroSubtitle?: T;
   heroCtas?: T;
@@ -1155,17 +1212,22 @@ export interface HomePageSelect<T extends boolean = true> {
         text?: T;
         id?: T;
       };
+  servicesHideSection?: T;
   servicesTitle?: T;
   servicesDescription?: T;
   selectedServices?: T;
+  servicesCta?: T;
+  machineryHideSection?: T;
   machineryTitle?: T;
   machineryDescription?: T;
   selectedMachinery?: T;
+  projectsHideSection?: T;
   projectHighlightsTitle?: T;
   projectHighlightsDescription?: T;
   projectHighlightsButtonText?: T;
   projectHighlightsButtonHref?: T;
   highlightedProjects?: T;
+  aboutHideSection?: T;
   aboutTitle?: T;
   aboutDescription?: T;
   aboutImage?: T;
@@ -1178,17 +1240,20 @@ export interface HomePageSelect<T extends boolean = true> {
         id?: T;
       };
   aboutCta?: T;
+  testimonialsHideSection?: T;
   testimonialsTitle?: T;
   selectedTestimonials?: T;
   testimonialsCta?: T;
+  galleryHideSection?: T;
   galleryTitle?: T;
   galleryDescription?: T;
   galleryButtonText?: T;
-  galleryButtonHref?: T;
+  galleryCta?: T;
   galleryImages?: T;
+  serviceAreaHideSection?: T;
   serviceAreaTitle?: T;
   serviceAreaDescription?: T;
-  serviceAreaMapImage?: T;
+  showMap?: T;
   serviceAreaLocations?:
     | T
     | {
@@ -1196,6 +1261,8 @@ export interface HomePageSelect<T extends boolean = true> {
         id?: T;
       };
   serviceAreaAdditionalInfo?: T;
+  contactCta?: T;
+  contactHideSection?: T;
   contactTitle?: T;
   contactDescription?: T;
   contactWorkingHours?:
@@ -1207,6 +1274,7 @@ export interface HomePageSelect<T extends boolean = true> {
       };
   contactPhoneNumber?: T;
   contactAddress?: T;
+  faqHideSection?: T;
   faqTitle?: T;
   faqDescription?: T;
   faqDefaultOpenItem?: T;

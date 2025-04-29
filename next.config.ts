@@ -22,6 +22,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/((?!admin|api))tenant-domains/:path*',
+        destination: '/tenant-domains/:tenant/:path*',
+        has: [
+          {
+            type: 'host',
+            value: '(?<tenant>.*)',
+          },
+        ],
+      },
+    ]
+  },
   webpack: (config: WebpackConfig, { webpack }) => {
     config.plugins = config.plugins || []; // Ensure plugins array exists
     config.plugins.push(

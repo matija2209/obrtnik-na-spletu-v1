@@ -45,6 +45,14 @@ const Users: CollectionConfig = {
   endpoints: [externalUsersLogin],
   fields: [
     {
+      name: 'username',
+      type: 'text',
+      hooks: {
+        beforeValidate: [ensureUniqueUsername],
+      },
+      index: true,
+    },
+    {
       name: 'firstName',
       label: 'Ime',
       type: 'text',

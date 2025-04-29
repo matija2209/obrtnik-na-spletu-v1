@@ -29,6 +29,7 @@ import type { Config } from './payload-types'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { isSuperAdmin } from '@/access/isSuperAdminAccess'
 import { getUserTenantIDs } from '@/utilities/getUserTenantIDs'
+import { seed } from './src/seed'; // Import the seed function
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -184,6 +185,10 @@ export default buildConfig({
     },
   }),
   sharp,
+  onInit: async (payload) => {
+
+      await seed(payload);
+  },
   plugins: [
     s3Storage({
       collections: {
