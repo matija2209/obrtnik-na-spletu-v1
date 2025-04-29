@@ -185,10 +185,9 @@ export default buildConfig({
     },
   }),
   sharp,
-  onInit: async (payload) => {
-
-      await seed(payload);
-  },
+  // onInit: async (payload) => {
+  //     await seed(payload);
+  // },
   plugins: [
     s3Storage({
       collections: {
