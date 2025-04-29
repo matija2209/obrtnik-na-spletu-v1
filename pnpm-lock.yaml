@@ -32,6 +32,9 @@ importers:
       '@payloadcms/storage-vercel-blob':
         specifier: ^3.35.1
         version: 3.35.1(@types/react@19.1.2)(monaco-editor@0.52.2)(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.35.1(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+      '@payloadcms/translations':
+        specifier: ^3.35.1
+        version: 3.35.1
       '@radix-ui/react-accordion':
         specifier: ^1.2.4
         version: 1.2.8(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)

@@ -1,10 +1,8 @@
 import { CollectionConfig, Access } from 'payload';
-import { User } from '../../payload-types'; // Import User type
+import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 
-// Define access control
-const isAdminOrLoggedIn: Access = ({ req }) => {
-  return !!req.user;
-};
+
+
 const anyone: Access = () => true;
 
 export const FaqItems: CollectionConfig = {
@@ -21,9 +19,9 @@ export const FaqItems: CollectionConfig = {
   },
   access: {
     read: anyone, // Anyone can read FAQs
-    create: isAdminOrLoggedIn,
-    update: isAdminOrLoggedIn,
-    delete: isAdminOrLoggedIn,
+    create: superAdminOrTenantAdminAccess,
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess,
   },
   fields: [
     {

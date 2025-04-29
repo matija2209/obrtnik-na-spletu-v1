@@ -1,3 +1,4 @@
+import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { CollectionConfig, Access } from 'payload';
 
 export const Machinery: CollectionConfig = {
@@ -13,9 +14,9 @@ export const Machinery: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: ({ req: { user } }) => !!user,
-    update: ({ req: { user } }) => !!user,
-    delete: ({ req: { user } }) => !!user,
+    create: superAdminOrTenantAdminAccess,
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess
   },
   fields: [
     {

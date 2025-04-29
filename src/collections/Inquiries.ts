@@ -1,11 +1,9 @@
+import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { CollectionConfig, Access } from 'payload';
 
 // Define access control - allowing anyone to create, admin to read/update/delete
 const anyone: Access = () => true;
-const isAdmin: Access = ({ req }) => {
-  if (!req.user) return false;
-  return req.user.roles?.includes('admin') ?? false;
-};
+
 
 export const Inquiries: CollectionConfig = {
   slug: 'inquiries',
@@ -18,12 +16,10 @@ export const Inquiries: CollectionConfig = {
     defaultColumns: ['firstName', 'lastName', 'email', 'service', 'createdAt'],
   },
   access: {
-    // Anyone can create an inquiry
-    create: anyone,
-    // Only admins can read, update, or delete inquiries
-    read: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    read: anyone,
+    create: superAdminOrTenantAdminAccess,
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess,
   },
   fields: [
     {

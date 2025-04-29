@@ -1,11 +1,8 @@
+import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { CollectionConfig, Access } from 'payload';
 
 // Define access control
 const anyone: Access = () => true;
-const isAdmin: Access = ({ req }) => {
-  if (!req.user) return false;
-  return req.user.roles?.includes('admin') ?? false;
-};
 
 export const Ctas: CollectionConfig = {
   slug: 'ctas',
@@ -20,9 +17,9 @@ export const Ctas: CollectionConfig = {
   },
   access: {
     read: anyone,
-    create: anyone,
-    update: anyone,
-    delete: anyone,
+    create: superAdminOrTenantAdminAccess,
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess,
   },
   fields: [
     {

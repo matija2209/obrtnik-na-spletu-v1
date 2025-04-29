@@ -1,3 +1,4 @@
+import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { GlobalConfig, Access, CollectionSlug } from 'payload';
 
 // import { Testimonials } from '../collections/Testimonials'; // No longer needed for slug
@@ -6,17 +7,14 @@ import { GlobalConfig, Access, CollectionSlug } from 'payload';
 
 // Define access control - allowing anyone to read, admin to update
 const anyone: Access = () => true;
-const isAdmin: Access = ({ req }) => {
-  if (!req.user) return false;
-  return req.user.roles?.includes('admin') ?? false;
-};
+
 
 export const HomePage: GlobalConfig = {
   slug: 'home-page',
   label: 'Vsebina domače strani',
   access: {
     read: anyone,
-    update: isAdmin, // Only admins can update home page settings
+    update: superAdminOrTenantAdminAccess, // Only admins can update home page settings
   },
   fields: [
     {

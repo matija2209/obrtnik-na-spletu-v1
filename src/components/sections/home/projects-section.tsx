@@ -9,6 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 import { getImageUrl } from '@/utils/getImageUrl';
 
+// Helper type for project images
+// Correctly get the type of the elements in the projectImages array
+type ProjectImage = NonNullable<Project['projectImages']>[number];
 
 interface ProjectsSectionProps {
   projects: Project[];
@@ -34,12 +37,13 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   };
 
   const navigateImage = (direction: 'next' | 'prev') => {
-    if (!selectedProject?.images || selectedProject.images.length === 0) return;
+    if (!selectedProject?.projectImages || selectedProject.projectImages.length === 0) return;
 
+    const imageCount = selectedProject.projectImages.length;
     if (direction === 'next') {
-      setSelectedImageIndex((prev) => (prev + 1) % selectedProject.images!.length);
+      setSelectedImageIndex((prev) => (prev + 1) % imageCount);
     } else {
-      setSelectedImageIndex((prev) => (prev - 1 + selectedProject.images!.length) % selectedProject.images!.length);
+      setSelectedImageIndex((prev) => (prev - 1 + imageCount) % imageCount);
     }
   };
 
@@ -74,6 +78,38 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
     setTouchEnd(null);
   };
 
+  // Helper function to get image source and alt text based on type
+  const getImageData = (img: ProjectImage | undefined) => {
+    if (!img) return { src: '/placeholder-image.jpg', alt: 'Placeholder Image' };
+    
+    if (img.type === 'comparison') {
+      const imageObj = img.afterImage?.image as Media | undefined;
+      return {
+        src: imageObj ? getImageUrl(imageObj) || '/placeholder-image.jpg' : '/placeholder-image.jpg',
+        alt: img.afterImage?.altText || 'After Image',
+      };
+    } else { // 'single' type
+      const imageObj = img.image as Media | undefined;
+      return {
+        src: imageObj ? getImageUrl(imageObj) || '/placeholder-image.jpg' : '/placeholder-image.jpg',
+        alt: img.imageAltText || 'Project Image',
+      };
+    }
+  };
+  
+  // Basic Rich Text extraction (placeholder)
+  // TODO: Replace with a proper RichText renderer component
+  const renderRichText = (richText: any): string => {
+    try {
+      // Attempt to extract the first text node's content
+      return richText?.root?.children?.[0]?.children?.[0]?.text || '';
+    } catch (error) {
+      console.error("Error rendering rich text:", error);
+      return ''; // Return empty string on error
+    }
+  };
+
+
   return (
     <ContainedSection
       id="projekti"
@@ -86,51 +122,55 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
       </SectionHeading>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
-        {projects.map((project) => (
-          <Card key={project.id} className="overflow-hidden group transition-all duration-300 hover:shadow-lg">
-            {project.images && project.images.length > 0 && (
-              <div className="relative h-60 w-full overflow-hidden">
-                <Image
-                  src={getImageUrl(project.images[0].image as Media) as string}
-                  alt={project.images[0].altText || project.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-            )}
-            <CardHeader>
-              <CardTitle>{project.title}</CardTitle>
-              {project.location && (
-                <p className="text-sm text-muted-foreground">{project.location}</p>
+        {projects.map((project) => {
+          const firstImageData = getImageData(project.projectImages?.[0]);
+          return (
+            <Card key={project.id} className="overflow-hidden group transition-all duration-300 hover:shadow-lg">
+              {project.projectImages && project.projectImages.length > 0 && (
+                <div className="relative h-60 w-full overflow-hidden">
+                  <Image
+                    src={firstImageData.src}
+                    alt={firstImageData.alt || project.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
               )}
-            </CardHeader>
-            <CardContent>
-              <p className="line-clamp-3 text-sm text-gray-700">
-                {project.description}
-              </p>
-            </CardContent>
-            <CardFooter>
-              <button 
-                onClick={() => openProject(project)}
-                className="text-primary font-medium flex items-center relative hover:underline"
-              >
-                Preberi več
-              </button>
-            </CardFooter>
-          </Card>
-        ))}
+              <CardHeader>
+                <CardTitle>{project.title}</CardTitle>
+                {project.location && (
+                  <p className="text-sm text-muted-foreground">{project.location}</p>
+                )}
+              </CardHeader>
+              <CardContent>
+                {/* Using basic rich text extraction */}
+                <p className="line-clamp-3 text-sm text-gray-700">
+                  {renderRichText(project.description)}
+                </p>
+              </CardContent>
+              <CardFooter>
+                <button
+                  onClick={() => openProject(project)}
+                  className="text-primary font-medium flex items-center relative hover:underline"
+                >
+                  Preberi več
+                </button>
+              </CardFooter>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Project Lightbox */}
       {selectedProject && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4 md:p-8"
           onClick={closeProject}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div 
+          <div
             className="relative max-w-6xl w-full h-full flex flex-col md:flex-row"
             onClick={(e) => e.stopPropagation()}
           >
@@ -145,19 +185,22 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
 
             {/* Image section */}
             <div className="relative flex-grow flex items-center justify-center h-1/2 md:h-full">
-              {selectedProject.images && selectedProject.images.length > 0 && (
+              {selectedProject.projectImages && selectedProject.projectImages.length > 0 && (
                 <div className="relative w-full h-full max-h-[60vh] md:max-h-full">
-                  <Image
-                    src={typeof selectedProject.images[selectedImageIndex].image === 'object' 
-                      ? getImageUrl(selectedProject.images[selectedImageIndex].image as Media) || '/placeholder-image.jpg'
-                      : '/placeholder-image.jpg'}
-                    alt={selectedProject.images[selectedImageIndex].altText || selectedProject.title}
-                    fill
-                    className="object-contain"
-                  />
-                  
+                  {(() => {
+                     const currentImageData = getImageData(selectedProject.projectImages?.[selectedImageIndex]);
+                     return (
+                       <Image
+                         src={currentImageData.src}
+                         alt={currentImageData.alt || selectedProject.title}
+                         fill
+                         className="object-contain"
+                       />
+                     );
+                  })()}
+
                   {/* Navigation arrows */}
-                  {selectedProject.images.length > 1 && (
+                  {selectedProject.projectImages.length > 1 && (
                     <>
                       <button
                         className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 text-black p-4 rounded-full z-10 hover:bg-white transition-colors shadow-md hidden sm:block"
@@ -181,11 +224,11 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                       </button>
                     </>
                   )}
-                  
+
                   {/* Image counter */}
-                  {selectedProject.images.length > 1 && (
+                  {selectedProject.projectImages.length > 1 && (
                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-black bg-white/80 px-4 py-2 rounded-full shadow-md">
-                      {selectedImageIndex + 1} / {selectedProject.images.length}
+                      {selectedImageIndex + 1} / {selectedProject.projectImages.length}
                     </div>
                   )}
                 </div>
@@ -199,32 +242,35 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                 <p className="text-sm text-muted-foreground mb-4">{selectedProject.location}</p>
               )}
               <div className="prose max-w-none">
-                <p>{selectedProject.description}</p>
+                 {/* Using basic rich text extraction */}
+                 {/* TODO: Replace with a proper RichText renderer component */}
+                 <p>{renderRichText(selectedProject.description)}</p>
               </div>
-              
+
               {/* Thumbnail navigation for gallery */}
-              {selectedProject.images && selectedProject.images.length > 1 && (
+              {selectedProject.projectImages && selectedProject.projectImages.length > 1 && (
                 <div className="mt-6">
                   <h3 className="text-sm font-medium mb-2">Galerija:</h3>
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                    {selectedProject.images.map((img, index) => (
-                      <div
-                        key={index}
-                        className={`relative h-16 cursor-pointer border-2 ${
-                          index === selectedImageIndex ? 'border-primary' : 'border-transparent'
-                        }`}
-                        onClick={() => setSelectedImageIndex(index)}
-                      >
-                        <Image
-                          src={typeof img.image === 'object' 
-                            ? getImageUrl(img.image as Media) || '/placeholder-image.jpg'
-                            : '/placeholder-image.jpg'}
-                          alt={img.altText || `Image ${index + 1}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ))}
+                    {selectedProject.projectImages.map((img, index) => {
+                      const thumbnailData = getImageData(img);
+                      return (
+                        <div
+                          key={index}
+                          className={`relative h-16 cursor-pointer border-2 ${
+                            index === selectedImageIndex ? 'border-primary' : 'border-transparent'
+                          }`}
+                          onClick={() => setSelectedImageIndex(index)}
+                        >
+                          <Image
+                            src={thumbnailData.src}
+                            alt={thumbnailData.alt || `Image ${index + 1}`}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

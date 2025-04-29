@@ -145,32 +145,37 @@ export interface Tenant {
   id: number;
   name: string;
   /**
-   * Unique identifier for the tenant, used in URLs etc.
+   * Used for domain-based tenant handling
+   */
+  domain?: string | null;
+  /**
+   * Used for url paths, example: /tenant-slug/page-slug
    */
   slug: string;
+  /**
+   * If checked, logging in is not required to read. Useful for building public pages.
+   */
+  allowPublicRead?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
- * Uporabniki za prijavo v administracijo.
- *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
-  roles?: ('admin' | 'user')[] | null;
+  roles?: ('super-admin' | 'user')[] | null;
+  username?: string | null;
   tenants?:
     | {
         tenant: number | Tenant;
+        roles: ('tenant-admin' | 'tenant-viewer')[];
         id?: string | null;
       }[]
     | null;
   updatedAt: string;
   createdAt: string;
-  enableAPIKey?: boolean | null;
-  apiKey?: string | null;
-  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -227,8 +232,6 @@ export interface Media {
   };
 }
 /**
- * Projekti za prikaz na spletni strani.
- *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "projects".
  */
@@ -236,12 +239,95 @@ export interface Project {
   id: number;
   tenant?: (number | null) | Tenant;
   title: string;
-  description?: string | null;
+  /**
+   * URL-friendly identifier (auto-generated from title if left blank)
+   */
+  slug?: string | null;
+  /**
+   * Detailed description of the project
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  projectStatus: 'planned' | 'in-progress' | 'completed';
   location?: string | null;
-  images?:
+  metadata?: {
+    startDate?: string | null;
+    completionDate?: string | null;
+    client?: string | null;
+    /**
+     * Optional budget information
+     */
+    budget?: string | null;
+  };
+  hasBeforeAfterPairs?: boolean | null;
+  projectImages?:
     | {
-        image: number | Media;
-        altText?: string | null;
+        type: 'single' | 'comparison';
+        image?: (number | null) | Media;
+        imageAltText?: string | null;
+        imageDescription?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        /**
+         * Explain what changes are shown in this before/after comparison
+         */
+        comparisonDescription?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        beforeImage?: {
+          image: number | Media;
+          altText?: string | null;
+        };
+        afterImage?: {
+          image: number | Media;
+          altText?: string | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add relevant tags to categorize this project
+   */
+  tags?:
+    | {
+        tag?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -487,7 +573,9 @@ export interface PayloadMigration {
  */
 export interface TenantsSelect<T extends boolean = true> {
   name?: T;
+  domain?: T;
   slug?: T;
+  allowPublicRead?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -497,17 +585,16 @@ export interface TenantsSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   roles?: T;
+  username?: T;
   tenants?:
     | T
     | {
         tenant?: T;
+        roles?: T;
         id?: T;
       };
   updatedAt?: T;
   createdAt?: T;
-  enableAPIKey?: T;
-  apiKey?: T;
-  apiKeyIndex?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -576,13 +663,45 @@ export interface MediaSelect<T extends boolean = true> {
 export interface ProjectsSelect<T extends boolean = true> {
   tenant?: T;
   title?: T;
+  slug?: T;
   description?: T;
+  projectStatus?: T;
   location?: T;
-  images?:
+  metadata?:
     | T
     | {
+        startDate?: T;
+        completionDate?: T;
+        client?: T;
+        budget?: T;
+      };
+  hasBeforeAfterPairs?: T;
+  projectImages?:
+    | T
+    | {
+        type?: T;
         image?: T;
-        altText?: T;
+        imageAltText?: T;
+        imageDescription?: T;
+        comparisonDescription?: T;
+        beforeImage?:
+          | T
+          | {
+              image?: T;
+              altText?: T;
+            };
+        afterImage?:
+          | T
+          | {
+              image?: T;
+              altText?: T;
+            };
+        id?: T;
+      };
+  tags?:
+    | T
+    | {
+        tag?: T;
         id?: T;
       };
   updatedAt?: T;

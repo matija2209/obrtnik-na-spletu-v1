@@ -1,11 +1,9 @@
+import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { GlobalConfig, Access, FieldHook } from 'payload';
 
 // Define access control - allowing anyone to read, admin to update
 const anyone: Access = () => true;
-const isAdmin: Access = ({ req}) => {
-  if (!req.user) return false;
-  return req.user.roles?.includes('admin') ?? false;
-};
+
 
 // Available icons for dropdown items based on desktop-navbar.tsx
 const iconOptions = [
@@ -23,17 +21,14 @@ type NavItemSiblingData = {
   // other fields if needed for condition logic
 };
 
-// Define a type for the sibling data in children array
-type ChildItemSiblingData = {
- // Define fields if needed for condition logic in child items
-};
+
 
 export const Navbar: GlobalConfig = {
   slug: 'navbar',
   label: 'Navigacija',
   access: {
     read: anyone,
-    update: isAdmin,
+    update: superAdminOrTenantAdminAccess,
   },
   fields: [
     {

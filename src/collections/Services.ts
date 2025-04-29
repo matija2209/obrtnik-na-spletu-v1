@@ -1,12 +1,10 @@
+import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { CollectionConfig, Access } from 'payload';
 import slugify from 'slugify';
 
 // Define access control - allowing anyone to read, admin to create/update/delete
 const anyone: Access = () => true;
-const isAdmin: Access = ({ req }) => {
-  if (!req.user) return false;
-  return req.user.roles?.includes('admin') ?? false;
-};
+
 
 export const Services: CollectionConfig = {
   slug: 'services',
@@ -37,9 +35,9 @@ export const Services: CollectionConfig = {
   },
   access: {
     read: anyone,
-    create: isAdmin,
-    update: isAdmin,
-    delete: isAdmin,
+    create: superAdminOrTenantAdminAccess,
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess,
   },
   fields: [
     {

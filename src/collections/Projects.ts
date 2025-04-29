@@ -1,89 +1,231 @@
+import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { CollectionConfig } from 'payload';
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
-  labels:{
-    singular: 'Projekt',
-    plural: 'Projekti',
-  },
-  
-  admin: {
-    useAsTitle: 'title',
-    defaultColumns: ['title', 'location', 'updatedAt'],
-    description: 'Projekti za prikaz na spletni strani.',
-  },
   access: {
     read: () => true,
-    create: ({ req: { user } }) => !!user,
-    update: ({ req: { user } }) => !!user,
-    delete: ({ req: { user } }) => !!user,
+    create: superAdminOrTenantAdminAccess,
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess,
   },
-  hooks: {
-    afterChange: [
-      async ({ doc, operation }) => {
-        if (operation === 'create' || operation === 'update') {
-          console.log(`Product ${operation}d: ${doc.title}. Triggering Vercel build...`);
-          try {
-            const response = await fetch('https://api.vercel.com/v1/integrations/deploy/prj_0YGxAZLtYVrGeyhpXRI7RPpXlDpB/Xgkc2A820Q', {
-              method: 'POST',
-            });
-            const data = await response.json();
-            if (response.ok && data.job && data.job.id) {
-              console.log(`Vercel build triggered successfully. Job ID: ${data.job.id}`);
-            } else {
-              console.error('Failed to trigger Vercel build:', response.status, response.statusText, data);
-            }
-          } catch (error) {
-            console.error('Error triggering Vercel build:', error);
-          }
-        }
-        return doc;
-      },
-    ],
+  admin: {
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'projectStatus', 'location', 'updatedAt'],
   },
   fields: [
     {
       name: 'title',
-      label: 'Naslov projekta',
       type: 'text',
       required: true,
-      defaultValue: '',
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      admin: {
+        description: 'URL-friendly identifier (auto-generated from title if left blank)',
+      },
+      hooks: {
+        beforeValidate: [
+          ({ value, data }) => {
+            // Auto-generate slug from title if not provided
+            if (!value && data?.title) {
+              return data.title
+                .toLowerCase()
+                .replace(/[^\\w\\s]/g, '') // Remove non-alphanumeric chars (except space)
+                .replace(/\\s+/g, '-'); // Replace spaces with hyphens
+            }
+            // Return original value if it exists or if title is missing
+            return value;
+          },
+        ],
+      },
     },
     {
       name: 'description',
-      label: 'Opis projekta',
-      type: 'textarea',
-      required: false,
-      defaultValue: '',
+      type: 'richText',
+      admin: {
+        description: 'Detailed description of the project',
+      },
+    },
+    {
+      name: 'projectStatus',
+      type: 'select',
+      options: [
+        { label: 'Planned', value: 'planned' },
+        { label: 'In Progress', value: 'in-progress' },
+        { label: 'Completed', value: 'completed' },
+      ],
+      defaultValue: 'completed',
+      required: true,
     },
     {
       name: 'location',
-      label: 'Lokacija projekta',
       type: 'text',
-      required: false,
-      defaultValue: '',
     },
     {
-      name: 'images',
-      label: 'Slike projekta',
-      type: 'array',
-      minRows: 1,
+      name: 'metadata',
+      type: 'group',
+      label: 'Project Metadata',
       fields: [
         {
-          name: 'image',
-          label: 'Slika',
-          type: 'upload',
-          relationTo: 'media',
-          required: true,
+          name: 'startDate',
+          type: 'date',
+          label: 'Start Date',
+          admin: {
+            date: {
+              pickerAppearance: 'dayOnly',
+            },
+          },
         },
         {
-          name: 'altText',
-          label: 'Nadomestno besedilo',
+          name: 'completionDate',
+          type: 'date',
+          label: 'Completion Date',
+          admin: {
+            date: {
+              pickerAppearance: 'dayOnly',
+            },
+            condition: (data) => data?.projectStatus === 'completed',
+          },
+        },
+        {
+          name: 'client',
           type: 'text',
-          required: false,
-          defaultValue: '',
+          label: 'Client Name',
+        },
+        {
+          name: 'budget',
+          type: 'text',
+          label: 'Project Budget',
+          admin: {
+            description: 'Optional budget information',
+          },
         },
       ],
     },
+    {
+      name: 'hasBeforeAfterPairs',
+      type: 'checkbox',
+      label: 'This project has before/after image comparisons',
+      defaultValue: false,
+    },
+    {
+      name: 'projectImages', // <-- specific name for project images!
+      type: 'array',
+      label: 'Project Images',
+      fields: [
+        {
+          name: 'type',
+          type: 'radio',
+          options: [
+            { label: 'Single Image', value: 'single' },
+            { label: 'Before/After Comparison', value: 'comparison' },
+          ],
+          defaultValue: 'single',
+          required: true,
+          admin: {
+            layout: 'horizontal',
+          },
+        },
+        // Fields for Single Images
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media', // <-- Pull from your Media Collection
+          required: true,
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'single',
+          },
+        },
+        {
+          name: 'imageAltText',
+          type: 'text',
+          label: 'Image Alt Text',
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'single',
+          },
+        },
+        {
+          name: 'imageDescription',
+          type: 'richText',
+          label: 'Image Description',
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'single',
+          },
+        },
+        // Fields for Before/After Comparisons
+        {
+          name: 'comparisonDescription',
+          type: 'richText',
+          label: 'Comparison Description',
+          admin: {
+            description: 'Explain what changes are shown in this before/after comparison',
+            condition: (_, siblingData) => siblingData?.type === 'comparison',
+          },
+        },
+        {
+          name: 'beforeImage',
+          type: 'group',
+          label: 'Before Image',
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'comparison',
+          },
+          fields: [
+            {
+              name: 'image',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+            },
+            {
+              name: 'altText',
+              type: 'text',
+              label: 'Before Image Alt Text',
+            },
+          ],
+        },
+        {
+          name: 'afterImage',
+          type: 'group',
+          label: 'After Image',
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'comparison',
+          },
+          fields: [
+            {
+              name: 'image',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+            },
+            {
+              name: 'altText',
+              type: 'text',
+              label: 'After Image Alt Text',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'tags',
+      type: 'array',
+      label: 'Project Tags',
+      labels: {
+        singular: 'Tag',
+        plural: 'Tags',
+      },
+      fields: [
+        {
+          name: 'tag',
+          type: 'text',
+        },
+      ],
+      admin: {
+        description: 'Add relevant tags to categorize this project',
+      },
+    },
   ],
-}; 
+  timestamps: true, // Adds createdAt and updatedAt fields automatically
+};

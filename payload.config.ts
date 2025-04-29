@@ -4,7 +4,9 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
-import { Users } from '@/collections/Users'
+import { en } from '@payloadcms/translations/languages/en'
+import { sl } from '@payloadcms/translations/languages/sl'
+import Users from '@/collections/Users'
 import { Media } from '@/collections/Media'
 import { Projects } from '@/collections/Projects'
 import { Testimonials } from '@/collections/Testimonials'
@@ -25,6 +27,8 @@ import type { PayloadRequest } from 'payload';
 import type { CollectionAfterChangeHook } from 'payload';
 import type { Config } from './payload-types'
 import { s3Storage } from '@payloadcms/storage-s3'
+import { isSuperAdmin } from '@/access/isSuperAdminAccess'
+import { getUserTenantIDs } from '@/utilities/getUserTenantIDs'
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -121,6 +125,10 @@ export default buildConfig({
     user: Users.slug,
   },
   editor: lexicalEditor({}),
+  i18n: {
+    supportedLanguages: { en, sl },
+    fallbackLanguage: 'sl',
+  },
   collections: allCollections.map(addDeployHook),
   globals: allGlobals.map(addDeployHook),
   localization: {
@@ -159,9 +167,21 @@ export default buildConfig({
       },
     }),
     multiTenantPlugin<Config>({
-      enabled: true,
-      debug: process.env.NODE_ENV !== 'production',
-      tenantsSlug: Tenants.slug,
+      tenantField: {
+        access: {
+          read: () => true,
+          update: ({ req }) => {
+            if (isSuperAdmin(req.user)) {
+              return true
+            }
+            return getUserTenantIDs(req.user).length > 0
+          },
+        },
+      },
+      tenantsArrayField: {
+        includeDefaultField: false,
+      },
+      userHasAccessToAllTenants: (user) => isSuperAdmin(user),
       collections: {
         [Projects.slug]: {},
         [Services.slug]: {},

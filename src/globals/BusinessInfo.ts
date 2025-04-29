@@ -1,19 +1,16 @@
+import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { GlobalConfig, Access } from 'payload';
 
 // Define access control - allowing anyone to read, admin to update
 const anyone: Access = () => true;
-const isAdmin: Access = ({ req }) => {
-  if (!req.user) return false;
-  // Assuming 'admin' role exists
-  return req.user.roles?.includes('admin') ?? false;
-};
+
 
 export const BusinessInfo: GlobalConfig = {
   slug: 'business-info',
   label: 'Podatki o podjetju',
   access: {
     read: anyone,
-    update: isAdmin, // Only admins can update business info
+    update: superAdminOrTenantAdminAccess, // Only admins can update business info
   },
   fields: [
     {
