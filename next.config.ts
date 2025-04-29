@@ -22,35 +22,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async rewrites() {
-    return {
-      beforeFiles: [
-        {
-          // Match any path except admin and api
-          source: '/:path*',
-          // Rewrite to the tenant-domains route with the tenant determined by hostname
-          destination: '/tenant-domains/:path*',
-          has: [
-            {
-              type: 'host',
-              value: '(?<tenant>.*)',
-            },
-          ],
-        },
-        // Keep admin paths as they are
-        {
-          source: '/admin/:path*',
-          destination: '/admin/:path*',
-        },
-        // Keep API paths as they are
-        {
-          source: '/api/:path*',
-          destination: '/api/:path*',
-        },
-      ]
-    }
-  },
-  
+  // ... existing code ...
   // Add other Next.js config options as needed
   
   // Add other Next.js config options as needed

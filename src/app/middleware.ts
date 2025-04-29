@@ -19,20 +19,14 @@ export function middleware(request: NextRequest) {
   // Get the tenant from the hostname
   const hostname = request.headers.get('host') || '';
   
-  // Extract tenant from hostname
-  // For production: a1-instalacije.vercel.app -> tenant is a1-instalacije
-  // For subdomains: gold.localhost:3000 -> tenant is gold
-  let tenant = hostname
-  
+  // Use the full hostname as the tenant identifier
+  const tenant = hostname;
   
   // For debugging (remove in production)
-  console.log(`Tenant: ${tenant}, Original path: ${pathname}`);
+  console.log(`Using hostname as tenant: ${tenant}, Original path: ${pathname}`);
   
-  // Rewrite to tenant domains path
-  url.pathname = `/tenant-domains${pathname}`;
-  
-  // If you need to pass the tenant explicitly (might be needed depending on how Payload is configured)
-  // url.pathname = `/tenant-domains/${tenant}${pathname}`;
+  // Rewrite to tenant domains path, using the full hostname
+  url.pathname = `/tenant-domains/${tenant}${pathname}`;
   
   return NextResponse.rewrite(url);
 }
