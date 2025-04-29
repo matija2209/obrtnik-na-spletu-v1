@@ -22,11 +22,54 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // ... existing code ...
-  // Add other Next.js config options as needed
-  
-  // Add other Next.js config options as needed
-  reactStrictMode: true,
+  // async rewrites() {
+  //   return [
+  //     {
+  //       // Rule for the specific host a1-instalacije.vercel.app
+  //       source: '/:path*', // Match all paths
+  //       has: [
+  //         {
+  //           type: 'host',
+  //           value: 'a1-instalacije.vercel.app',
+  //         },
+  //       ],
+  //       destination: '/tenant-domains/:path*', // Rewrite to /tenant-domains, preserving the path
+  //     },
+  //     {
+  //       // Rule for the root path for other hosts
+  //       source: '/',
+  //       destination: '/tenant-domains/:tenant/', // No trailing path here
+  //       has: [
+  //         {
+  //           type: 'host',
+  //           // Exclude the specific host and common localhost/vercel previews
+  //           value: '^(?!a1-instalacije\\.vercel\\.app|localhost|.*\\.vercel\\.app$).*$',
+  //         },
+  //         {
+  //           type: 'host',
+  //           value: '(?<tenant>.*)', // Capture the full hostname
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       // Rule for non-root paths for other hosts, excluding /api and /admin
+  //       // Use :path+ to ensure it matches paths with content
+  //       source: '/:path+((?!api|admin).*)',
+  //       destination: '/tenant-domains/:tenant/:path*',
+  //       has: [
+  //         {
+  //           type: 'host',
+  //           // Exclude the specific host and common localhost/vercel previews
+  //           value: '^(?!a1-instalacije\\.vercel\\.app|localhost|.*\\.vercel\\.app$).*$',
+  //         },
+  //         {
+  //           type: 'host',
+  //           value: '(?<tenant>.*)', // Capture the full hostname
+  //         },
+  //       ],
+  //     },
+  //   ]
+  // },
   webpack: (config: WebpackConfig, { webpack }) => {
     config.plugins = config.plugins || []; // Ensure plugins array exists
     config.plugins.push(
