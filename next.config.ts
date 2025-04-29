@@ -25,15 +25,11 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        // Match any path that doesn't start with /api or /admin
-        // The :path* captures the rest of the path including the leading /
-        // The * makes the path optional to match the root '/'
-        source: '/:path((?!api|admin).*)',
+        source: '/((?!admin|api))tenant-domains/:path*',
         destination: '/tenant-domains/:tenant/:path*',
         has: [
           {
             type: 'host',
-            // Capture the full hostname (e.g., a1-instalacije.vercel.app)
             value: '(?<tenant>.*)',
           },
         ],
