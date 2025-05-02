@@ -11,7 +11,7 @@ import type {
   Media,
   BusinessInfo as BusinessInfoType,
   Navbar as NavbarType,
-  HomePage as HomePageType,
+  Page,
 } from '../../payload-types'
 
 
@@ -143,29 +143,6 @@ export const getNavbar = async (query = {}) => {
   })
 }
 
-export const getHomePage = async (tenantSlug?: string, query = {}) => {
-  const payload = await getPayloadClient();
-
-  // Construct the req object to pass tenant context
-  // The multi-tenant plugin typically uses headers or a context object
-  // For server-side calls, we manually provide the tenant slug.
-  // The exact header name (`X-Payload-Tenant`) might depend on plugin config, but this is common.
-  const req = {
-    headers: {
-      'X-Payload-Tenant': tenantSlug || '', // Use slug or empty string if none provided
-    },
-    payload, // Pass the payload instance for context
-    user: undefined, // Assuming no specific user context is needed for this public fetch
-  };
-
-  return payload.findGlobal({
-    slug: 'home-page',
-    ...query,
-    // Pass the constructed request object with tenant info
-    req: req as any, // Cast to any if needed, depending on exact Payload types
-  });
-};
-
 
 // Logo utilities
 export function getLogoUrl(businessData?: any, variant: 'light' | 'dark' = 'dark'): string {
@@ -192,3 +169,63 @@ export function getLogoUrl(businessData?: any, variant: 'light' | 'dark' = 'dark
     return "/logo.png";
   }
 }
+
+// Page utility functions
+export const queryPageBySlug = async ({
+  slug,
+  tenant,
+  overrideAccess = false,
+}: {
+  slug?: string[];
+  tenant?: string;
+  overrideAccess?: boolean;
+}) => {
+  const payload = await getPayloadClient();
+  
+  let slugConstraint: Record<string, any> = {};
+  
+  // Handle homepage (empty slug) and regular pages
+  if (!slug || slug.length === 0) {
+    slugConstraint = {
+      slug: {
+        equals: 'home',
+      },
+    };
+  } else {
+    slugConstraint = {
+      slug: {
+        equals: slug.join('/'),
+      },
+    };
+  }
+
+  // Build the where clause
+  const whereConditions = [];
+  
+  if (tenant) {
+    whereConditions.push({
+      'tenant.slug': {
+        equals: tenant,
+      },
+    });
+  }
+  
+  whereConditions.push(slugConstraint);
+  
+  try {
+    const pageQuery = await payload.find({
+      collection: 'pages',
+      overrideAccess,
+      where: {
+        and: whereConditions,
+      },
+      depth: 2, // Load relationships 2 levels deep
+    });
+
+    // Return the first matching page or null if none found
+    return pageQuery.docs[0] as Page | null;
+  } catch (error) {
+    console.error('Error querying page by slug:', error);
+    return null;
+  }
+};

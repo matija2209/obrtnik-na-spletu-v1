@@ -77,6 +77,8 @@ export interface Config {
     ctas: Cta;
     inquiries: Inquiry;
     machinery: Machinery;
+    'opening-hours': OpeningHour;
+    pages: Page;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -93,6 +95,8 @@ export interface Config {
     ctas: CtasSelect<false> | CtasSelect<true>;
     inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
     machinery: MachinerySelect<false> | MachinerySelect<true>;
+    'opening-hours': OpeningHoursSelect<false> | OpeningHoursSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -103,12 +107,12 @@ export interface Config {
   globals: {
     'business-info': BusinessInfo;
     navbar: Navbar;
-    'home-page': HomePage;
+    footer: Footer;
   };
   globalsSelect: {
     'business-info': BusinessInfoSelect<false> | BusinessInfoSelect<true>;
     navbar: NavbarSelect<false> | NavbarSelect<true>;
-    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
   };
   locale: null;
   user: User & {
@@ -488,6 +492,282 @@ export interface Machinery {
   createdAt: string;
 }
 /**
+ * Define different opening hours schedules (e.g., regular, seasonal, emergency).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opening-hours".
+ */
+export interface OpeningHour {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * E.g., "Regular Hours", "Summer Schedule", "Emergency On-Call"
+   */
+  name: string;
+  /**
+   * Optional. Schedule is active starting from this date.
+   */
+  startDate?: string | null;
+  /**
+   * Optional. Schedule is active until this date.
+   */
+  endDate?: string | null;
+  dailyHours?:
+    | {
+        days: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[];
+        timeSlots: {
+          startTime: string;
+          endTime: string;
+          /**
+           * Optional notes for this specific time slot (e.g., "Appointments only")
+           */
+          notes?: string | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional general notes for the entire schedule.
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  publishedAt?: string | null;
+  slug?: string | null;
+  layout?:
+    | (
+        | HeroBlock
+        | ServicesBlock
+        | ProjectHighlightsBlock
+        | AboutBlock
+        | TestimonialsBlock
+        | GalleryBlock
+        | ServiceAreaBlock
+        | ContactBlock
+        | FAQBlock
+        | MachineryBlock
+      )[]
+    | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock".
+ */
+export interface HeroBlock {
+  template: 'default';
+  title?: string | null;
+  subtitle?: string | null;
+  /**
+   * Izberite CTA gumbe za naslovno sekcijo. Vrstni red je pomemben.
+   */
+  ctas?: (number | Cta)[] | null;
+  image?: (number | null) | Media;
+  features?:
+    | {
+        iconText?: string | null;
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesBlock".
+ */
+export interface ServicesBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Izberite storitve, ki se prikažejo na domači strani. Vrstni red je pomemben.
+   */
+  selectedServices?: (number | Service)[] | null;
+  /**
+   * Izberite CTA gumb za sekcijo Storitve (neobvezno).
+   */
+  serviceCta?: (number | null) | Cta;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'services';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectHighlightsBlock".
+ */
+export interface ProjectHighlightsBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  buttonText?: string | null;
+  buttonHref?: string | null;
+  /**
+   * Izberite projekte za prikaz na domači strani. Vrstni red je pomemben.
+   */
+  highlightedProjects?: (number | Project)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'projectHighlights';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutBlock".
+ */
+export interface AboutBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  benefits?:
+    | {
+        title?: string | null;
+        description?: string | null;
+        /**
+         * Ime ikone (npr. Star, Trophy, Clock)
+         */
+        icon?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'about';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock".
+ */
+export interface TestimonialsBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Izberite mnenja strank, ki bodo prikazana na domači strani. Vrstni red je pomemben.
+   */
+  selectedTestimonials?: (number | Testimonial)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock".
+ */
+export interface GalleryBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  galleryImages?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Izberite CTA gumb za galerijo (neobvezno).
+   */
+  galleryCta?: (number | null) | Cta;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gallery';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServiceAreaBlock".
+ */
+export interface ServiceAreaBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  showMap?: boolean | null;
+  locations?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'serviceArea';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactBlock".
+ */
+export interface ContactBlock {
+  template: 'default' | 'simple';
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Select one or more opening hours schedules to display.
+   */
+  openingHoursSchedules?: (number | OpeningHour)[] | null;
+  phoneNumber?: string | null;
+  address?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'contact';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock".
+ */
+export interface FAQBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Izberite vprašanja, ki bodo prikazana na domači strani. Vrstni red je pomemben.
+   */
+  selectedFaqs?: (number | FaqItem)[] | null;
+  /**
+   * Izberite CTA gumb za sekcijo FAQ (neobvezno).
+   */
+  faqCta?: (number | null) | Cta;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineryBlock".
+ */
+export interface MachineryBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Izberite stroje, ki se prikažejo na domači strani. Vrstni red je pomemben.
+   */
+  selectedMachinery?: (number | Machinery)[] | null;
+  template: 'default';
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machinery';
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
@@ -533,6 +813,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'machinery';
         value: number | Machinery;
+      } | null)
+    | ({
+        relationTo: 'opening-hours';
+        value: number | OpeningHour;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -829,6 +1117,221 @@ export interface MachinerySelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opening-hours_select".
+ */
+export interface OpeningHoursSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  startDate?: T;
+  endDate?: T;
+  dailyHours?:
+    | T
+    | {
+        days?: T;
+        timeSlots?:
+          | T
+          | {
+              startTime?: T;
+              endTime?: T;
+              notes?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  publishedAt?: T;
+  slug?: T;
+  layout?:
+    | T
+    | {
+        hero?: T | HeroBlockSelect<T>;
+        services?: T | ServicesBlockSelect<T>;
+        projectHighlights?: T | ProjectHighlightsBlockSelect<T>;
+        about?: T | AboutBlockSelect<T>;
+        testimonials?: T | TestimonialsBlockSelect<T>;
+        gallery?: T | GalleryBlockSelect<T>;
+        serviceArea?: T | ServiceAreaBlockSelect<T>;
+        contact?: T | ContactBlockSelect<T>;
+        faq?: T | FAQBlockSelect<T>;
+        machinery?: T | MachineryBlockSelect<T>;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock_select".
+ */
+export interface HeroBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  subtitle?: T;
+  ctas?: T;
+  image?: T;
+  features?:
+    | T
+    | {
+        iconText?: T;
+        text?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesBlock_select".
+ */
+export interface ServicesBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  selectedServices?: T;
+  serviceCta?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectHighlightsBlock_select".
+ */
+export interface ProjectHighlightsBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  buttonText?: T;
+  buttonHref?: T;
+  highlightedProjects?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutBlock_select".
+ */
+export interface AboutBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  benefits?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        icon?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock_select".
+ */
+export interface TestimonialsBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  selectedTestimonials?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock_select".
+ */
+export interface GalleryBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  galleryImages?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  galleryCta?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServiceAreaBlock_select".
+ */
+export interface ServiceAreaBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  showMap?: T;
+  locations?:
+    | T
+    | {
+        name?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactBlock_select".
+ */
+export interface ContactBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  openingHoursSchedules?: T;
+  phoneNumber?: T;
+  address?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock_select".
+ */
+export interface FAQBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  selectedFaqs?: T;
+  faqCta?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineryBlock_select".
+ */
+export interface MachineryBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  selectedMachinery?: T;
+  template?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
@@ -972,161 +1475,37 @@ export interface Navbar {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home-page".
+ * via the `definition` "footer".
  */
-export interface HomePage {
+export interface Footer {
   id: number;
   /**
-   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   * Dodajte povezave do družabnih omrežij, ki se bodo prikazale v nogi strani.
    */
-  heroHideSection?: boolean | null;
-  heroTitle?: string | null;
-  heroSubtitle?: string | null;
-  /**
-   * Izberite CTA gumbe za naslovno sekcijo. Vrstni red je pomemben.
-   */
-  heroCtas?: (number | Cta)[] | null;
-  heroImage?: (number | null) | Media;
-  heroFeatures?:
+  socialLinks?:
     | {
-        iconText?: string | null;
-        text?: string | null;
+        platform: 'facebook' | 'instagram' | 'linkedin' | 'youtube' | 'twitter' | 'tiktok' | 'google';
+        url: string;
         id?: string | null;
       }[]
     | null;
   /**
-   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
+   * Besedilo avtorskih pravic, ki bo prikazano na dnu noge. Uporabite {{year}} za dinamično leto.
    */
-  servicesHideSection?: boolean | null;
-  servicesTitle?: string | null;
-  servicesDescription?: string | null;
+  copyrightText?: string | null;
+  logo?: (number | null) | Media;
   /**
-   * Izberite storitve, ki se prikažejo na domači strani. Vrstni red je pomemben.
+   * Dodajte hitre povezave, ki se bodo prikazale v nogi.
    */
-  selectedServices?: (number | Service)[] | null;
-  /**
-   * Izberite CTA gumb za sekcijo Storitve (neobvezno).
-   */
-  servicesCta?: (number | null) | Cta;
-  /**
-   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
-   */
-  machineryHideSection?: boolean | null;
-  machineryTitle?: string | null;
-  machineryDescription?: string | null;
-  /**
-   * Izberite stroje, ki se prikažejo na domači strani. Vrstni red je pomemben.
-   */
-  selectedMachinery?: (number | Machinery)[] | null;
-  /**
-   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
-   */
-  projectsHideSection?: boolean | null;
-  projectHighlightsTitle?: string | null;
-  projectHighlightsDescription?: string | null;
-  projectHighlightsButtonText?: string | null;
-  projectHighlightsButtonHref?: string | null;
-  /**
-   * Izberite projekte, ki se prikažejo na domači strani. Priporočljivo 3-4 projekte.
-   */
-  highlightedProjects?: (number | Project)[] | null;
-  /**
-   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
-   */
-  aboutHideSection?: boolean | null;
-  aboutTitle?: string | null;
-  aboutDescription?: string | null;
-  aboutImage?: (number | null) | Media;
-  aboutBenefits?:
+  quickLinks?:
     | {
-        /**
-         * Interni ID, mora biti unikaten.
-         */
-        benefitId?: string | null;
-        title?: string | null;
-        description?: string | null;
+        label: string;
+        url: string;
         id?: string | null;
       }[]
     | null;
-  /**
-   * Izberite CTA gumb za sekcijo O nas (neobvezno).
-   */
-  aboutCta?: (number | null) | Cta;
-  /**
-   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
-   */
-  testimonialsHideSection?: boolean | null;
-  testimonialsTitle?: string | null;
-  /**
-   * Izberite mnenja, ki se prikažejo na domači strani. Vrstni red je pomemben.
-   */
-  selectedTestimonials?: (number | Testimonial)[] | null;
-  /**
-   * Izberite CTA gumb za sekcijo Mnenja strank (neobvezno).
-   */
-  testimonialsCta?: (number | null) | Cta;
-  /**
-   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
-   */
-  galleryHideSection?: boolean | null;
-  galleryTitle?: string | null;
-  galleryDescription?: string | null;
-  galleryButtonText?: string | null;
-  /**
-   * Izberite CTA gumb za galerijo (neobvezno).
-   */
-  galleryCta?: (number | null) | Cta;
-  /**
-   * Izberite slike iz medijske knjižnice, ki se prikažejo v galeriji na domači strani. Vrstni red je pomemben.
-   */
-  galleryImages?: (number | Media)[] | null;
-  /**
-   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
-   */
-  serviceAreaHideSection?: boolean | null;
-  serviceAreaTitle?: string | null;
-  serviceAreaDescription?: string | null;
-  /**
-   * Če je označeno, bo prikazan zemljevid. Preverite, ali so 'Koordinate sedeža' pravilno nastavljene v splošnih nastavitvah strani.
-   */
-  showMap?: boolean | null;
-  serviceAreaLocations?:
-    | {
-        name?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  serviceAreaAdditionalInfo?: string | null;
-  /**
-   * Izberite CTA gumb za kontaktno sekcijo (neobvezno).
-   */
-  contactCta?: (number | null) | Cta;
-  /**
-   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
-   */
-  contactHideSection?: boolean | null;
-  contactTitle?: string | null;
-  contactDescription?: string | null;
-  contactWorkingHours?:
-    | {
-        day?: string | null;
-        hours?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  contactPhoneNumber?: string | null;
-  contactAddress?: string | null;
-  /**
-   * Če je označeno, ta sekcija ne bo prikazana na spletni strani.
-   */
-  faqHideSection?: boolean | null;
-  faqTitle?: string | null;
-  faqDescription?: string | null;
-  faqDefaultOpenItem?: (number | null) | FaqItem;
-  /**
-   * Izberite pogosta vprašanja, ki se prikažejo na domači strani. Vrstni red je pomemben.
-   */
-  selectedFaqItems?: (number | FaqItem)[] | null;
+  showContactInFooter?: boolean | null;
+  showPrivacyLinks?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1197,88 +1576,27 @@ export interface NavbarSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home-page_select".
+ * via the `definition` "footer_select".
  */
-export interface HomePageSelect<T extends boolean = true> {
-  heroHideSection?: T;
-  heroTitle?: T;
-  heroSubtitle?: T;
-  heroCtas?: T;
-  heroImage?: T;
-  heroFeatures?:
+export interface FooterSelect<T extends boolean = true> {
+  socialLinks?:
     | T
     | {
-        iconText?: T;
-        text?: T;
+        platform?: T;
+        url?: T;
         id?: T;
       };
-  servicesHideSection?: T;
-  servicesTitle?: T;
-  servicesDescription?: T;
-  selectedServices?: T;
-  servicesCta?: T;
-  machineryHideSection?: T;
-  machineryTitle?: T;
-  machineryDescription?: T;
-  selectedMachinery?: T;
-  projectsHideSection?: T;
-  projectHighlightsTitle?: T;
-  projectHighlightsDescription?: T;
-  projectHighlightsButtonText?: T;
-  projectHighlightsButtonHref?: T;
-  highlightedProjects?: T;
-  aboutHideSection?: T;
-  aboutTitle?: T;
-  aboutDescription?: T;
-  aboutImage?: T;
-  aboutBenefits?:
+  copyrightText?: T;
+  logo?: T;
+  quickLinks?:
     | T
     | {
-        benefitId?: T;
-        title?: T;
-        description?: T;
+        label?: T;
+        url?: T;
         id?: T;
       };
-  aboutCta?: T;
-  testimonialsHideSection?: T;
-  testimonialsTitle?: T;
-  selectedTestimonials?: T;
-  testimonialsCta?: T;
-  galleryHideSection?: T;
-  galleryTitle?: T;
-  galleryDescription?: T;
-  galleryButtonText?: T;
-  galleryCta?: T;
-  galleryImages?: T;
-  serviceAreaHideSection?: T;
-  serviceAreaTitle?: T;
-  serviceAreaDescription?: T;
-  showMap?: T;
-  serviceAreaLocations?:
-    | T
-    | {
-        name?: T;
-        id?: T;
-      };
-  serviceAreaAdditionalInfo?: T;
-  contactCta?: T;
-  contactHideSection?: T;
-  contactTitle?: T;
-  contactDescription?: T;
-  contactWorkingHours?:
-    | T
-    | {
-        day?: T;
-        hours?: T;
-        id?: T;
-      };
-  contactPhoneNumber?: T;
-  contactAddress?: T;
-  faqHideSection?: T;
-  faqTitle?: T;
-  faqDescription?: T;
-  faqDefaultOpenItem?: T;
-  selectedFaqItems?: T;
+  showContactInFooter?: T;
+  showPrivacyLinks?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

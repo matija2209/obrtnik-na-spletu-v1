@@ -5,7 +5,8 @@ import { headers as getHeaders } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import React from 'react'
-import RenderPage from '@/components/payload/RenderPage'
+import { RenderBlocks } from '@/blocks/RenderBlocks'
+import { queryPageBySlug } from '@/lib/payload'
 
 // eslint-disable-next-line no-restricted-exports
 export default async function Page({
@@ -13,15 +14,16 @@ export default async function Page({
 }: {
   params: Promise<{ slug?: string[]; tenant: string }>
 }) {
- 
+  // Await parameters
   const params = await paramsPromise
+  const { slug, tenant } = params
 
+  // Get authenticated user
   const headers = await getHeaders()
   const payload = await getPayload({ config: configPromise })
   const { user } = await payload.auth({ headers })
 
-  const slug = params?.slug
-
+  // Check tenant access
   try {
     const tenantsQuery = await payload.find({
       collection: 'tenants',
@@ -29,53 +31,44 @@ export default async function Page({
       user,
       where: {
         slug: {
-          equals: params.tenant,
+          equals: tenant,
         },
       },
     })
-    // If no tenant is found, the user does not have access
-    // Show the login view
+    
+    // If no tenant is found, redirect to login
     if (tenantsQuery.docs.length === 0) {
       redirect(
-        `/tenant-slugs/${params.tenant}/login?redirect=${encodeURIComponent(
-          `/tenant-slugs/${params.tenant}${slug ? `/${slug.join('/')}` : ''}`,
+        `/tenant-slugs/${tenant}/login?redirect=${encodeURIComponent(
+          `/tenant-slugs/${tenant}${slug ? `/${slug.join('/')}` : ''}`,
         )}`,
       )
     }
   } catch (e) {
-    // If the query fails, it means the user did not have access to query on the slug field
-    // Show the login view
+    // If the query fails, redirect to login
     redirect(
-      `/tenant-slugs/${params.tenant}/login?redirect=${encodeURIComponent(
-        `/tenant-slugs/${params.tenant}${slug ? `/${slug.join('/')}` : ''}`,
+      `/tenant-slugs/${tenant}/login?redirect=${encodeURIComponent(
+        `/tenant-slugs/${tenant}${slug ? `/${slug.join('/')}` : ''}`,
       )}`,
     )
   }
 
+  // Query for the page
+  const page = await queryPageBySlug({
+    slug,
+    tenant,
+    overrideAccess: false, // Use access control
+  })
 
-  // const pageQuery = await payload.find({
-  //   collection: 'pages',
-  //   overrideAccess: false,
-  //   user,
-  //   where: {
-  //     and: [
-  //       {
-  //         'tenant.slug': {
-  //           equals: params.tenant,
-  //         },
-  //       },
-  //       slugConstraint,
-  //     ],
-  //   },
-  // })
+  // If no page is found, return a 404
+  if (!page) {
+    return notFound()
+  }
 
-  // const pageData = pageQuery.docs?.[0]
-
-  // // The page with the provided slug could not be found
-  // if (!pageData) {
-  //   return notFound()
-  // }
-
-  
-  return <RenderPage tenantSlug={params.tenant} />
+  // Render the page layout blocks
+  return page.layout ? (
+    <RenderBlocks blocks={page.layout} />
+  ) : (
+    <div>This page has no content blocks</div>
+  )
 }

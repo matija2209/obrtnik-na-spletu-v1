@@ -10,7 +10,6 @@ import Users from '@/collections/Users'
 import { Media } from '@/collections/Media'
 import { Projects } from '@/collections/Projects'
 import { Testimonials } from '@/collections/Testimonials'
-import { HomePage } from '@/globals/HomePage'
 import { FaqItems } from '@/collections/FaqItems'
 import { Services } from '@/collections/Services'
 import { Ctas } from '@/collections/Ctas'
@@ -18,8 +17,8 @@ import { Inquiries } from '@/collections/Inquiries'
 import { Navbar } from '@/globals/Navbar'
 import { BusinessInfo } from '@/globals/BusinessInfo'
 import { Machinery } from '@/collections/Machinery'
+import { OpeningHours } from '@/collections/OpeningHours'
 import { Tenants } from '@/collections/Tenants'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import type { CollectionConfig, GlobalConfig } from 'payload';
 import type { GlobalAfterChangeHook } from 'payload';
@@ -30,6 +29,8 @@ import { s3Storage } from '@payloadcms/storage-s3'
 import { isSuperAdmin } from '@/access/isSuperAdminAccess'
 import { getUserTenantIDs } from '@/utilities/getUserTenantIDs'
 import { seed } from './src/seed'; // Import the seed function
+import { Pages } from '@/collections/Pages';
+import { Footer } from '@/globals/Footer';
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -105,12 +106,14 @@ const allCollections: CollectionConfig[] = [
   Ctas,
   Inquiries,
   Machinery,
+  OpeningHours,
+  Pages,
 ];
 
 const allGlobals: GlobalConfig[] = [
   BusinessInfo,
   Navbar,
-  HomePage,
+  Footer,
 ];
 
 if (!process.env.PAYLOAD_SECRET) {
@@ -166,6 +169,11 @@ export default buildConfig({
     },
   },
   editor: lexicalEditor({}),
+  onInit: async (args) => {
+    if (true) {
+      await seed(args)
+    }
+  },
   i18n: {
     supportedLanguages: { en, sl },
     fallbackLanguage: 'sl',
@@ -229,7 +237,9 @@ export default buildConfig({
         [Inquiries.slug]: {},
         [Machinery.slug]: {},
         [Media.slug]: {},
-        [HomePage.slug]: { isGlobal: true },
+        [Pages.slug]: {},
+        [OpeningHours.slug]: {},
+        [Footer.slug]: { isGlobal: true },
         [Navbar.slug]: { isGlobal: true },
         [BusinessInfo.slug]: { isGlobal: true },
       },
