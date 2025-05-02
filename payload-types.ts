@@ -252,9 +252,6 @@ export interface Project {
   id: number;
   tenant?: (number | null) | Tenant;
   title: string;
-  /**
-   * URL-friendly identifier (auto-generated from title if left blank)
-   */
   slug?: string | null;
   /**
    * Detailed description of the project
@@ -1379,8 +1376,6 @@ export interface BusinessInfo {
   location: string;
   phoneNumber: string;
   email: string;
-  facebookUrl?: string | null;
-  googleReviewUrl?: string | null;
   /**
    * Temna varianta logotipa, ki se uporablja na svetlih ozadjih.
    */
@@ -1389,6 +1384,8 @@ export interface BusinessInfo {
    * Svetla varianta logotipa, ki se uporablja na temnih ozadjih. Če ni izbrana, se uporabi temna varianta.
    */
   logoLight?: (number | null) | Media;
+  facebookUrl?: string | null;
+  googleReviewUrl?: string | null;
   /**
    * Dodajte povezave do vaših profilov na platformah za pridobivanje strank.
    */
@@ -1522,10 +1519,10 @@ export interface BusinessInfoSelect<T extends boolean = true> {
   location?: T;
   phoneNumber?: T;
   email?: T;
-  facebookUrl?: T;
-  googleReviewUrl?: T;
   logo?: T;
   logoLight?: T;
+  facebookUrl?: T;
+  googleReviewUrl?: T;
   leadGenPlatformUrls?:
     | T
     | {

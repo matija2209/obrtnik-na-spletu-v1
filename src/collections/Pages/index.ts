@@ -24,6 +24,7 @@ import {
 // Import hooks
 import { populatePublishedAt } from './hooks/populatePublishedAt';
 import { revalidatePage, revalidateDelete } from './hooks/revalidatePage';
+import { generatePreviewPath } from '@/utils/generatePreviewPath';
 
 
 // Define access control - allowing anyone to read, admin to update
@@ -39,6 +40,23 @@ export const Pages: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
     group: 'Content',
+    livePreview: {
+      url: ({ data, req }) => {
+        return generatePreviewPath({
+          slug: typeof data?.slug === 'string' ? data.slug : '',
+          collection: 'pages',
+          data,
+          req,
+        })
+      },
+    },
+    preview: (data, { req }) =>
+      generatePreviewPath({
+        slug: typeof data?.slug === 'string' ? data.slug : '',
+        collection: 'pages',
+        data,
+        req,
+      }),
   },
   // Enable versions & drafts
   versions: {

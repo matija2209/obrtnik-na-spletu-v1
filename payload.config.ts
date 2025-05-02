@@ -126,6 +126,7 @@ if (!process.env.NEXT_PUBLIC_SERVER_URL) {
 
 export default buildConfig({
   admin: {
+    
     importMap: {
       baseDir: path.resolve(__dirname, 'src'),
     },
@@ -167,10 +168,32 @@ export default buildConfig({
         Logo: '/graphics/Logo/index.tsx#Logo',
       },
     },
+    livePreview: {
+      breakpoints: [
+        {
+          label: 'Mobile',
+          name: 'mobile',
+          width: 375,
+          height: 667,
+        },
+        {
+          label: 'Tablet',
+          name: 'tablet',
+          width: 768,
+          height: 1024,
+        },
+        {
+          label: 'Desktop',
+          name: 'desktop',
+          width: 1440,
+          height: 900,
+        },
+      ],
+    },
   },
   editor: lexicalEditor({}),
   onInit: async (args) => {
-    if (true) {
+    if (process.env.SEED === 'true') {
       await seed(args)
     }
   },

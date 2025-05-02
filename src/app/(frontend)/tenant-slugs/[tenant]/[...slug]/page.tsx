@@ -9,14 +9,16 @@ import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { queryPageBySlug } from '@/lib/payload'
 
 // eslint-disable-next-line no-restricted-exports
-export default async function Page({
+export default async function TenantSlugPage({
   params: paramsPromise,
 }: {
   params: Promise<{ slug?: string[]; tenant: string }>
 }) {
   // Await parameters
+  
   const params = await paramsPromise
   const { slug, tenant } = params
+  console.log('TenantSlugPage', params);
 
   // Get authenticated user
   const headers = await getHeaders()
@@ -57,7 +59,7 @@ export default async function Page({
   const page = await queryPageBySlug({
     slug,
     tenant,
-    overrideAccess: false, // Use access control
+    overrideAccess: true, // Use access control
   })
 
   // If no page is found, return a 404
@@ -66,9 +68,5 @@ export default async function Page({
   }
 
   // Render the page layout blocks
-  return page.layout ? (
-    <RenderBlocks blocks={page.layout} />
-  ) : (
-    <div>This page has no content blocks</div>
-  )
+  return <RenderBlocks blocks={page.layout} />
 }

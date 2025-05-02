@@ -1,5 +1,6 @@
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { CollectionConfig } from 'payload';
+import { slugField } from '@/fields/slug';
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -19,28 +20,7 @@ export const Projects: CollectionConfig = {
       type: 'text',
       required: true,
     },
-    {
-      name: 'slug',
-      type: 'text',
-      admin: {
-        description: 'URL-friendly identifier (auto-generated from title if left blank)',
-      },
-      hooks: {
-        beforeValidate: [
-          ({ value, data }) => {
-            // Auto-generate slug from title if not provided
-            if (!value && data?.title) {
-              return data.title
-                .toLowerCase()
-                .replace(/[^\\w\\s]/g, '') // Remove non-alphanumeric chars (except space)
-                .replace(/\\s+/g, '-'); // Replace spaces with hyphens
-            }
-            // Return original value if it exists or if title is missing
-            return value;
-          },
-        ],
-      },
-    },
+    slugField(),
     {
       name: 'description',
       type: 'richText',

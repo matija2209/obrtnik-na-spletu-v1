@@ -62,42 +62,6 @@ export const seed = async (payload: Payload): Promise<void> => {
     }
     const userForGlobalUpdates = tenantUser.docs[0] as User; // Cast to User type
 
-    // --- Seed Opening Hours Schedule ---
-    payload.logger.info('Attempting to seed Opening Hours...');
-    let regularHours;
-    try {
-      payload.logger.info(`Seeding OpeningHours for tenant ${tenantA1.id}...`);
-      regularHours = await payload.create({
-
-        collection: 'opening-hours',
-        data: {
-          tenant: tenantA1.id,
-          name: 'Regular Business Hours',
-          dailyHours: [
-            {
-              days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-              timeSlots: [
-                { startTime: '08:00', endTime: '16:00' } // Use HH:mm format for timeOnly fields
-              ]
-            },
-            {
-              days: ['saturday', 'sunday'],
-              timeSlots: [] // Closed on weekends
-            }
-          ],
-
-          // Add tenant field if required by multi-tenant setup for this collection
-          // tenant: tenantA1.id, // This collection does not seem to be tenant-specific
-        },
-        // If OpeningHours is tenant-specific, you might need req or depth here too
-        // req: simulatedReq, // If needed for access control/hooks
-        // depth: 0, // Usually sufficient for create
-      });
-      payload.logger.info(`OpeningHours "Regular Business Hours" seeded with ID: ${regularHours.id}`);
-    } catch (err) {
-      payload.logger.error('Error seeding Opening Hours:', err);
-    }
-
     // Simulate a more complete req object for global updates
     const simulatedReq: PayloadRequest = {
       payload,
@@ -120,6 +84,41 @@ export const seed = async (payload: Payload): Promise<void> => {
       query: {}, // Empty query object
       t: (key: string) => key, // Minimal translation function placeholder
     } as any as PayloadRequest;
+
+    // --- Seed Opening Hours Schedule ---
+    payload.logger.info('Attempting to seed Opening Hours...');
+    let regularHours;
+    try {
+      payload.logger.info(`Seeding OpeningHours for tenant ${tenantA1.id}...`);
+      regularHours = await payload.create({
+        collection: 'opening-hours',
+        data: {
+          tenant: tenantA1.id,
+          name: 'Regular Business Hours',
+          dailyHours: [
+            {
+              days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+              timeSlots: [
+                { startTime: '1970-01-01T08:00:00.000Z', endTime: '1970-01-01T16:00:00.000Z' } // Use ISO format
+              ]
+            },
+            // Removed Saturday/Sunday entry as timeSlots requires minRows: 1
+            // {
+            //   days: ['saturday', 'sunday'],
+            //   timeSlots: [] // Invalid: minRows is 1
+            // }
+          ],
+          // Removed comment: This collection IS tenant-specific
+        },
+        // If OpeningHours is tenant-specific, access control/hooks MIGHT need req, but let's try without first.
+        // req: simulatedReq, 
+        // depth: 0, // Usually sufficient for create
+      });
+      payload.logger.info(`OpeningHours "Regular Business Hours" seeded with ID: ${regularHours.id}`);
+    } catch (err) {
+      payload.logger.error('Error seeding Opening Hours:', err);
+      console.error('Detailed error seeding Opening Hours:', err); // Add console.error for more detail
+    }
 
     // --- Seed Globals for Tenant ---
     const tenantId = tenantA1.id; // Keep tenantId for logging if needed

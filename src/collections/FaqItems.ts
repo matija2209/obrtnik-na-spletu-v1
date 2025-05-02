@@ -1,8 +1,6 @@
 import { CollectionConfig, Access } from 'payload';
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 
-
-
 const anyone: Access = () => true;
 
 export const FaqItems: CollectionConfig = {
@@ -38,18 +36,5 @@ export const FaqItems: CollectionConfig = {
       label: 'Odgovor',
       localized: true, // Answers might need translation
     },
-    // Optional: Add a category or ordering field if needed
-    // {
-    //   name: 'category',
-    //   type: 'select',
-    //   options: [ ... ],
-    //   label: 'Kategorija',
-    // },
-    // {
-    //   name: 'displayOrder',
-    //   type: 'number',
-    //   label: 'Vrstni red prikaza',
-    //   admin: { step: 1 }
-    // },
   ],
 }; 

@@ -18,7 +18,7 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "seed": "echo SEED=true && pnpm run payload migrate:fresh && pnpm run dev"
+    "seed": "SEED=true pnpm run payload migrate:fresh && SEED=true pnpm run dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
