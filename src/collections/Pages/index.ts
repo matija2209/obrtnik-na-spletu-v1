@@ -42,25 +42,30 @@ export const Pages: CollectionConfig = {
     group: 'Content',
     livePreview: {
       url: ({ data, req }) => {
-        return generatePreviewPath({
+        const path = generatePreviewPath({
           slug: typeof data?.slug === 'string' ? data.slug : '',
           collection: 'pages',
-          data,
           req,
         })
+
+        return path
       },
     },
     preview: (data, { req }) =>
       generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
         collection: 'pages',
-        data,
         req,
       }),
   },
-  // Enable versions & drafts
   versions: {
-    drafts: true,
+    drafts: {
+      autosave: {
+        interval: 100, // We set this interval for optimal live preview
+      },
+      schedulePublish: true,
+    },
+    maxPerDoc: 50,
   },
   access: {
     read: anyone,

@@ -3,16 +3,41 @@ import { NextRequest, NextResponse } from 'next/server'
 export function middleware(req: NextRequest) {
   const hostname = req.headers.get('host') || '';
   const url = req.nextUrl.clone();
+  const pathname = url.pathname; // Original pathname
 
-  if (hostname === 'a1-instalacije.vercel.app') {
-    if (url.pathname === '/') {
-      url.pathname = '/tenant-slugs/a1-instalacije.vercel.app';
+  const tenantSlugPrefix = '/tenant-slugs/';
+  let tenantSlug: string | null = null;
+
+  // Map hostnames to the same tenant slug
+  if (
+    hostname === 'a1-instalacije.vercel.app' ||
+    hostname === 'a1-instalacije.local:3000'
+  ) {
+    tenantSlug = 'a1-instalacije'; // Use the desired slug here
+  }
+
+  // If a tenant slug was determined, rewrite the URL
+  if (tenantSlug) {
+    const tenantPath = `${tenantSlugPrefix}${tenantSlug}`;
+    let adjustedPathname = pathname;
+
+    // Remove leading/trailing slashes from the original pathname for consistent joining
+    if (adjustedPathname.startsWith('/')) {
+      adjustedPathname = adjustedPathname.substring(1);
+    }
+    if (adjustedPathname.endsWith('/')) {
+       adjustedPathname = adjustedPathname.substring(0, adjustedPathname.length - 1);
+    }
+
+    if (adjustedPathname === '') {
+       url.pathname = tenantPath;
     } else {
-      url.pathname = `/tenant-slugs/a1-instalacije.vercel.app/${url.pathname}`;
+       url.pathname = `${tenantPath}/${adjustedPathname}`;
     }
     return NextResponse.rewrite(url);
   }
 
+  // Default: No rewrite
   return NextResponse.next();
 }
 
