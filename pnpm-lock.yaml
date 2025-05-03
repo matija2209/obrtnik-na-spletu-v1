@@ -155,6 +155,9 @@ importers:
       next:
         specifier: ^15.3.0
         version: 15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4)
+      next-sitemap:
+        specifier: ^4.2.3
+        version: 4.2.3(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -453,6 +456,9 @@ packages:
   '@babel/types@7.27.1':
     resolution: {integrity: sha512-+EzkxvLNfiUeKMgy/3luqfsCWFRXLb7U6wNQTk60tovuckwB15B191tJWvpp4HjiQWdJkCxO3Wbvc6jlk3Xb2Q==}
     engines: {node: '>=6.9.0'}
+
+  '@corex/deepmerge@4.0.43':
+    resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
 
   '@date-fns/tz@1.2.0':
     resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==}
@@ -1217,6 +1223,9 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
+  '@next/env@13.5.11':
+    resolution: {integrity: sha512-fbb2C7HChgM7CemdCY+y3N1n8pcTKdqtQLbC7/EQtPdLvlMUT9JX/dBYl8MMZAtYG4uVMyPFHXckb68q/NRwqg==}
+
   '@next/env@15.3.1':
     resolution: {integrity: sha512-cwK27QdzrMblHSn9DZRV+DQscHXRuJv6MydlJRpFSqJWZrTYMLzKDeyueJNN9MGd8NNiUKzDQADAf+dMLXX7YQ==}
 
@@ -1273,6 +1282,18 @@ packages:
     peerDependencies:
       next: ^13.0.0 || ^14.0.0 || ^15.0.0
       react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
+
+  '@nodelib/fs.scandir@2.1.5':
+    resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
+    engines: {node: '>= 8'}
+
+  '@nodelib/fs.stat@2.0.5':
+    resolution: {integrity: sha512-RkhPPp2zrqDAQA/2jNhnztcPAlv64XdhIp7a7454A5ovI7Bukxgt7MX7udwAu3zg1DcpPU0rz3VV1SeaqvY4+A==}
+    engines: {node: '>= 8'}
+
+  '@nodelib/fs.walk@1.2.8':
+    resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
+    engines: {node: '>= 8'}
 
   '@payloadcms/admin-bar@3.36.1':
     resolution: {integrity: sha512-dFIsoH9L4CdJkNN8qT+KzSgHM8BVsKDLOVhmXjebXRc77JjS8gnTlxcozre8S4f3d84gIJ8g+JZ7MUk2YF8dcA==}
@@ -2950,6 +2971,10 @@ packages:
     resolution: {integrity: sha512-V7/RktU11J3I36Nwq2JnZEM7tNm17eBJz+u25qdxBZeCKiX6BkVSZQjwWIr+IobgnZy+ag73tTZgZi7tr0LrBw==}
     engines: {node: '>=6.0.0'}
 
+  fast-glob@3.3.3:
+    resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
+    engines: {node: '>=8.6.0'}
+
   fast-redact@3.5.0:
     resolution: {integrity: sha512-dwsoQlS7h9hMeYUq1W++23NDcBLV4KqONnITDV9DjfS3q1SgDGVrBdvvTLUotWtPSD7asWDV9/CmsZPy8Hf70A==}
     engines: {node: '>=6'}
@@ -2963,6 +2988,9 @@ packages:
   fast-xml-parser@4.4.1:
     resolution: {integrity: sha512-xkjOecfnKGkSsOwtZ5Pz7Us/T6mrbPQrq0nh+aCO5V9nk5NLWmasAHumTKjiPJPWANe+kAZ84Jc8ooJkzZ88Sw==}
     hasBin: true
+
+  fastq@1.19.1:
+    resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
 
   fdir@6.4.4:
     resolution: {integrity: sha512-1NZP+GK4GfuAv3PqKvxQRDMjdSRZjnkq7KfhlNrCNNlZ0ygQFpebfrnfnq/W7fpUnAv9aGWmY1zKx7FYL3gwhg==}
@@ -3329,6 +3357,10 @@ packages:
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
 
+  merge2@1.4.1:
+    resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
+    engines: {node: '>= 8'}
+
   merge@2.1.1:
     resolution: {integrity: sha512-jz+Cfrg9GWOZbQAnDQ4hlVnQky+341Yk5ru8bZSe6sIDTCIg8n9i/u7hSQGSVOF3C7lH6mGtqjkiT9G4wFLL0w==}
 
@@ -3432,6 +3464,13 @@ packages:
 
   neo-async@2.6.2:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
+
+  next-sitemap@4.2.3:
+    resolution: {integrity: sha512-vjdCxeDuWDzldhCnyFCQipw5bfpl4HmZA7uoo3GAaYGjGgfL4Cxb1CiztPuWGmS+auYs7/8OekRS8C2cjdAsjQ==}
+    engines: {node: '>=14.18'}
+    hasBin: true
+    peerDependencies:
+      next: '*'
 
   next-themes@0.4.6:
     resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
@@ -3677,6 +3716,9 @@ packages:
     resolution: {integrity: sha512-D8NAthKSD7SGn748v+GLaaO6k08Mvpoqroa35PqIQC4gtUa8/Pb/k+r0m0NnGBVbHDP1gKZ2nVywqfMisRhV5A==}
     engines: {node: '>=18'}
 
+  queue-microtask@1.2.3:
+    resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+
   quick-format-unescaped@4.0.4:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
 
@@ -3847,6 +3889,13 @@ packages:
   retry@0.13.1:
     resolution: {integrity: sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==}
     engines: {node: '>= 4'}
+
+  reusify@1.1.0:
+    resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
+    engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
+
+  run-parallel@1.2.0:
+    resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
   safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
@@ -4806,6 +4855,8 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
+  '@corex/deepmerge@4.0.43': {}
+
   '@date-fns/tz@1.2.0': {}
 
   '@dnd-kit/accessibility@3.1.1(react@19.1.0)':
@@ -5443,6 +5494,8 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
+  '@next/env@13.5.11': {}
+
   '@next/env@15.3.1': {}
 
   '@next/swc-darwin-arm64@15.3.1':
@@ -5474,6 +5527,18 @@ snapshots:
       next: 15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4)
       react: 19.1.0
       third-party-capital: 1.0.20
+
+  '@nodelib/fs.scandir@2.1.5':
+    dependencies:
+      '@nodelib/fs.stat': 2.0.5
+      run-parallel: 1.2.0
+
+  '@nodelib/fs.stat@2.0.5': {}
+
+  '@nodelib/fs.walk@1.2.8':
+    dependencies:
+      '@nodelib/fs.scandir': 2.1.5
+      fastq: 1.19.1
 
   '@payloadcms/admin-bar@3.36.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
@@ -7447,6 +7512,14 @@ snapshots:
 
   fast-equals@5.2.2: {}
 
+  fast-glob@3.3.3:
+    dependencies:
+      '@nodelib/fs.stat': 2.0.5
+      '@nodelib/fs.walk': 1.2.8
+      glob-parent: 5.1.2
+      merge2: 1.4.1
+      micromatch: 4.0.8
+
   fast-redact@3.5.0: {}
 
   fast-safe-stringify@2.1.1: {}
@@ -7456,6 +7529,10 @@ snapshots:
   fast-xml-parser@4.4.1:
     dependencies:
       strnum: 1.1.2
+
+  fastq@1.19.1:
+    dependencies:
+      reusify: 1.1.0
 
   fdir@6.4.4(picomatch@4.0.2):
     optionalDependencies:
@@ -7800,6 +7877,8 @@ snapshots:
 
   merge-stream@2.0.0: {}
 
+  merge2@1.4.1: {}
+
   merge@2.1.1: {}
 
   micromark-core-commonmark@2.0.3:
@@ -7991,6 +8070,14 @@ snapshots:
   nanoid@3.3.11: {}
 
   neo-async@2.6.2: {}
+
+  next-sitemap@4.2.3(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4)):
+    dependencies:
+      '@corex/deepmerge': 4.0.43
+      '@next/env': 13.5.11
+      fast-glob: 3.3.3
+      minimist: 1.2.8
+      next: 15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4)
 
   next-themes@0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
@@ -8269,6 +8356,8 @@ snapshots:
 
   qs-esm@7.0.2: {}
 
+  queue-microtask@1.2.3: {}
+
   quick-format-unescaped@4.0.4: {}
 
   randombytes@2.1.0:
@@ -8449,6 +8538,12 @@ snapshots:
       supports-preserve-symlinks-flag: 1.0.0
 
   retry@0.13.1: {}
+
+  reusify@1.1.0: {}
+
+  run-parallel@1.2.0:
+    dependencies:
+      queue-microtask: 1.2.3
 
   safe-buffer@5.2.1: {}
 
