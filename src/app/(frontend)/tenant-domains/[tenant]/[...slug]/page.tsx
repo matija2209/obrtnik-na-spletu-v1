@@ -1,11 +1,15 @@
 import type { Where } from 'payload'
 
 import configPromise from '@payload-config'
+import { draftMode } from 'next/headers'
 import { headers as getHeaders } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import React from 'react'
-import RenderPage from '@/components/payload/RenderPage'
+import { queryPageBySlug } from '@/lib/payload'
+import { RenderBlocks } from '@/blocks/RenderBlocks'
+import { LivePreviewListener } from '@/components/admin/live-preview-listener'
+
 
 
 
@@ -58,7 +62,27 @@ export default async function TenantDomainPage({
     )
   }
 
+  // Get draft mode status
+  const { isEnabled: draft } = await draftMode()
+
+  // Query for the page, passing draft status
+  const page = await queryPageBySlug({
+    slug,
+    tenant: params.tenant, // Use the domain as the tenant identifier for querying
+    overrideAccess: draft,
+    draft,
+  })
+
+  // If no page is found, return a 404
+  if (!page) {
+    return notFound()
+  }
 
   // The page was found, render the page with data
-  return <RenderPage tenantDomain={params.tenant} />
+  return (
+    <>
+      {draft && <LivePreviewListener />}
+      <RenderBlocks blocks={page.layout} />
+    </>
+  )
 }

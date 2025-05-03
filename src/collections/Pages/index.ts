@@ -24,7 +24,7 @@ import {
 // Import hooks
 import { populatePublishedAt } from './hooks/populatePublishedAt';
 import { revalidatePage, revalidateDelete } from './hooks/revalidatePage';
-import { generatePreviewPath } from '@/utils/generatePreviewPath';
+import { generatePreviewPath } from '@/utilities/generatePreviewPath';
 
 
 // Define access control - allowing anyone to read, admin to update

@@ -1,12 +1,13 @@
 import type { Where } from 'payload'
 
 import configPromise from '@payload-config'
-import { headers as getHeaders } from 'next/headers'
+import { headers as getHeaders, draftMode } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import React from 'react'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
 import { queryPageBySlug } from '@/lib/payload'
+import { LivePreviewListener } from '@/components/admin/live-preview-listener'
 
 // eslint-disable-next-line no-restricted-exports
 export default async function TenantSlugPage({
@@ -55,11 +56,15 @@ export default async function TenantSlugPage({
     )
   }
 
-  // Query for the page
+  // Get draft mode status
+  const { isEnabled: draft } = await draftMode()
+
+  // Query for the page, passing draft status
   const page = await queryPageBySlug({
     slug,
     tenant,
-    overrideAccess: true, // Use access control
+    overrideAccess: draft,
+    draft,
   })
 
   // If no page is found, return a 404
@@ -68,5 +73,10 @@ export default async function TenantSlugPage({
   }
 
   // Render the page layout blocks
-  return <RenderBlocks blocks={page.layout} />
+  return (
+    <>
+      {draft && <LivePreviewListener />}
+      <RenderBlocks blocks={page.layout} />
+    </>
+  )
 }

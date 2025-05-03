@@ -31,6 +31,7 @@ import { getUserTenantIDs } from '@/utilities/getUserTenantIDs'
 import { seed } from './src/seed'; // Import the seed function
 import { Pages } from '@/collections/Pages';
 import { Footer } from '@/globals/Footer';
+import { Redirects } from '@/collections/Redirects'; // Import the new collection
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -108,6 +109,7 @@ const allCollections: CollectionConfig[] = [
   Machinery,
   OpeningHours,
   Pages,
+  Redirects, // Add the Redirects collection here
 ];
 
 const allGlobals: GlobalConfig[] = [
@@ -262,9 +264,15 @@ export default buildConfig({
         [Media.slug]: {},
         [Pages.slug]: {},
         [OpeningHours.slug]: {},
-        [Footer.slug]: { isGlobal: true },
-        [Navbar.slug]: { isGlobal: true },
-        [BusinessInfo.slug]: { isGlobal: true },
+        [Redirects.slug]: {}, // Add Redirects to multi-tenant config
+        // Globals seem to be handled differently or implicitly here
+        // If you need explicit tenant control for globals like Footer, Navbar, BusinessInfo,
+        // you might need to adjust how they are registered or how the plugin handles them.
+        // Check the plugin documentation for handling globals.
+        // Example (if needed and supported):
+        // [Footer.slug]: { isGlobal: true },
+        // [Navbar.slug]: { isGlobal: true },
+        // [BusinessInfo.slug]: { isGlobal: true },
       },
     }),
   ],

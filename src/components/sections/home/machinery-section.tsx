@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import Image from 'next/image'
 import React from 'react'
 import { Media } from '@payload-types'
-import { getImageUrl } from '@/utils/getImageUrl'
+import { getImageUrl } from '@/utilities/getImageUrl'
 
 
 interface MachinerySpecDetail {

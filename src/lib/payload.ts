@@ -14,19 +14,17 @@ import type {
   Page,
 } from '../../payload-types'
 
-
-
-import config from '../../payload.config'
-import { getImageUrl } from '@/utils/getImageUrl'
-
+import configPromise from '@payload-config'
+import { getImageUrl } from '@/utilities/getImageUrl'
+import { draftMode } from 'next/headers'
+import type { Where } from 'payload'
 
 const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_SERVER_URL
-
 
 // Initialize Payload instance
 export const getPayloadClient = async (): Promise<Payload> => {
   return getPayload({
-    config,
+    config: configPromise,
   })
 }
 
@@ -143,7 +141,6 @@ export const getNavbar = async (query = {}) => {
   })
 }
 
-
 // Logo utilities
 export function getLogoUrl(businessData?: any, variant: 'light' | 'dark' = 'dark'): string {
   if (variant === 'light') {
@@ -175,14 +172,17 @@ export const queryPageBySlug = async ({
   slug,
   tenant,
   overrideAccess = false,
+  draft: draftParam,
 }: {
-  slug?: string[];
-  tenant?: string;
-  overrideAccess?: boolean;
+  slug?: string[]
+  tenant?: string
+  overrideAccess?: boolean
+  draft?: boolean
 }) => {
-  const payload = await getPayloadClient();
-  
-  let slugConstraint: Record<string, any> = {};
+  const payload = await getPayload({ config: configPromise })
+  const { isEnabled: draft } = draftParam === undefined ? await draftMode() : { isEnabled: draftParam }
+
+  let slugConstraint: Record<string, any> = {}
   
   // Handle homepage (empty slug) and regular pages
   if (!slug || slug.length === 0) {
@@ -215,7 +215,8 @@ export const queryPageBySlug = async ({
   try {
     const pageQuery = await payload.find({
       collection: 'pages',
-      overrideAccess,
+      overrideAccess: overrideAccess || draft,
+      draft,
       where: {
         and: whereConditions,
       },

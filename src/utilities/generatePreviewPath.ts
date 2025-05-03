@@ -12,10 +12,21 @@ type Props = {
 }
 
 export const generatePreviewPath = async ({ collection, slug, req }: Props): Promise<string> => {
-  const user = req.user?.id
   let tenantSlug: string | undefined;
-  tenantSlug = 'a1-instalacije';
-
+  
+  const tenantsForUser = req.user?.tenants
+  if (tenantsForUser && tenantsForUser.length > 0) {
+    // Check if tenant is an object and has a slug property
+    if (typeof tenantsForUser[0].tenant === 'object' && tenantsForUser[0].tenant !== null && 'slug' in tenantsForUser[0].tenant) {
+      tenantSlug = (tenantsForUser[0].tenant as Tenant).slug;
+    } else {
+      // Handle cases where tenant might still be a string ID or unexpected structure
+      // Fallback or throw error depending on requirements
+      tenantSlug = 'a1-instalacije'; // Keep existing fallback for now
+    }
+  } else {
+    tenantSlug = 'a1-instalacije';
+  }
   const encodedParams = new URLSearchParams({
     slug,
     tenantSlug: tenantSlug, // Use the fetched/determined slug

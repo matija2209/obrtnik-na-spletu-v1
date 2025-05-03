@@ -29,6 +29,11 @@ const nextConfig: NextConfig = {
       new webpack.IgnorePlugin({
         resourceRegExp: /^pg-native$|^cloudflare:sockets$/,
       }),
+      // Add this rule to ignore the prettier warning
+      new webpack.IgnorePlugin({
+        resourceRegExp: /prettier/,
+        contextRegExp: /@payloadcms[\\/](db-postgres|drizzle)[\\/]dist/,
+      }),
     );
 
     return config;

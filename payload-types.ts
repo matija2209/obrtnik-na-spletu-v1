@@ -79,6 +79,7 @@ export interface Config {
     machinery: Machinery;
     'opening-hours': OpeningHour;
     pages: Page;
+    redirects: Redirect;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -98,6 +99,7 @@ export interface Config {
     machinery: MachinerySelect<false> | MachinerySelect<true>;
     'opening-hours': OpeningHoursSelect<false> | OpeningHoursSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -774,6 +776,24 @@ export interface MachineryBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects".
+ */
+export interface Redirect {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * The path to redirect from (e.g., /old-page). Must start with /.
+   */
+  from: string;
+  /**
+   * The path or URL to redirect to (e.g., /new-page or https://example.com). Must start with / or http(s)://.
+   */
+  to: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
@@ -918,6 +938,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'redirects';
+        value: number | Redirect;
       } | null)
     | ({
         relationTo: 'payload-jobs';
@@ -1430,6 +1454,17 @@ export interface MachineryBlockSelect<T extends boolean = true> {
   template?: T;
   id?: T;
   blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects_select".
+ */
+export interface RedirectsSelect<T extends boolean = true> {
+  tenant?: T;
+  from?: T;
+  to?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

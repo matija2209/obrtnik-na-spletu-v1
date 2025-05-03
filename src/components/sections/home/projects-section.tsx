@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Media, Project } from '@payload-types';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
-import { getImageUrl } from '@/utils/getImageUrl';
+import { getImageUrl } from '@/utilities/getImageUrl';
 
 // Helper type for project images
 // Correctly get the type of the elements in the projectImages array
