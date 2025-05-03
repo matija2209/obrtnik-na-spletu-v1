@@ -582,12 +582,9 @@ export interface Page {
  * via the `definition` "HeroBlock".
  */
 export interface HeroBlock {
-  template: 'default';
+  template: 'default' | 'one-hero-section';
   title?: string | null;
   subtitle?: string | null;
-  /**
-   * Izberite CTA gumbe za naslovno sekcijo. Vrstni red je pomemben.
-   */
   ctas?: (number | Cta)[] | null;
   image?: (number | null) | Media;
   features?:
@@ -609,13 +606,7 @@ export interface ServicesBlock {
   template: 'default';
   title?: string | null;
   description?: string | null;
-  /**
-   * Izberite storitve, ki se prikažejo na domači strani. Vrstni red je pomemben.
-   */
   selectedServices?: (number | Service)[] | null;
-  /**
-   * Izberite CTA gumb za sekcijo Storitve (neobvezno).
-   */
   serviceCta?: (number | null) | Cta;
   id?: string | null;
   blockName?: string | null;
@@ -631,9 +622,6 @@ export interface ProjectHighlightsBlock {
   description?: string | null;
   buttonText?: string | null;
   buttonHref?: string | null;
-  /**
-   * Izberite projekte za prikaz na domači strani. Vrstni red je pomemben.
-   */
   highlightedProjects?: (number | Project)[] | null;
   id?: string | null;
   blockName?: string | null;
@@ -670,9 +658,6 @@ export interface TestimonialsBlock {
   template: 'default';
   title?: string | null;
   description?: string | null;
-  /**
-   * Izberite mnenja strank, ki bodo prikazana na domači strani. Vrstni red je pomemben.
-   */
   selectedTestimonials?: (number | Testimonial)[] | null;
   id?: string | null;
   blockName?: string | null;
@@ -693,9 +678,6 @@ export interface GalleryBlock {
         id?: string | null;
       }[]
     | null;
-  /**
-   * Izberite CTA gumb za galerijo (neobvezno).
-   */
   galleryCta?: (number | null) | Cta;
   id?: string | null;
   blockName?: string | null;
@@ -728,9 +710,6 @@ export interface ContactBlock {
   template: 'default' | 'simple';
   title?: string | null;
   description?: string | null;
-  /**
-   * Select one or more opening hours schedules to display.
-   */
   openingHoursSchedules?: (number | OpeningHour)[] | null;
   phoneNumber?: string | null;
   address?: string | null;
@@ -746,13 +725,7 @@ export interface FAQBlock {
   template: 'default';
   title?: string | null;
   description?: string | null;
-  /**
-   * Izberite vprašanja, ki bodo prikazana na domači strani. Vrstni red je pomemben.
-   */
   selectedFaqs?: (number | FaqItem)[] | null;
-  /**
-   * Izberite CTA gumb za sekcijo FAQ (neobvezno).
-   */
   faqCta?: (number | null) | Cta;
   id?: string | null;
   blockName?: string | null;
@@ -765,9 +738,6 @@ export interface FAQBlock {
 export interface MachineryBlock {
   title?: string | null;
   description?: string | null;
-  /**
-   * Izberite stroje, ki se prikažejo na domači strani. Vrstni red je pomemben.
-   */
   selectedMachinery?: (number | Machinery)[] | null;
   template: 'default';
   id?: string | null;

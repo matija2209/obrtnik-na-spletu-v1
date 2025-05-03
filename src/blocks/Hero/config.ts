@@ -19,7 +19,11 @@ const Hero: Block = {
           label: 'Default Layout',
           value: 'default',
         },
-        // Add more template options here
+        {
+          label: 'One Hero Section',
+          value: 'one-hero-section',
+        },
+
       ],
     },
     {
@@ -28,18 +32,14 @@ const Hero: Block = {
       label: 'Naslov',
       required: false,
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'subtitle',
       type: 'textarea',
       label: 'Podnaslov',
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'ctas',
@@ -50,10 +50,7 @@ const Hero: Block = {
       label: 'CTA gumbe',
       minRows: 0,
       maxRows: 2,
-      admin: {
-        description: 'Izberite CTA gumbe za naslovno sekcijo. Vrstni red je pomemben.',
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+ 
     },
     {
       name: 'image',
@@ -61,18 +58,14 @@ const Hero: Block = {
       relationTo: 'media',
       label: 'Slika ozadja',
       required: false,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+  
     },
     {
       name: 'features',
       type: 'array',
       required: false,
       label: 'Značilnosti',
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+
       fields: [
         {
           name: 'iconText',
@@ -85,6 +78,7 @@ const Hero: Block = {
           label: 'Besedilo značilnosti',
           required: false,
           localized: true,
+          defaultValue: '',
         }
       ]
     },

@@ -12,7 +12,7 @@ interface ServicesSectionProps {
   description?: string;
 }
 
-const ServicesSectionV3: React.FC<ServicesSectionProps> = ({
+const DefaultServicesSection: React.FC<ServicesSectionProps> = ({
   services,
   title = 'Naše Storitve',
   description = 'Naše storitve diamantnega rezanja in vrtanja betona so vam na voljo širom Slovenije. Z veseljem se odzovemo na povpraševanja iz vseh slovenskih regij, pri čemer trenutno ne pokrivamo le območja Štajerske.'
@@ -52,4 +52,4 @@ const ServicesSectionV3: React.FC<ServicesSectionProps> = ({
   );
 };
 
-export default ServicesSectionV3;
+export default DefaultServicesSection;

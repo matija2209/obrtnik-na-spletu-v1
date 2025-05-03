@@ -2,8 +2,19 @@ import React from 'react';
 import { ContainedSection } from '@/components/layout/container-section';
 import { ContactForm } from '@/components/contact-form';
 import SectionHeading from '@/components/layout/section-heading';
+import { Cta } from '@payload-types';
 
-export default function ContactSection() {
+interface ContactSectionProps {
+  title?: string;
+  description?: string;
+  cta?: Cta[];
+  imageUrl?: string;
+}
+
+export default function DefaultContactSection({
+  title,
+  description,
+}: ContactSectionProps) {
   return (
     <ContainedSection
       id="kontakt"
@@ -13,9 +24,9 @@ export default function ContactSection() {
         {/* Left Column - Contact Information and Hours */}
       <div className="text-white">
       <SectionHeading >
-          <SectionHeading.Title className='text-white'>Kontaktirajte nas</SectionHeading.Title>
+          <SectionHeading.Title className='text-white'>{title}</SectionHeading.Title>
           <SectionHeading.Description className='text-white'>
-              Če imate kakršno koli vprašanje ali potrebo po pomoči, smo tu za vas.
+              {description}
           </SectionHeading.Description>
         </SectionHeading>
       </div>

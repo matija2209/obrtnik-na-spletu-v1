@@ -29,18 +29,14 @@ const Services: Block = {
       label: 'Naslov sekcije storitev',
       required: false,
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'description',
       type: 'textarea',
       label: 'Opis sekcije storitev',
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'selectedServices',
@@ -49,10 +45,7 @@ const Services: Block = {
       hasMany: true,
       label: 'Izbrane storitve',
       required: false,
-      admin: {
-        description: 'Izberite storitve, ki se prikažejo na domači strani. Vrstni red je pomemben.',
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+
     },
     {
       name: 'serviceCta',
@@ -61,10 +54,7 @@ const Services: Block = {
       hasMany: false,
       required: false,
       label: 'CTA gumb sekcije storitev',
-      admin: {
-        description: 'Izberite CTA gumb za sekcijo Storitve (neobvezno).',
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+  
     }
   ]
 };

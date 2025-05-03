@@ -18,7 +18,7 @@ interface ServiceAreaSectionProps {
   additionalInfo?: string;
 }
 
-export default function ServiceAreaSection({
+export default function DefaultServiceAreaSection({
   title = 'Območje Delovanja',
   description = 'Naše storitve diamantnega rezanja in vrtanja betona so vam na voljo širom Slovenije. Z veseljem se odzovemo na povpraševanja iz vseh slovenskih regij, pri čemer trenutno ne pokrivamo le območja Štajerske.',
   mapImage,

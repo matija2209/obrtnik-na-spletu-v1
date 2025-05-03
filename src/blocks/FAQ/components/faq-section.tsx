@@ -7,14 +7,21 @@ import {
   AccordionTrigger
 } from '@/components/ui/accordion';
 import SectionHeading from '@/components/layout/section-heading';
+import { FaqItem } from '@payload-types';
 
-interface FaqItem {
-  id: string;
-  question: string;
-  answer: string;
+
+
+interface FaqSectionProps {
+  title?: string;
+  description?: string;
+  faqData?: FaqItem[];
 }
 
-export default function FaqSection({ faqData }: { faqData: FaqItem[] }) {
+export default function FaqSection({
+  title,
+  description,
+  faqData,
+}: FaqSectionProps) {
   return (
     <ContainedSection
       id="pogosta-vprasanja"
@@ -23,15 +30,15 @@ export default function FaqSection({ faqData }: { faqData: FaqItem[] }) {
     >
       <div className="max-w-4xl mx-auto">
       <SectionHeading>
-            <SectionHeading.Title>Pogosta vprašanja</SectionHeading.Title>
+            <SectionHeading.Title>{title}</SectionHeading.Title>
             <SectionHeading.Description>
-                Če imate kakršno koli vprašanje ali potrebo po pomoči, smo tu za vas.
+                {description}
             </SectionHeading.Description>
           </SectionHeading>
           
         <Accordion type="single" collapsible defaultValue="pricing">
-          {faqData.map((item) => (
-            <AccordionItem key={item.id} value={item.id} className="border-0 mb-4 group">
+          {faqData && faqData.map((item) => (
+            <AccordionItem key={item.id} value={item.id.toString()} className="border-0 mb-4 group">
               <AccordionTrigger className="py-4 px-6 data-[state=open]:bg-primary data-[state=closed]:bg-primary-foreground data-[state=open]:text-primary-foreground data-[state=closed]:text-foreground hover:bg-primary/80 font-medium rounded-md focus:outline-none transition-colors">
                 {item.question}
               </AccordionTrigger>

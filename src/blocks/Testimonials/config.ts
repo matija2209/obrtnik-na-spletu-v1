@@ -29,18 +29,14 @@ const Testimonials: Block = {
       label: 'Naslov',
       required: false,
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'description',
       type: 'textarea',
       label: 'Opis',
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'selectedTestimonials',
@@ -49,10 +45,7 @@ const Testimonials: Block = {
       hasMany: true,
       label: 'Izbrana mnenja',
       required: false,
-      admin: {
-        description: 'Izberite mnenja strank, ki bodo prikazana na domači strani. Vrstni red je pomemben.',
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+  
     }
   ]
 };

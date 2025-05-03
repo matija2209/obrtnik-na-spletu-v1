@@ -28,27 +28,21 @@ const Gallery: Block = {
       label: 'Naslov',
       required: false,
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'description',
       type: 'textarea',
       label: 'Opis',
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'galleryImages',
       type: 'array',
       required: false,
       label: 'Slike galerije',
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+    
       fields: [
         {
           name: 'image',
@@ -63,6 +57,7 @@ const Gallery: Block = {
           label: 'Napis (neobvezno)',
           required: false,
           localized: true,
+          defaultValue: '',
         }
       ]
     },
@@ -73,10 +68,7 @@ const Gallery: Block = {
       hasMany: false,
       required: false,
       label: 'CTA gumb galerije',
-      admin: {
-        description: 'Izberite CTA gumb za galerijo (neobvezno).',
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+     
     }
   ]
 };

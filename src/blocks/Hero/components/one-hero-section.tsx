@@ -16,7 +16,7 @@ interface HeroProps {
   ctas?:Cta[]
 }
 
-const HeroSection: React.FC<HeroProps> = ({
+const OneHeroSection: React.FC<HeroProps> = ({
   title,
   subtitle,
   ctas,
@@ -56,4 +56,4 @@ const HeroSection: React.FC<HeroProps> = ({
   );
 };
 
-export default HeroSection;
+export default OneHeroSection;

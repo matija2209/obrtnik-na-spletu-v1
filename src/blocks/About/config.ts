@@ -29,39 +29,35 @@ const About: Block = {
       label: 'Naslov',
       required: false,
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'description',
       type: 'textarea',
       label: 'Opis',
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'benefits',
       type: 'array',
       required: false,
       label: 'Prednosti',
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+     
       fields: [
         {
           name: 'title',
           type: 'text',
           label: 'Naslov prednosti',
           localized: true,
+          defaultValue: '',
         },
         {
           name: 'description',
           type: 'textarea',
           label: 'Opis prednosti',
           localized: true,
+          defaultValue: '',
         },
         {
           name: 'icon',

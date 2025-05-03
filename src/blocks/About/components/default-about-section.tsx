@@ -8,18 +8,17 @@ import Link from 'next/link';
 
 
 interface AboutMeSectionProps {
-  title: string;
-  description?: string;
-  content: string;
-  cta?: Cta;
+  title?: string;
+  subtitle?: string;
+  ctas?: Cta[];
   imageUrl?: string;
 }
 
-export default function AboutMeSection({
+export default function DefaultAboutMeSection({
   title,
-  description,
-  content,
-  cta,
+  subtitle,
+
+  ctas,
   imageUrl,
 
 }: AboutMeSectionProps) {
@@ -30,21 +29,19 @@ export default function AboutMeSection({
       backgroundImage={imageUrl}
       verticalPadding="xl"
       overlayClassName="bg-white/80"
-
     >
-      <div className='space-y-6'>
+            <div className='space-y-6'>
           <SectionHeading>
             <SectionHeading.Title className='bg-primary p-2'>{title}</SectionHeading.Title>
-            {/* <SectionHeading.Description>{description}</SectionHeading.Description> */}
           </SectionHeading>
           <p className='text-left md:text-center'>
-          {content}
+          {subtitle}
           </p>
-          {cta && (
+          {ctas && ctas.map((cta) => (
             <Button>
               <Link href={cta.ctaHref}>{cta.ctaText}</Link>
             </Button>
-          )}
+          ))}
 
       </div>
      

@@ -16,9 +16,7 @@ const Machinery: Block = {
       required: false,
       localized: true,
       defaultValue: 'Naš Vozni Park',
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+    
     },
     {
       name: 'description',
@@ -26,9 +24,7 @@ const Machinery: Block = {
       label: 'Opis sekcije strojnega parka (neobvezno)',
       localized: true,
       defaultValue: 'Ponudba gradbene mehanizacije za najem',
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      
     },
     {
       name: 'selectedMachinery',
@@ -37,10 +33,7 @@ const Machinery: Block = {
       hasMany: true,
       label: 'Izbrani stroji za prikaz',
       required: false,
-      admin: {
-        description: 'Izberite stroje, ki se prikažejo na domači strani. Vrstni red je pomemben.',
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+ 
     },
     {
       name: 'template',

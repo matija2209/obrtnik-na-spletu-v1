@@ -32,18 +32,14 @@ const Contact: Block = {
       label: 'Naslov',
       required: false,
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'description',
       type: 'textarea',
       label: 'Opis',
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'openingHoursSchedules',
@@ -51,26 +47,19 @@ const Contact: Block = {
       relationTo: 'opening-hours',
       hasMany: true,
       label: 'Opening Hours Schedules',
-      admin: {
-        description: 'Select one or more opening hours schedules to display.',
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+   
     },
     {
       name: 'phoneNumber',
       type: 'text',
       label: 'Telefonska številka',
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+     
     },
     {
       name: 'address',
       type: 'text',
       label: 'Naslov',
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+
     },
   ]
 };

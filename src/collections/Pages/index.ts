@@ -100,6 +100,7 @@ export const Pages: CollectionConfig = {
       label: 'Published At',
     },
     slugField(),
+
     {
       type: 'tabs',
       tabs: [

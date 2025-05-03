@@ -28,18 +28,14 @@ const FAQ: Block = {
       label: 'Naslov',
       required: false,
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'description',
       type: 'textarea',
       label: 'Opis',
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'selectedFaqs',
@@ -48,10 +44,6 @@ const FAQ: Block = {
       hasMany: true,
       label: 'Izbrana vprašanja',
       required: false,
-      admin: {
-        description: 'Izberite vprašanja, ki bodo prikazana na domači strani. Vrstni red je pomemben.',
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
     },
     {
       name: 'faqCta',
@@ -60,10 +52,6 @@ const FAQ: Block = {
       hasMany: false,
       required: false,
       label: 'CTA gumb sekcije FAQ',
-      admin: {
-        description: 'Izberite CTA gumb za sekcijo FAQ (neobvezno).',
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
     }
   ]
 };

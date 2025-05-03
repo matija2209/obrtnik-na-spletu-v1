@@ -29,13 +29,14 @@ const ServiceArea: Block = {
       label: 'Naslov',
       required: false,
       localized: true,
+      defaultValue: '',
     },
     {
       name: 'description',
       type: 'text',
       label: 'Opis',
       localized: true,
-      
+      defaultValue: '',
     },
     {
       name: 'showMap',

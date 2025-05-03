@@ -21,7 +21,7 @@ interface TestimonialsSectionProps {
   cta?: Cta;
 }
 
-const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({ 
+const DefaultTestimonialsSection: React.FC<TestimonialsSectionProps> = ({ 
   testimonials,
   title = "Kaj pravijo naše stranke",
   cta
@@ -76,4 +76,4 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   );
 };
 
-export default TestimonialsSection;
+export default DefaultTestimonialsSection;

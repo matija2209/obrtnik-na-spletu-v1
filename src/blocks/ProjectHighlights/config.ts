@@ -29,35 +29,27 @@ const ProjectHighlights: Block = {
       label: 'Naslov sekcije projektov',
       required: false,
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'description',
       type: 'textarea',
       label: 'Opis sekcije projektov',
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'buttonText',
       type: 'text',
       label: 'Besedilo gumba (npr. Vsi projekti)',
       localized: true,
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+      defaultValue: '',
     },
     {
       name: 'buttonHref',
       type: 'text',
       label: 'Povezava gumba (npr. /projekti)',
-      admin: {
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+  
     },
     {
       name: 'highlightedProjects',
@@ -66,10 +58,7 @@ const ProjectHighlights: Block = {
       hasMany: true,
       label: 'Izbrani projekti za prikaz',
       required: false,
-      admin: {
-        description: 'Izberite projekte za prikaz na domači strani. Vrstni red je pomemben.',
-        condition: (data: any, siblingData: any) => !siblingData?.hideSection,
-      },
+ 
     }
   ]
 };

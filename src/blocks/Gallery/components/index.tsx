@@ -1,5 +1,21 @@
-const GalleryBlock = () => {
-  return <div>GalleryBlock</div>
-}
+import GallerySection from './gallery-section';
+import type { GalleryBlock as GalleryBlockType } from '@payload-types'; // Assuming GalleryBlock is the type name
 
-export default GalleryBlock
+const GalleryBlock = ({ ...block }: GalleryBlockType) => {
+  // Assuming a template field might exist
+  switch (block?.template) {
+    case 'default':
+    default: // Defaulting to render GallerySection
+      // GallerySection currently handles its own title, description, and photos internally.
+      // Pass props from 'block' if GallerySection is refactored to accept them later.
+      return (
+        <GallerySection />
+      );
+      // Add other cases for different templates if needed
+  }
+
+  // Fallback
+  // return <div>Please select a template for the Gallery block.</div>;
+};
+
+export default GalleryBlock;
