@@ -179,45 +179,100 @@ export const queryPageBySlug = async ({
   overrideAccess?: boolean
   draft?: boolean
 }) => {
+  console.log('====== QUERY PAGE BY SLUG - START ======');
+  console.log('Input parameters:', { slug, tenant, overrideAccess, draftParam });
+  
   const payload = await getPayload({ config: configPromise })
   const { isEnabled: draft } = draftParam === undefined ? await draftMode() : { isEnabled: draftParam }
+  console.log('Draft mode:', draft);
 
   // Determine the slug value to search for
   const slugValue = !slug || slug.length === 0 ? 'home' : slug.join('/');
-  
-  // Build the where clause
-  const whereConditions = [];
-  
-  if (tenant) {
-    whereConditions.push({
-      'tenant.slug': {
-        equals: tenant,
-      },
-    });
-  }
-  
-  // Use the correct field path for slug - it's directly on the page object
-  whereConditions.push({
-    'slug': {
-      equals: slugValue,
-    },
-  });
+  console.log('Computed slug value:', slugValue);
   
   try {
+    // Try two different approaches
+    
+    // Approach 1: Get all pages for the tenant first
+    console.log('Approach 1: Get all pages for tenant first');
+    const tenantPages = await payload.find({
+      collection: 'pages',
+      overrideAccess: overrideAccess || draft,
+      draft,
+      where: tenant ? {
+        'tenant.slug': {
+          equals: tenant,
+        },
+      } : {},
+      depth: 1,
+    });
+    
+    console.log(`Found ${tenantPages.totalDocs} pages for tenant`);
+    
+    // Manually search for the page with the matching slug
+    if (tenantPages.docs.length > 0) {
+      console.log('Sample page fields:', Object.keys(tenantPages.docs[0]));
+      
+      // Look through all pages for this tenant and find matching slug
+      const matchingPage = tenantPages.docs.find(page => {
+        console.log(`Comparing page slug "${page.slug}" with "${slugValue}"`);
+        return page.slug === slugValue;
+      });
+      
+      if (matchingPage) {
+        console.log('Found matching page by manual search!');
+        return matchingPage as Page;
+      } else {
+        console.log('No matching page found by manual search');
+      }
+    }
+    
+    // Approach 2: Try a different field structure
+    console.log('Approach 2: Try different query structure');
+    const whereConditions: Record<string, any> = {};
+    
+    if (tenant) {
+      whereConditions['tenant.slug'] = {
+        equals: tenant,
+      };
+    }
+    
+    // Try querying the slug field directly (not in an array)
+    whereConditions.slug = {
+      equals: slugValue,
+    };
+    
+    console.log('Where conditions:', JSON.stringify(whereConditions, null, 2));
+    
     const pageQuery = await payload.find({
       collection: 'pages',
       overrideAccess: overrideAccess || draft,
       draft,
-      where: {
-        and: whereConditions,
-      },
-      depth: 2, // Load relationships 2 levels deep
+      where: whereConditions,
+      depth: 2,
     });
 
-    // Return the first matching page or null if none found
-    return pageQuery.docs[0] as Page | null;
-  } catch (error) {
-    console.error('Error querying page by slug:', error);
+    console.log('Query results:', {
+      totalDocs: pageQuery.totalDocs,
+      hasResults: pageQuery.docs.length > 0,
+      firstResultId: pageQuery.docs.length > 0 ? pageQuery.docs[0].id : null
+    });
+
+    if (pageQuery.docs.length > 0) {
+      return pageQuery.docs[0] as Page;
+    }
+    
     return null;
+  } catch (error: any) {
+    console.error('Error querying page by slug:', error);
+    console.log('Error details:', {
+      message: error?.message,
+      code: error?.code,
+      status: error?.status,
+      data: error?.data
+    });
+    return null;
+  } finally {
+    console.log('====== QUERY PAGE BY SLUG - END ======');
   }
 };
