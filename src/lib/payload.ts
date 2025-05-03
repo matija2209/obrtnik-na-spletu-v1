@@ -191,80 +191,66 @@ export const queryPageBySlug = async ({
   console.log('Computed slug value:', slugValue);
   
   try {
-    // Try two different approaches
+    // Query only by tenant, then filter by slug in memory
+    console.log('Querying pages by tenant only, will filter by slug in memory');
     
-    // Approach 1: Get all pages for the tenant first
-    console.log('Approach 1: Get all pages for tenant first');
-    const tenantPages = await payload.find({
+    // Create the tenant query with correct typing
+    let tenantQuery: Where = {};
+    
+    if (tenant) {
+      tenantQuery = {
+        'tenant.slug': {
+          equals: tenant,
+        }
+      };
+    }
+    
+    console.log('Tenant query:', JSON.stringify(tenantQuery, null, 2));
+    
+    // Get all pages for this tenant
+    const pagesQuery = await payload.find({
       collection: 'pages',
       overrideAccess: overrideAccess || draft,
       draft,
-      where: tenant ? {
-        'tenant.slug': {
-          equals: tenant,
-        },
-      } : {},
-      depth: 1,
+      where: tenantQuery,
+      depth: 2,
+      limit: 100, // Increase limit to find the right page
     });
     
-    console.log(`Found ${tenantPages.totalDocs} pages for tenant`);
+    console.log(`Found ${pagesQuery.totalDocs} pages for tenant`);
     
-    // Manually search for the page with the matching slug
-    if (tenantPages.docs.length > 0) {
-      console.log('Sample page fields:', Object.keys(tenantPages.docs[0]));
+    if (pagesQuery.docs.length > 0) {
+      console.log('Available page fields:', Object.keys(pagesQuery.docs[0]));
       
-      // Look through all pages for this tenant and find matching slug
-      const matchingPage = tenantPages.docs.find(page => {
+      // Log all pages and their slugs for debugging
+      pagesQuery.docs.forEach((page, index) => {
+        console.log(`Page ${index + 1} - ID: ${page.id}, Title: ${page.title}, Slug: ${page.slug}`);
+      });
+      
+      // Find the page with matching slug
+      const matchingPage = pagesQuery.docs.find(page => {
+        if (!page.slug) {
+          console.log(`Page ${page.id} has no slug field`);
+          return false;
+        }
+        
         console.log(`Comparing page slug "${page.slug}" with "${slugValue}"`);
         return page.slug === slugValue;
       });
       
       if (matchingPage) {
-        console.log('Found matching page by manual search!');
+        console.log('Found matching page!');
         return matchingPage as Page;
       } else {
-        console.log('No matching page found by manual search');
+        console.log(`No page found with slug "${slugValue}"`);
       }
-    }
-    
-    // Approach 2: Try a different field structure
-    console.log('Approach 2: Try different query structure');
-    const whereConditions: Record<string, any> = {};
-    
-    if (tenant) {
-      whereConditions['tenant.slug'] = {
-        equals: tenant,
-      };
-    }
-    
-    // Try querying the slug field directly (not in an array)
-    whereConditions.slug = {
-      equals: slugValue,
-    };
-    
-    console.log('Where conditions:', JSON.stringify(whereConditions, null, 2));
-    
-    const pageQuery = await payload.find({
-      collection: 'pages',
-      overrideAccess: overrideAccess || draft,
-      draft,
-      where: whereConditions,
-      depth: 2,
-    });
-
-    console.log('Query results:', {
-      totalDocs: pageQuery.totalDocs,
-      hasResults: pageQuery.docs.length > 0,
-      firstResultId: pageQuery.docs.length > 0 ? pageQuery.docs[0].id : null
-    });
-
-    if (pageQuery.docs.length > 0) {
-      return pageQuery.docs[0] as Page;
+    } else {
+      console.log('No pages found for tenant');
     }
     
     return null;
   } catch (error: any) {
-    console.error('Error querying page by slug:', error);
+    console.error('Error querying pages:', error);
     console.log('Error details:', {
       message: error?.message,
       code: error?.code,
