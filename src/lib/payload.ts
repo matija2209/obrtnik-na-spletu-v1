@@ -182,23 +182,9 @@ export const queryPageBySlug = async ({
   const payload = await getPayload({ config: configPromise })
   const { isEnabled: draft } = draftParam === undefined ? await draftMode() : { isEnabled: draftParam }
 
-  let slugConstraint: Record<string, any> = {}
+  // Determine the slug value to search for
+  const slugValue = !slug || slug.length === 0 ? 'home' : slug.join('/');
   
-  // Handle homepage (empty slug) and regular pages
-  if (!slug || slug.length === 0) {
-    slugConstraint = {
-      slug: {
-        equals: 'home',
-      },
-    };
-  } else {
-    slugConstraint = {
-      slug: {
-        equals: slug.join('/'),
-      },
-    };
-  }
-
   // Build the where clause
   const whereConditions = [];
   
@@ -210,7 +196,12 @@ export const queryPageBySlug = async ({
     });
   }
   
-  whereConditions.push(slugConstraint);
+  // Use the correct field path for slug - it's directly on the page object
+  whereConditions.push({
+    'slug': {
+      equals: slugValue,
+    },
+  });
   
   try {
     const pageQuery = await payload.find({

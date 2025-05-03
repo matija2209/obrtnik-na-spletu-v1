@@ -80,6 +80,7 @@ export interface Config {
     'opening-hours': OpeningHour;
     pages: Page;
     redirects: Redirect;
+    forms: Form;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -100,6 +101,7 @@ export interface Config {
     'opening-hours': OpeningHoursSelect<false> | OpeningHoursSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -763,6 +765,48 @@ export interface Redirect {
   createdAt: string;
 }
 /**
+ * Reusable forms for website integration.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title?: string | null;
+  subtitle?: string | null;
+  /**
+   * A label for identifying this form in the admin panel.
+   */
+  label: string;
+  /**
+   * Email address where form submission notifications will be sent or replied from.
+   */
+  replyToEmail: string;
+  /**
+   * URL to redirect the user to after successful submission.
+   */
+  redirectUrl?: string | null;
+  fields?:
+    | {
+        /**
+         * Unique identifier for this field (e.g., "firstName", "message"). Used internally and for submission data.
+         */
+        name: string;
+        /**
+         * The label displayed to the user for this field.
+         */
+        label: string;
+        placeholder?: string | null;
+        type: 'text' | 'email' | 'textarea' | 'checkbox';
+        required?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs".
  */
@@ -912,6 +956,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'redirects';
         value: number | Redirect;
+      } | null)
+    | ({
+        relationTo: 'forms';
+        value: number | Form;
       } | null)
     | ({
         relationTo: 'payload-jobs';
@@ -1433,6 +1481,30 @@ export interface RedirectsSelect<T extends boolean = true> {
   tenant?: T;
   from?: T;
   to?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms_select".
+ */
+export interface FormsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  subtitle?: T;
+  label?: T;
+  replyToEmail?: T;
+  redirectUrl?: T;
+  fields?:
+    | T
+    | {
+        name?: T;
+        label?: T;
+        placeholder?: T;
+        type?: T;
+        required?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

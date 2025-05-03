@@ -32,6 +32,7 @@ import { seed } from './src/seed'; // Import the seed function
 import { Pages } from '@/collections/Pages';
 import { Footer } from '@/globals/Footer';
 import { Redirects } from '@/collections/Redirects'; // Import the new collection
+import { Forms } from '@/collections/Forms'; // Import the Forms collection
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -110,6 +111,7 @@ const allCollections: CollectionConfig[] = [
   OpeningHours,
   Pages,
   Redirects, // Add the Redirects collection here
+  Forms, // Add the Forms collection here
 ];
 
 const allGlobals: GlobalConfig[] = [
@@ -265,6 +267,7 @@ export default buildConfig({
         [Pages.slug]: {},
         [OpeningHours.slug]: {},
         [Redirects.slug]: {}, // Add Redirects to multi-tenant config
+        [Forms.slug]: {}, // Add Forms to multi-tenant config
         // Globals seem to be handled differently or implicitly here
         // If you need explicit tenant control for globals like Footer, Navbar, BusinessInfo,
         // you might need to adjust how they are registered or how the plugin handles them.
