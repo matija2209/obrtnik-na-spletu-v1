@@ -29,9 +29,7 @@ const OneHeroSection: React.FC<HeroProps> = ({
       backgroundImage={imageUrl} 
       verticalPadding='3xl'
       contentBgColor="bg-white" // This controls the left side's background
-
       halfWidthImageOnDesktop={true}
-
     >
       {/* Hero Section */}
       <div

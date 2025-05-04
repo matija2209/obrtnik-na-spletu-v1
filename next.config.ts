@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     reactCompiler: false, // Recommended for Payload compatibility
+    useCache: true, // Enable use cache directive
   },
   images:{
     remotePatterns: [

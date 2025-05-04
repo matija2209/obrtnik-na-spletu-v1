@@ -15,8 +15,9 @@ export default async function TenantSlugPage({
 }: {
   params: Promise<{ slug?: string[]; tenant: string }>
 }) {
-  // Await parameters
+  'use cache'
   
+  // Await parameters
   const params = await paramsPromise
   const { slug, tenant } = params
   console.log('TenantSlugPage', params);
