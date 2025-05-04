@@ -111,6 +111,9 @@ export const Pages: CollectionConfig = {
               name: 'layout',
               label: 'Page Layout',
               type: 'blocks',
+              admin:{
+                initCollapsed: true,
+              },
               minRows: 1,
               blocks: [
                 Hero,

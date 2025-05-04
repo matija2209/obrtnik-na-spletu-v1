@@ -65,7 +65,9 @@ const Hero: Block = {
       type: 'array',
       required: false,
       label: 'Značilnosti',
-
+      admin: {
+        initCollapsed: true,
+      },
       fields: [
         {
           name: 'iconText',

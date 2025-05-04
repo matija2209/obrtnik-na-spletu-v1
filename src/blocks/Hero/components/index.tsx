@@ -1,42 +1,41 @@
-import type { HeroBlock } from "@payload-types"
+import type { Cta, HeroBlock } from "@payload-types"
 import DefaultHeroBlock from "./default-hero-block"
 import OneHeroSection from "./one-hero-section"
 import { getImageUrl } from "@/utilities/getImageUrl"
 import { validateCtas } from "@/utilities/validateCtas"
+import MissingFieldsAlert from "@/components/admin/MissingFieldsAlert"
 
 const HeroBlockComponent = ({ ...block }: HeroBlock) => {
   // Destructure with default values or ensure they are checked before use
   const { template, ctas, title, subtitle, image } = block
 
-  // Early return if essential props are missing for default template
-  if (
-    template === 'default' &&
-    (!ctas || !title || !subtitle || !image || typeof image === 'number')
-  ) {
-    console.warn("HeroBlockComponent: Missing essential props for default template.")
-    return null
-  }
-
   switch (template) {
     case "default": {
       // Ensure image is Media type before passing to getImageUrl
-      const imageUrl = typeof image === 'object' && image !== null ? getImageUrl(image) : undefined
+      const imageUrl =
+        typeof image === "object" && image !== null ? getImageUrl(image) : undefined
       // Validate CTAs ensure they are Cta objects
       const validCtas = validateCtas(ctas)
 
+      const missingFields: string[] = []
+      if (!title) missingFields.push("Title")
+      if (!subtitle) missingFields.push("Subtitle")
+      if (!imageUrl) missingFields.push("Image")
+      if (!validCtas) missingFields.push("CTAs")
+
       // Ensure required props are strings and validCtas is not undefined before rendering
-      if (!title || !subtitle || !imageUrl || !validCtas) {
-        console.warn(
-          "HeroBlockComponent: Could not render default template due to missing or invalid props.",
+      if (missingFields.length > 0) {
+        return (
+          <MissingFieldsAlert missingFields={missingFields} sectionName="Hero" />
         )
-        return null
       }
+      // By reaching this point, title, subtitle, imageUrl, and validCtas are guaranteed to be defined.
       return (
         <DefaultHeroBlock
-          ctas={validCtas} // Pass validated CTAs
-          title={title}
-          subtitle={subtitle}
-          imageUrl={imageUrl} // Pass validated image URL
+          ctas={validCtas as Cta[]} // Cast because validation ensures it's Cta[] if not undefined
+          title={title as string} // Cast because check ensures it's a string
+          subtitle={subtitle as string} // Cast because check ensures it's a string
+          imageUrl={imageUrl as string} // Cast because check ensures it's a string
         />
       )
     }
