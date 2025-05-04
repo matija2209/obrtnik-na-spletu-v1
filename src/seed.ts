@@ -165,7 +165,13 @@ export const seed = async (payload: Payload): Promise<void> => {
         data: {
           tenant: tenantA1.id,
           ctaText: 'Kontaktirajte nas',
-          ctaHref: '#kontakt',
+          link: { // Correct link structure
+            type: 'external', // Changed from internal based on '#kontakt'
+            externalUrl: '#kontakt', // Use externalUrl for anchors or external links
+            newTab: false,
+          },
+          // icon: 'Mail', // Optional: Lucide icon name
+          // ctaClassname: 'custom-cta-class', // Optional: Custom CSS class
           ctaType: 'primary',
         },
       });
@@ -180,7 +186,13 @@ export const seed = async (payload: Payload): Promise<void> => {
         data: {
           tenant: tenantA1.id,
           ctaText: 'Vse Storitve',
-          ctaHref: '/storitve',
+          link: { // Correct link structure
+            type: 'external', // Assume external for now as /storitve page isn't seeded
+            externalUrl: '/storitve', // Use externalUrl
+            newTab: false,
+          },
+          // icon: 'ArrowRight', // Optional: Lucide icon name
+          // ctaClassname: 'another-cta-class', // Optional: Custom CSS class
           ctaType: 'secondary',
         },
       });
@@ -239,8 +251,11 @@ export const seed = async (payload: Payload): Promise<void> => {
           title: 'Vodoinštalacije',
           description: 'Nudimo celovite rešitve za vodovodne inštalacije, od načrtovanja do izvedbe in vzdrževanja.',
           features: [{ featureText: 'Novogradnje' }, { featureText: 'Adaptacije' }, { featureText: 'Popravila' }],
-          link: '/storitve/vodoinstalacije',
           images: [], // Changed from image: mediaDocId to images: []
+          priceDisplay: 'Po dogovoru', // Added priceDisplay
+          // relatedProjects: [], // Optional
+          // relatedTestimonials: [], // Optional
+          // dedicatedPage: null, // Optional
         },
       });
       payload.logger.info(`Created Service: ${serviceVodoinstalacije.id}`);
@@ -256,8 +271,11 @@ export const seed = async (payload: Payload): Promise<void> => {
           title: 'Montaža sanitarne opreme',
           description: 'Strokovna montaža tuš kabin, kadi, WC školjk, umivalnikov in ostale sanitarne opreme.',
           features: [{ featureText: 'Montaža' }, { featureText: 'Priklop' }, { featureText: 'Svetovanje' }],
-          link: '/storitve/montaza-sanitarne-opreme',
           images: [], // Added images: [] for consistency
+          priceDisplay: 'Od €150 dalje', // Added priceDisplay
+          // relatedProjects: [], // Optional
+          // relatedTestimonials: [], // Optional
+          // dedicatedPage: null, // Optional
         },
       });
       payload.logger.info(`Created Service: ${serviceMontaza.id}`);
@@ -268,6 +286,54 @@ export const seed = async (payload: Payload): Promise<void> => {
       payload.logger.info(`Services seeded: ${serviceVodoinstalacije.id}, ${serviceMontaza.id}`);
     } else {
       payload.logger.warn('One or more Services failed to seed.');
+    }
+
+    // --- Seed Testimonials ---
+    payload.logger.info('Attempting to seed Testimonials...');
+    payload.logger.info(`Seeding Testimonials for tenant ${tenantId}...`);
+    let testimonial1, testimonial2;
+    try {
+      payload.logger.info('Attempting to create Testimonial: Ana K.');
+      testimonial1 = await payload.create({
+        collection: 'testimonials',
+        data: {
+          tenant: tenantA1.id,
+          name: 'Ana K.',
+          testimonialDate: new Date('2024-04-15').toISOString(),
+          source: 'manual',
+          location: 'Ljubljana',
+          service: 'Adaptacija kopalnice',
+          content: 'Zelo zadovoljni s hitrostjo in kvaliteto izvedbe prenove kopalnice. Priporočam!',
+          rating: 5,
+        },
+      });
+      payload.logger.info(`Created Testimonial: ${testimonial1.id}`);
+    } catch (err) {
+      payload.logger.error('Error creating Testimonial (Ana K.):', err);
+    }
+    try {
+      payload.logger.info('Attempting to create Testimonial: Marko P.');
+      testimonial2 = await payload.create({
+        collection: 'testimonials',
+        data: {
+          tenant: tenantA1.id,
+          name: 'Marko P.',
+          testimonialDate: new Date('2024-05-01').toISOString(),
+          source: 'google',
+          location: 'Domžale',
+          service: 'Menjava vodovodnih cevi',
+          content: 'Profesionalen odnos in odlično opravljeno delo. Držali so se dogovorjenih rokov.',
+          rating: 5,
+        },
+      });
+      payload.logger.info(`Created Testimonial: ${testimonial2.id}`);
+    } catch (err) {
+      payload.logger.error('Error creating Testimonial (Marko P.):', err);
+    }
+    if (testimonial1 && testimonial2) {
+      payload.logger.info(`Testimonials seeded: ${testimonial1.id}, ${testimonial2.id}`);
+    } else {
+      payload.logger.warn('One or more Testimonials failed to seed.');
     }
 
     // --- Seed Projects ---
@@ -303,8 +369,10 @@ export const seed = async (payload: Payload): Promise<void> => {
             client: 'Družina Novak',
             budget: '10000 EUR',
           },
-          // projectImages: [], // Add image data if seeding media
           tags: [{ tag: 'Adaptacija' }, { tag: 'Kopalnica' }],
+          servicesPerformed: [serviceVodoinstalacije?.id].filter(Boolean) as number[], // Example link with type assertion
+          relatedTestimonials: [testimonial1?.id].filter(Boolean) as number[], // Example link with type assertion
+          // dedicatedPage: null // Optional: Link to a page ID
         },
       });
       payload.logger.info(`Created Project: ${projectAdaptacija.id}`);
@@ -339,6 +407,9 @@ export const seed = async (payload: Payload): Promise<void> => {
             client: 'Gospod Podlipnik',
           },
           tags: [{ tag: 'Novogradnja' }, { tag: 'Hiša' }],
+          servicesPerformed: [serviceVodoinstalacije?.id].filter(Boolean) as number[], // Example link with type assertion
+          // relatedTestimonials: [], // Optional
+          // dedicatedPage: null // Optional: Link to a page ID
         },
       });
       payload.logger.info(`Created Project: ${projectNovogradnja.id}`);
@@ -349,52 +420,6 @@ export const seed = async (payload: Payload): Promise<void> => {
       payload.logger.info(`Projects seeded: ${projectAdaptacija.id}, ${projectNovogradnja.id}`);
     } else {
       payload.logger.warn('One or more Projects failed to seed.');
-    }
-
-    // --- Seed Testimonials ---
-    payload.logger.info('Attempting to seed Testimonials...');
-    payload.logger.info(`Seeding Testimonials for tenant ${tenantId}...`);
-    let testimonial1, testimonial2;
-    try {
-      payload.logger.info('Attempting to create Testimonial: Ana K.');
-      testimonial1 = await payload.create({
-        collection: 'testimonials',
-        data: {
-          tenant: tenantA1.id,
-          name: 'Ana K.',
-          time: 'pred 1 mesecem',
-          location: 'Ljubljana',
-          service: 'Adaptacija kopalnice',
-          content: 'Zelo zadovoljni s hitrostjo in kvaliteto izvedbe prenove kopalnice. Priporočam!',
-          rating: 5,
-        },
-      });
-      payload.logger.info(`Created Testimonial: ${testimonial1.id}`);
-    } catch (err) {
-      payload.logger.error('Error creating Testimonial (Ana K.):', err);
-    }
-    try {
-      payload.logger.info('Attempting to create Testimonial: Marko P.');
-      testimonial2 = await payload.create({
-        collection: 'testimonials',
-        data: {
-          tenant: tenantA1.id,
-          name: 'Marko P.',
-          time: 'pred 3 tedni',
-          location: 'Domžale',
-          service: 'Menjava vodovodnih cevi',
-          content: 'Profesionalen odnos in odlično opravljeno delo. Držali so se dogovorjenih rokov.',
-          rating: 5,
-        },
-      });
-      payload.logger.info(`Created Testimonial: ${testimonial2.id}`);
-    } catch (err) {
-      payload.logger.error('Error creating Testimonial (Marko P.):', err);
-    }
-    if (testimonial1 && testimonial2) {
-      payload.logger.info(`Testimonials seeded: ${testimonial1.id}, ${testimonial2.id}`);
-    } else {
-      payload.logger.warn('One or more Testimonials failed to seed.');
     }
 
     // --- Seed FAQ Items ---
@@ -408,7 +433,21 @@ export const seed = async (payload: Payload): Promise<void> => {
         data: {
           tenant: tenantA1.id,
           question: 'Kakšen je vaš delovni čas?',
-          answer: 'Naš redni delovni čas je od ponedeljka do petka, od 8:00 do 16:00. Za nujne intervencije smo dosegljivi tudi izven delovnega časa.',
+          category: 'general',
+          answer: {
+            root: {
+              type: 'root',
+              children: [{
+                type: 'paragraph',
+                children: [{ text: 'Naš redni delovni čas je od ponedeljka do petka, od 8:00 do 16:00. Za nujne intervencije smo dosegljivi tudi izven delovnega časa.', version: 1 }],
+                version: 1
+              }],
+              direction: null,
+              format: '',
+              indent: 0,
+              version: 1,
+            },
+          },
         },
       });
       payload.logger.info(`Created FAQ Item: ${faq1.id}`);
@@ -422,7 +461,21 @@ export const seed = async (payload: Payload): Promise<void> => {
         data: {
           tenant: tenantA1.id,
           question: 'Na katerem območju opravljate storitve?',
-          answer: 'Storitve opravljamo predvsem na območju osrednje Slovenije, vključno z Ljubljano z okolico, Domžalami, Kamnikom in Kranjem. Za večje projekte se lahko dogovorimo tudi za delo izven tega območja.',
+          category: 'general',
+          answer: {
+            root: {
+              type: 'root',
+              children: [{
+                type: 'paragraph',
+                children: [{ text: 'Storitve opravljamo predvsem na območju osrednje Slovenije, vključno z Ljubljano z okolico, Domžalami, Kamnikom in Kranjem. Za večje projekte se lahko dogovorimo tudi za delo izven tega območja.', version: 1 }],
+                version: 1
+              }],
+              direction: null,
+              format: '',
+              indent: 0,
+              version: 1,
+            },
+          },
         },
       });
       payload.logger.info(`Created FAQ Item: ${faq2.id}`);
@@ -436,7 +489,21 @@ export const seed = async (payload: Payload): Promise<void> => {
         data: {
           tenant: tenantA1.id,
           question: 'Ali nudite garancijo na opravljeno delo?',
-          answer: 'Da, na vse naše storitve in vgrajeni material nudimo ustrezno garancijo.',
+          category: 'general',
+          answer: {
+            root: {
+              type: 'root',
+              children: [{
+                type: 'paragraph',
+                children: [{ text: 'Da, na vse naše storitve in vgrajeni material nudimo ustrezno garancijo.', version: 1 }],
+                version: 1
+              }],
+              direction: null,
+              format: '',
+              indent: 0,
+              version: 1,
+            },
+          },
         },
       });
       payload.logger.info(`Created FAQ Item: ${faq3.id}`);
@@ -447,6 +514,62 @@ export const seed = async (payload: Payload): Promise<void> => {
       payload.logger.info(`FAQ Items seeded: ${faq1.id}, ${faq2.id}, ${faq3.id}`);
     } else {
       payload.logger.warn('One or more FAQ Items failed to seed.');
+    }
+
+    // --- Seed Forms --- (New Section)
+    payload.logger.info('Attempting to seed Forms...');
+    payload.logger.info(`Seeding Forms for tenant ${tenantId}...`);
+    let contactForm;
+    try {
+      payload.logger.info('Attempting to create Form: Kontaktni Obrazec');
+      contactForm = await payload.create({
+        collection: 'forms',
+        data: {
+          tenant: tenantA1.id,
+          title: 'Stopite v stik',
+          subtitle: 'Izpolnite obrazec in odgovorili vam bomo v najkrajšem možnem času.',
+          label: 'Kontaktni Obrazec (Glavni)', // Internal label
+          replyToEmail: 'info.a1instalacije@gmail.com', // Should match business info
+          // redirectUrl: '/hvala', // Optional redirect
+          fields: [
+            {
+              name: 'ime_priimek',
+              label: 'Ime in Priimek',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'email',
+              label: 'Email Naslov',
+              type: 'email',
+              required: true,
+            },
+            {
+              name: 'telefon',
+              label: 'Telefonska številka (Neobvezno)',
+              type: 'text',
+              required: false,
+            },
+            {
+              name: 'sporocilo',
+              label: 'Vaše sporočilo',
+              type: 'textarea',
+              required: true,
+            },
+            {
+              name: 'strinjanje',
+              label: 'Strinjam se s pogoji zasebnosti',
+              type: 'checkbox',
+              required: true,
+            },
+          ],
+        },
+      });
+      payload.logger.info(`Created Form: ${contactForm.id}`);
+      payload.logger.info(`Forms seeded: ${contactForm.id}`);
+    } catch (err) {
+      payload.logger.error('Error creating Form (Kontaktni Obrazec):', err);
+      payload.logger.warn('Form seeding failed.');
     }
 
     // --- Seed Home Page ---

@@ -13,7 +13,7 @@ import { Testimonials } from '@/collections/Testimonials'
 import { FaqItems } from '@/collections/FaqItems'
 import { Services } from '@/collections/Services'
 import { Ctas } from '@/collections/Ctas'
-import { Inquiries } from '@/collections/Inquiries'
+import { Inquiries } from '@/collections/Inquiries/index'
 import { Navbar } from '@/globals/Navbar'
 import { BusinessInfo } from '@/globals/BusinessInfo'
 import { Machinery } from '@/collections/Machinery'
@@ -33,6 +33,9 @@ import { Pages } from '@/collections/Pages';
 import { Footer } from '@/globals/Footer';
 import { Redirects } from '@/collections/Redirects'; // Import the new collection
 import { Forms } from '@/collections/Forms'; // Import the Forms collection
+import { Pricelists } from '@/collections/Pricelists'; // Import the new Pricelists collection
+import { PriceListSections } from '@/collections/PriceListSections'; // Import new
+import { PriceListItems } from '@/collections/PriceListItems'; // Import new
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -112,6 +115,9 @@ const allCollections: CollectionConfig[] = [
   Pages,
   Redirects, // Add the Redirects collection here
   Forms, // Add the Forms collection here
+  Pricelists, // Add the Pricelists collection here
+  PriceListSections, // Add new
+  PriceListItems, // Add new
 ];
 
 const allGlobals: GlobalConfig[] = [
@@ -268,6 +274,9 @@ export default buildConfig({
         [OpeningHours.slug]: {},
         [Redirects.slug]: {}, // Add Redirects to multi-tenant config
         [Forms.slug]: {}, // Add Forms to multi-tenant config
+        [Pricelists.slug]: {},
+        [PriceListSections.slug]: {}, // Add new
+        [PriceListItems.slug]: {}, // Add new
         // Globals seem to be handled differently or implicitly here
         // If you need explicit tenant control for globals like Footer, Navbar, BusinessInfo,
         // you might need to adjust how they are registered or how the plugin handles them.

@@ -49,6 +49,17 @@ const Machinery: Block = {
         // Add more template options here
       ],
     },
+    {
+      name: 'callToAction',
+      label: 'Call to Action (Neobvezno)',
+      type: 'relationship',
+      relationTo: 'ctas',
+      hasMany: false,
+      required: false,
+      admin: {
+        description: 'Dodajte gumb \'call to action\' pod seznam strojev.'
+      }
+    }
   ]
 };
 

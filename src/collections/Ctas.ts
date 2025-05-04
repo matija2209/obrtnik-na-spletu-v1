@@ -12,7 +12,7 @@ export const Ctas: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'ctaText', // Use ctaText as the title in the admin UI
-    defaultColumns: ['ctaText', 'ctaHref', 'ctaClassname', 'updatedAt'],
+    defaultColumns: ['ctaText', 'link.type', 'ctaType', 'updatedAt'],
     description: 'Reusable Call-to-Action buttons.',
   },
   access: {
@@ -33,12 +33,68 @@ export const Ctas: CollectionConfig = {
       }
     },
     {
-      name: 'ctaHref',
+      name: 'link',
+      type: 'group',
+      label: 'Povezava gumba',
+      fields: [
+        {
+          name: 'type',
+          type: 'radio',
+          label: 'Tip povezave',
+          options: [
+            { label: 'Notranja stran', value: 'internal' },
+            { label: 'Zunanji URL', value: 'external' },
+          ],
+          defaultValue: 'internal',
+          required: true,
+          admin: {
+            layout: 'horizontal',
+          },
+        },
+        {
+          name: 'internalLink',
+          label: 'Izberi stran',
+          type: 'relationship',
+          relationTo: 'pages', // Link primarily to Pages, could add more relations if needed
+          required: true,
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'internal',
+          }
+        },
+        {
+          name: 'externalUrl',
+          label: 'Vnesi URL',
+          type: 'text',
+          required: true,
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'external',
+          },
+          validate: (value: string | null | undefined, { siblingData }: { siblingData: { type?: string } }) => {
+            if (siblingData?.type === 'external' && !value) {
+              return 'URL je obvezen za zunanje povezave.';
+            }
+            // Basic URL validation (optional but recommended)
+            // if (siblingData?.type === 'external' && value && !value.startsWith('http')) {
+            //   return 'URL se mora začeti s http:// ali https://';
+            // }
+            return true;
+          },
+        },
+        {
+          name: 'newTab',
+          label: 'Odpri v novem zavihku?',
+          type: 'checkbox',
+          defaultValue: false,
+        }
+      ]
+    },
+    {
+      name: 'icon',
+      label: 'Ikona (Lucide ime, neobvezno)',
       type: 'text',
-      label: 'Povezava gumba (URL ali sidro)',
-      required: true,
+      required: false,
       admin: {
-        description: 'Kam naj gumb vodi (npr. /kontakt, /#storitve, https://example.com).'
+        description: 'Vnesite ime ikone iz knjižnice Lucide React (npr. ArrowRight, CheckCircle).',
       }
     },
     {

@@ -1,9 +1,13 @@
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
-import { CollectionConfig, Access } from 'payload';
 
-// Define access control - allowing anyone to create, admin to read/update/delete
+
+import { sendNotification } from './hooks/sendNotification';
+import { CollectionConfig } from 'payload';
+import { Access, FieldAccess } from 'payload';
+
+
+// Define access control - allowing anyone to create
 const anyone: Access = () => true;
-
 
 export const Inquiries: CollectionConfig = {
   slug: 'inquiries',
@@ -13,15 +17,35 @@ export const Inquiries: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'firstName',
-    defaultColumns: ['firstName', 'lastName', 'email', 'service', 'createdAt'],
+    defaultColumns: ['inquiryType', 'firstName', 'lastName', 'email', 'service', 'status', 'createdAt'],
+    group: 'Management',
   },
   access: {
-    read: anyone,
-    create: superAdminOrTenantAdminAccess,
+    read: superAdminOrTenantAdminAccess,
+    create: anyone,
     update: superAdminOrTenantAdminAccess,
     delete: superAdminOrTenantAdminAccess,
   },
+  hooks: {
+    afterChange: [sendNotification],
+  },
   fields: [
+    {
+      name: 'inquiryType',
+      type: 'select',
+      label: 'Tip povpraševanja',
+      options: [
+        { label: 'Splošno vprašanje', value: 'general' },
+        { label: 'Zahteva za ponudbo', value: 'quote' },
+        { label: 'Podpora', value: 'support' },
+        { label: 'Drugo', value: 'other' },
+      ],
+      defaultValue: 'general',
+      required: false,
+      admin: {
+        position: 'sidebar',
+      }
+    },
     {
       name: 'firstName',
       type: 'text',
@@ -87,6 +111,18 @@ export const Inquiries: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
+    },
+    {
+      name: 'consent',
+      type: 'checkbox',
+      label: 'Strinjam se z obdelavo podatkov za namen povpraševanja.',
+      required: true,
+      validate: (val: boolean | null | undefined) => val === true ? true : 'Morate se strinjati z obdelavo podatkov.',
+    },
+    {
+      name: 'adminNotes',
+      type: 'textarea',
+      label: 'Admin Notes (Internal)',
     },
   ],
 }; 

@@ -37,11 +37,21 @@ export default function DefaultAboutMeSection({
           <p className='text-left md:text-center'>
           {subtitle}
           </p>
-          {ctas && ctas.map((cta) => (
-            <Button>
-              <Link href={cta.ctaHref}>{cta.ctaText}</Link>
-            </Button>
-          ))}
+          {ctas && ctas.map((cta) => {
+            // Determine href based on link type
+            const href = cta.link?.type === 'external' 
+              ? cta.link.externalUrl || '#' 
+              : (typeof cta.link?.internalLink === 'object' && cta.link.internalLink?.slug ? `/${cta.link.internalLink.slug}` : '/'); // Basic internal link handling
+            
+            // Determine target based on newTab setting
+            const target = cta.link?.newTab ? '_blank' : '_self';
+            
+            return (
+              <Button key={cta.id} asChild>
+                <Link href={href} target={target}>{cta.ctaText}</Link>
+              </Button>
+            );
+          })}
 
       </div>
      

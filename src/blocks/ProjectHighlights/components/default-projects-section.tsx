@@ -78,23 +78,18 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
     setTouchEnd(null);
   };
 
-  // Helper function to get image source and alt text based on type
+  // Helper function to get image source and alt text for Image 1
   const getImageData = (img: ProjectImage | undefined) => {
     if (!img) return { src: '/placeholder-image.jpg', alt: 'Placeholder Image' };
-    
-    if (img.type === 'comparison') {
-      const imageObj = img.afterImage?.image as Media | undefined;
-      return {
-        src: imageObj ? getImageUrl(imageObj) || '/placeholder-image.jpg' : '/placeholder-image.jpg',
-        alt: img.afterImage?.altText || 'After Image',
-      };
-    } else { // 'single' type
-      const imageObj = img.image as Media | undefined;
-      return {
-        src: imageObj ? getImageUrl(imageObj) || '/placeholder-image.jpg' : '/placeholder-image.jpg',
-        alt: img.imageAltText || 'Project Image',
-      };
-    }
+
+    // Use image1 as the primary image source
+    // getImageUrl should handle cases where image1 might be an ID (number) or a Media object
+    const imageObj = img.image1 as Media | undefined; 
+
+    return {
+      src: imageObj ? getImageUrl(imageObj) || '/placeholder-image.jpg' : '/placeholder-image.jpg',
+      alt: img.altText1 || 'Project Image', // Use altText1
+    };
   };
   
   // Basic Rich Text extraction (placeholder)

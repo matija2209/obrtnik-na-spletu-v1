@@ -1,7 +1,6 @@
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { CollectionConfig, Access } from 'payload';
-import slugify from 'slugify';
-import { Wrench } from 'lucide-react';
+
 import { slugField } from '@/fields/slug';
 
 // Define access control - allowing anyone to read, admin to create/update/delete
@@ -81,10 +80,43 @@ export const Services: CollectionConfig = {
       ],
     },
     {
-      name: 'link',
+      name: 'priceDisplay',
       type: 'text',
-      label: 'URL povezava (npr. /storitve/klimatske-naprave)',
-      required: false,
+      label: 'Prikaz cene (Neobvezno)',
+      localized: true, // Price display might differ by locale/market
+      admin: {
+        description: 'Primer: "€50", "Od €100", "€150 - €250", "Po dogovoru"',
+      }
     },
+    {
+      name: 'relatedProjects',
+      type: 'relationship',
+      relationTo: 'projects',
+      hasMany: true,
+      label: 'Povezani projekti (Neobvezno)',
+      admin: {
+        description: 'Prikaži projekte, kjer je bila ta storitev uporabljena.',
+      }
+    },
+    {
+      name: 'relatedTestimonials',
+      type: 'relationship',
+      relationTo: 'testimonials',
+      hasMany: true,
+      label: 'Povezana mnenja (Neobvezno)',
+      admin: {
+        description: 'Prikaži mnenja strank, ki se nanašajo na to storitev.',
+      }
+    },
+    {
+      name: 'dedicatedPage',
+      label: 'Namenska stran (Neobvezno)',
+      type: 'relationship',
+      relationTo: 'pages',
+      hasMany: false,
+      admin: {
+        description: 'Poveži storitev z njeno namensko podstranjo, če obstaja.',
+      }
+    }
   ],
 }; 

@@ -1,5 +1,7 @@
 'use strict'
 
+import { isSuperAdminAccess } from '@/access/isSuperAdminAccess'
+import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin'
 import type { CollectionConfig } from 'payload'
 
 const formFieldTypes = [
@@ -21,9 +23,9 @@ export const Forms: CollectionConfig = {
   },
   access: {
     read: () => true, // Define access control as needed
-    create: () => true,
-    update: () => true,
-    delete: () => true,
+    create: superAdminOrTenantAdminAccess,
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess,
   },
   fields: [
     {

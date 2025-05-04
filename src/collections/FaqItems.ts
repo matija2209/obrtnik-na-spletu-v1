@@ -7,7 +7,7 @@ export const FaqItems: CollectionConfig = {
   slug: 'faq-items',
   labels:{
     singular: 'Pogosta vprašanja',
-    plural: 'Pogosta vprašanja',
+    plural: 'Vprašanja in odgovori',
   },
   
   admin: {
@@ -23,6 +23,24 @@ export const FaqItems: CollectionConfig = {
   },
   fields: [
     {
+      name: 'category',
+      type: 'select',
+      label: 'Kategorija (Neobvezno)',
+      options: [
+        // Add your predefined categories here
+        { label: 'Splošno', value: 'general' },
+        { label: 'Montaža', value: 'installation' },
+        { label: 'Vzdrževanje', value: 'maintenance' },
+        { label: 'Plačila', value: 'billing' },
+        // ... add more as needed
+      ],
+      required: false,
+      admin: {
+        position: 'sidebar',
+        description: 'Izberite kategorijo za lažje filtriranje.',
+      }
+    },
+    {
       name: 'question',
       type: 'text',
       required: true,
@@ -31,10 +49,21 @@ export const FaqItems: CollectionConfig = {
     },
     {
       name: 'answer',
-      type: 'textarea', // Use textarea for potentially longer answers
+      type: 'richText',
       required: true,
       label: 'Odgovor',
-      localized: true, // Answers might need translation
+      localized: true,
     },
+    {
+      name: 'relatedService',
+      type: 'relationship',
+      relationTo: 'services',
+      hasMany: false, // An FAQ usually relates to one primary service
+      label: 'Povezana storitev (Neobvezno)',
+      required: false,
+      admin: {
+        description: 'Povežite to vprašanje s specifično storitvijo, če je relevantno.'
+      }
+    }
   ],
 }; 

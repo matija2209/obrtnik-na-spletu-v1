@@ -1,4 +1,4 @@
-import GallerySection from './gallery-section';
+import DefaultGallerySection from './default-gallery-section';
 import type { GalleryBlock as GalleryBlockType } from '@payload-types'; // Assuming GalleryBlock is the type name
 
 const GalleryBlock = ({ ...block }: GalleryBlockType) => {
@@ -9,7 +9,7 @@ const GalleryBlock = ({ ...block }: GalleryBlockType) => {
       // GallerySection currently handles its own title, description, and photos internally.
       // Pass props from 'block' if GallerySection is refactored to accept them later.
       return (
-        <GallerySection />
+        <DefaultGallerySection />
       );
       // Add other cases for different templates if needed
   }

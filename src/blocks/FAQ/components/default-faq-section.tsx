@@ -1,15 +1,18 @@
 import React from 'react';
-import { ContainedSection } from '@/components/layout/container-section';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion';
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { ContainedSection } from '@/components/layout/container-section';
 import SectionHeading from '@/components/layout/section-heading';
-import { FaqItem } from '@payload-types';
 
-
+interface FaqItem { 
+  id: number | string; // Allow number or string for ID
+  question?: string | null;
+  answer?: any | null; // Type for rich text is complex, using 'any' for now
+}
 
 interface FaqSectionProps {
   title?: string;
@@ -17,7 +20,19 @@ interface FaqSectionProps {
   faqData?: FaqItem[];
 }
 
-export default function FaqSection({
+// Basic Rich Text extraction (placeholder) - Mirroring the one from Projects section
+// TODO: Replace with a proper RichText renderer component
+const renderRichText = (richText: any): string => {
+  try {
+    // Attempt to extract the first text node's content
+    return richText?.root?.children?.[0]?.children?.[0]?.text || '';
+  } catch (error) {
+    console.error("Error rendering rich text:", error);
+    return ''; // Return empty string on error
+  }
+};
+
+export default function DefaultFaqSection({
   title,
   description,
   faqData,
@@ -43,7 +58,9 @@ export default function FaqSection({
                 {item.question}
               </AccordionTrigger>
               <AccordionContent className="mt-2 px-6 py-4 rounded-md group-data-[state=open]:bg-white bg-secondary">
-                <p className="group-data-[state=open]:text-foreground text-secondary-foreground">{item.answer}</p>
+                <p className="group-data-[state=open]:text-foreground text-secondary-foreground">
+                  {renderRichText(item.answer)}
+                </p>
               </AccordionContent>
             </AccordionItem>
           ))}

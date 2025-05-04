@@ -21,7 +21,7 @@ interface GallerySectionV2Props {
   photos: Photo[];
 }
 
-export default function GallerySectionV2({ photos }: GallerySectionV2Props) {
+export default function OneGallerySection({ photos }: GallerySectionV2Props) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);

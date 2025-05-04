@@ -3,15 +3,8 @@ import type { Payload } from 'payload'
 import type { 
   Project, 
   Service, 
-  Testimonial, 
-  FaqItem, 
-  Cta, 
-  Inquiry, 
-  User,
-  Media,
-  BusinessInfo as BusinessInfoType,
-  Navbar as NavbarType,
   Page,
+  Inquiry,
 } from '../../payload-types'
 
 import configPromise from '@payload-config'
@@ -97,18 +90,9 @@ export const getCtas = async (query = {}) => {
   })
 }
 
-type CreateInquiryData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  message: string;
-  service: number; // ID of the service
-  location: string;
-  phone?: string;
-  status?: 'new' | 'in-progress' | 'completed';
-};
 
-export const createInquiry = async (data: CreateInquiryData) => {
+
+export const createInquiry = async (data: Inquiry) => {
   const payload = await getPayloadClient()
   return payload.create({
     collection: 'inquiries',

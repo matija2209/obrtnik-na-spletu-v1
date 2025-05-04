@@ -56,7 +56,7 @@ const galleryPhotos: Photo[] = [
   }
 ];
 
-export default function GallerySection() {
+export default function DefaultGallerySection() {
   return (
     <ContainedSection 
       id="galerija"

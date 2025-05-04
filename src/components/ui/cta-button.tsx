@@ -25,6 +25,25 @@ const CtaButton: React.FC<CtaButtonProps> = ({ mainCta }) => {
     return null;
   }
 
+  // Determine href and target from the link object
+  const linkData = mainCta.link;
+  let href = '#'; // Default href
+  if (linkData) {
+    if (linkData.type === 'external') {
+      href = linkData.externalUrl || '#';
+    } else if (linkData.type === 'internal') {
+      // Handle potential object or ID for internalLink
+      const internalLink = linkData.internalLink;
+      if (typeof internalLink === 'object' && internalLink?.slug) {
+        href = `/${internalLink.slug}`;
+      } else {
+        // Fallback if internalLink is just an ID or slug is missing (might need adjustment based on actual data)
+        href = '/'; 
+      }
+    }
+  }
+  const target = linkData?.newTab ? '_blank' : '_self';
+
   // Map Cta type to Button variant
   let buttonVariant: ButtonVariant = 'default'; // Default to 'default'
   if (mainCta.ctaType && mainCta.ctaType !== 'primary' && mainCta.ctaType !== 'icon') {
@@ -39,18 +58,20 @@ const CtaButton: React.FC<CtaButtonProps> = ({ mainCta }) => {
 
   let IconComponent: IconType = Phone;
 
-  if (mainCta.ctaHref.startsWith('mailto:')) {
+  // Update icon logic to use the derived href
+  if (href.startsWith('mailto:')) {
     IconComponent = Mail;
-  } else if (mainCta.ctaHref.includes('facebook.com')) {
+  } else if (href.includes('facebook.com')) {
     IconComponent = FacebookIcon;
-  } else if (mainCta.ctaHref.includes('google.com')) {
+  } else if (href.includes('google.com')) {
     IconComponent = GoogleIcon;
-  } else if (mainCta.ctaHref.startsWith('tel:')) {
+  } else if (href.startsWith('tel:')) {
     IconComponent = Phone;
   }
+  // TODO: Add logic for selecting icon based on mainCta.icon field if needed
 
   return (
-    <Link href={mainCta.ctaHref}>
+    <Link href={href} target={target} passHref>
       {/* Use the mapped buttonVariant */}
       <Button className="flex items-center gap-1 w-full sm:w-auto" variant={buttonVariant}> 
         <IconComponent className="mr-2 h-4 w-4" />

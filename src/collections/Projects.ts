@@ -85,106 +85,45 @@ export const Projects: CollectionConfig = {
       ],
     },
     {
-      name: 'hasBeforeAfterPairs',
-      type: 'checkbox',
-      label: 'This project has before/after image comparisons',
-      defaultValue: false,
-    },
-    {
-      name: 'projectImages', // <-- specific name for project images!
+      name: 'projectImages',
       type: 'array',
-      label: 'Project Images',
+      label: 'Project Images / Pairs',
+      minRows: 1,
       fields: [
         {
-          name: 'type',
-          type: 'radio',
-          options: [
-            { label: 'Single Image', value: 'single' },
-            { label: 'Before/After Comparison', value: 'comparison' },
-          ],
-          defaultValue: 'single',
-          required: true,
-          admin: {
-            layout: 'horizontal',
-          },
-        },
-        // Fields for Single Images
-        {
-          name: 'image',
+          name: 'image1',
+          label: 'Image 1 (or Before Image)',
           type: 'upload',
-          relationTo: 'media', // <-- Pull from your Media Collection
+          relationTo: 'media',
           required: true,
-          admin: {
-            condition: (_, siblingData) => siblingData?.type === 'single',
-          },
         },
         {
-          name: 'imageAltText',
+          name: 'altText1',
           type: 'text',
-          label: 'Image Alt Text',
+          label: 'Image 1 Alt Text',
+        },
+        {
+          name: 'image2',
+          label: 'Image 2 (or After Image) (Optional)',
+          type: 'upload',
+          relationTo: 'media',
+          required: false,
+        },
+        {
+          name: 'altText2',
+          type: 'text',
+          label: 'Image 2 Alt Text',
           admin: {
-            condition: (_, siblingData) => siblingData?.type === 'single',
+            condition: (_, siblingData) => !!siblingData.image2,
           },
         },
         {
-          name: 'imageDescription',
+          name: 'pairDescription',
           type: 'richText',
-          label: 'Image Description',
+          label: 'Image/Pair Description (Optional)',
           admin: {
-            condition: (_, siblingData) => siblingData?.type === 'single',
-          },
-        },
-        // Fields for Before/After Comparisons
-        {
-          name: 'comparisonDescription',
-          type: 'richText',
-          label: 'Comparison Description',
-          admin: {
-            description: 'Explain what changes are shown in this before/after comparison',
-            condition: (_, siblingData) => siblingData?.type === 'comparison',
-          },
-        },
-        {
-          name: 'beforeImage',
-          type: 'group',
-          label: 'Before Image',
-          admin: {
-            condition: (_, siblingData) => siblingData?.type === 'comparison',
-          },
-          fields: [
-            {
-              name: 'image',
-              type: 'upload',
-              relationTo: 'media',
-              required: true,
-            },
-            {
-              name: 'altText',
-              type: 'text',
-              label: 'Before Image Alt Text',
-            },
-          ],
-        },
-        {
-          name: 'afterImage',
-          type: 'group',
-          label: 'After Image',
-          admin: {
-            condition: (_, siblingData) => siblingData?.type === 'comparison',
-          },
-          fields: [
-            {
-              name: 'image',
-              type: 'upload',
-              relationTo: 'media',
-              required: true,
-            },
-            {
-              name: 'altText',
-              type: 'text',
-              label: 'After Image Alt Text',
-            },
-          ],
+            description: 'Describe this image or the before/after comparison.',
+          }
         },
       ],
     },
@@ -206,6 +145,36 @@ export const Projects: CollectionConfig = {
         description: 'Add relevant tags to categorize this project',
       },
     },
+    {
+      name: 'servicesPerformed',
+      label: 'Services Performed (Optional)',
+      type: 'relationship',
+      relationTo: 'services',
+      hasMany: true,
+      admin: {
+        description: 'Select the services that were part of this project.',
+      },
+    },
+    {
+      name: 'relatedTestimonials',
+      label: 'Related Testimonials (Optional)',
+      type: 'relationship',
+      relationTo: 'testimonials',
+      hasMany: true,
+      admin: {
+        description: 'Link any testimonials specifically related to this project.',
+      },
+    },
+    {
+      name: 'dedicatedPage',
+      label: 'Dedicated Case Study Page (Optional)',
+      type: 'relationship',
+      relationTo: 'pages',
+      hasMany: false,
+      admin: {
+        description: 'Link to a detailed page about this project, if one exists.',
+      },
+    },
   ],
-  timestamps: true, // Adds createdAt and updatedAt fields automatically
+  timestamps: true,
 };

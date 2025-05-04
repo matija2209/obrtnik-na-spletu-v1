@@ -81,6 +81,9 @@ export interface Config {
     pages: Page;
     redirects: Redirect;
     forms: Form;
+    pricelists: Pricelist;
+    'price-list-sections': PriceListSection;
+    'price-list-items': PriceListItem;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -102,6 +105,9 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
+    pricelists: PricelistsSelect<false> | PricelistsSelect<true>;
+    'price-list-sections': PriceListSectionsSelect<false> | PriceListSectionsSelect<true>;
+    'price-list-items': PriceListItemsSelect<false> | PriceListItemsSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -294,31 +300,16 @@ export interface Project {
      */
     budget?: string | null;
   };
-  hasBeforeAfterPairs?: boolean | null;
   projectImages?:
     | {
-        type: 'single' | 'comparison';
-        image?: (number | null) | Media;
-        imageAltText?: string | null;
-        imageDescription?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
+        image1: number | Media;
+        altText1?: string | null;
+        image2?: (number | null) | Media;
+        altText2?: string | null;
         /**
-         * Explain what changes are shown in this before/after comparison
+         * Describe this image or the before/after comparison.
          */
-        comparisonDescription?: {
+        pairDescription?: {
           root: {
             type: string;
             children: {
@@ -333,14 +324,6 @@ export interface Project {
           };
           [k: string]: unknown;
         } | null;
-        beforeImage?: {
-          image: number | Media;
-          altText?: string | null;
-        };
-        afterImage?: {
-          image: number | Media;
-          altText?: string | null;
-        };
         id?: string | null;
       }[]
     | null;
@@ -353,6 +336,18 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Select the services that were part of this project.
+   */
+  servicesPerformed?: (number | Service)[] | null;
+  /**
+   * Link any testimonials specifically related to this project.
+   */
+  relatedTestimonials?: (number | Testimonial)[] | null;
+  /**
+   * Link to a detailed page about this project, if one exists.
+   */
+  dedicatedPage?: (number | null) | Page;
   updatedAt: string;
   createdAt: string;
 }
@@ -381,7 +376,22 @@ export interface Service {
         id?: string | null;
       }[]
     | null;
-  link?: string | null;
+  /**
+   * Primer: "€50", "Od €100", "€150 - €250", "Po dogovoru"
+   */
+  priceDisplay?: string | null;
+  /**
+   * Prikaži projekte, kjer je bila ta storitev uporabljena.
+   */
+  relatedProjects?: (number | Project)[] | null;
+  /**
+   * Prikaži mnenja strank, ki se nanašajo na to storitev.
+   */
+  relatedTestimonials?: (number | Testimonial)[] | null;
+  /**
+   * Poveži storitev z njeno namensko podstranjo, če obstaja.
+   */
+  dedicatedPage?: (number | null) | Page;
   updatedAt: string;
   createdAt: string;
 }
@@ -396,9 +406,10 @@ export interface Testimonial {
   tenant?: (number | null) | Tenant;
   name: string;
   /**
-   * Relativni čas ali specifični datum podaje mnenja.
+   * Datum, ko je bilo mnenje podano.
    */
-  time?: string | null;
+  testimonialDate?: string | null;
+  source?: ('google' | 'facebook' | 'website' | 'manual') | null;
   location?: string | null;
   service?: string | null;
   content: string;
@@ -406,145 +417,21 @@ export interface Testimonial {
    * Ocena stranke od 1 do 5 zvezdic.
    */
   rating: number;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Pogosta vprašanja in odgovori.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faq-items".
- */
-export interface FaqItem {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  question: string;
-  answer: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Reusable Call-to-Action buttons.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ctas".
- */
-export interface Cta {
-  id: number;
-  tenant?: (number | null) | Tenant;
   /**
-   * Besedilo, ki bo prikazano na gumbu.
+   * Povežite to mnenje s specifičnimi storitvami ali projekti.
    */
-  ctaText: string;
-  /**
-   * Kam naj gumb vodi (npr. /kontakt, /#storitve, https://example.com).
-   */
-  ctaHref: string;
-  /**
-   * Dodaten CSS razred za stilsko oblikovanje gumba na spletni strani (npr. primary-button, secondary-button).
-   */
-  ctaClassname?: string | null;
-  /**
-   * Izberite stil gumba (npr. Primary, Secondary). To lahko vpliva na izgled gumba na spletni strani.
-   */
-  ctaType?: ('primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link' | 'icon') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "inquiries".
- */
-export interface Inquiry {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string | null;
-  message: string;
-  service: number | Service;
-  location: string;
-  status?: ('new' | 'in-progress' | 'completed') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Podatki o gradbeni mehanizaciji.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "machinery".
- */
-export interface Machinery {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  tabName: string;
-  /**
-   * Npr. Volvo EL70, Komatsu PC210
-   */
-  name: string;
-  description?: string | null;
-  image?: (number | null) | Media;
-  /**
-   * Dodajte ključne specifikacije.
-   */
-  specifications?:
-    | {
-        specName: string;
-        specDetails: {
-          detail: string;
-          id?: string | null;
-        }[];
-        id?: string | null;
-      }[]
+  relatedItems?:
+    | (
+        | {
+            relationTo: 'services';
+            value: number | Service;
+          }
+        | {
+            relationTo: 'projects';
+            value: number | Project;
+          }
+      )[]
     | null;
-  /**
-   * Npr. Premik stroja na kolesih za krajše razdalje (do 40km)
-   */
-  notes?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Define different opening hours schedules (e.g., regular, seasonal, emergency).
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "opening-hours".
- */
-export interface OpeningHour {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  /**
-   * E.g., "Regular Hours", "Summer Schedule", "Emergency On-Call"
-   */
-  name: string;
-  /**
-   * Optional. Schedule is active starting from this date.
-   */
-  startDate?: string | null;
-  /**
-   * Optional. Schedule is active until this date.
-   */
-  endDate?: string | null;
-  dailyHours?:
-    | {
-        days: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[];
-        timeSlots: {
-          startTime: string;
-          endTime: string;
-          /**
-           * Optional notes for this specific time slot (e.g., "Appointments only")
-           */
-          notes?: string | null;
-          id?: string | null;
-        }[];
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Optional general notes for the entire schedule.
-   */
-  notes?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -604,6 +491,40 @@ export interface HeroBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'hero';
+}
+/**
+ * Reusable Call-to-Action buttons.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ctas".
+ */
+export interface Cta {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * Besedilo, ki bo prikazano na gumbu.
+   */
+  ctaText: string;
+  link: {
+    type: 'internal' | 'external';
+    internalLink?: (number | null) | Page;
+    externalUrl?: string | null;
+    newTab?: boolean | null;
+  };
+  /**
+   * Vnesite ime ikone iz knjižnice Lucide React (npr. ArrowRight, CheckCircle).
+   */
+  icon?: string | null;
+  /**
+   * Dodaten CSS razred za stilsko oblikovanje gumba na spletni strani (npr. primary-button, secondary-button).
+   */
+  ctaClassname?: string | null;
+  /**
+   * Izberite stil gumba (npr. Primary, Secondary). To lahko vpliva na izgled gumba na spletni strani.
+   */
+  ctaType?: ('primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link' | 'icon') | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -725,6 +646,49 @@ export interface ContactBlock {
   blockType: 'contact';
 }
 /**
+ * Define different opening hours schedules (e.g., regular, seasonal, emergency).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opening-hours".
+ */
+export interface OpeningHour {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * E.g., "Regular Hours", "Summer Schedule", "Emergency On-Call"
+   */
+  name: string;
+  /**
+   * Optional. Schedule is active starting from this date.
+   */
+  startDate?: string | null;
+  /**
+   * Optional. Schedule is active until this date.
+   */
+  endDate?: string | null;
+  dailyHours?:
+    | {
+        days: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[];
+        timeSlots: {
+          startTime: string;
+          endTime: string;
+          /**
+           * Optional notes for this specific time slot (e.g., "Appointments only")
+           */
+          notes?: string | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Optional general notes for the entire schedule.
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "FAQBlock".
  */
@@ -739,6 +703,42 @@ export interface FAQBlock {
   blockType: 'faq';
 }
 /**
+ * Pogosta vprašanja in odgovori.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq-items".
+ */
+export interface FaqItem {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * Izberite kategorijo za lažje filtriranje.
+   */
+  category?: ('general' | 'installation' | 'maintenance' | 'billing') | null;
+  question: string;
+  answer: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Povežite to vprašanje s specifično storitvijo, če je relevantno.
+   */
+  relatedService?: (number | null) | Service;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "MachineryBlock".
  */
@@ -747,9 +747,70 @@ export interface MachineryBlock {
   description?: string | null;
   selectedMachinery?: (number | Machinery)[] | null;
   template: 'default';
+  /**
+   * Dodajte gumb 'call to action' pod seznam strojev.
+   */
+  callToAction?: (number | null) | Cta;
   id?: string | null;
   blockName?: string | null;
   blockType: 'machinery';
+}
+/**
+ * Podatki o gradbeni mehanizaciji.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "machinery".
+ */
+export interface Machinery {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  tabName: string;
+  /**
+   * Npr. Volvo EL70, Komatsu PC210
+   */
+  name: string;
+  description?: string | null;
+  image?: (number | null) | Media;
+  /**
+   * Dodajte ključne specifikacije.
+   */
+  specifications?:
+    | {
+        specName: string;
+        specDetails: {
+          detail: string;
+          id?: string | null;
+        }[];
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Npr. Premik stroja na kolesih za krajše razdalje (do 40km)
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inquiries".
+ */
+export interface Inquiry {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  inquiryType?: ('general' | 'quote' | 'support' | 'other') | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string | null;
+  message: string;
+  service: number | Service;
+  location: string;
+  status?: ('new' | 'in-progress' | 'completed') | null;
+  consent: boolean;
+  adminNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -808,6 +869,87 @@ export interface Form {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Upravljajte strukturirane cenike (sestavljene iz sekcij in elementov).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pricelists".
+ */
+export interface Pricelist {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * Ime za celoten cenik (npr. Cenik Kosil, Cenik Vrtalnih Storitev 2024).
+   */
+  name: string;
+  /**
+   * Izberite tip cenika za lažjo organizacijo in prikaz.
+   */
+  priceListType: 'gastronomy' | 'service' | 'other';
+  /**
+   * Opis, ki se prikaže na vrhu tega specifičnega cenika.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Izberite in uredite vrstni red sekcij, ki bodo vključene v ta cenik.
+   */
+  sections: (number | PriceListSection)[];
+  /**
+   * Dodajte gumb 'call to action' na dno cenika.
+   */
+  callToAction?: (number | null) | Cta;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Kategorije ali sekcije znotraj cenika (npr. Predjedi, Vrtanje).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "price-list-sections".
+ */
+export interface PriceListSection {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  name: string;
+  description?: string | null;
+  /**
+   * Nižja številka pomeni prikaz višje na seznamu.
+   */
+  displayOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Posamezne postavke na ceniku (npr. Goveja juha, Vrtanje 10cm luknje).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "price-list-items".
+ */
+export interface PriceListItem {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  name: string;
+  description?: string | null;
+  price: string;
+  section: number | PriceListSection;
+  displayOrder?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -965,6 +1107,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'forms';
         value: number | Form;
+      } | null)
+    | ({
+        relationTo: 'pricelists';
+        value: number | Pricelist;
+      } | null)
+    | ({
+        relationTo: 'price-list-sections';
+        value: number | PriceListSection;
+      } | null)
+    | ({
+        relationTo: 'price-list-items';
+        value: number | PriceListItem;
       } | null)
     | ({
         relationTo: 'payload-jobs';
@@ -1129,27 +1283,14 @@ export interface ProjectsSelect<T extends boolean = true> {
         client?: T;
         budget?: T;
       };
-  hasBeforeAfterPairs?: T;
   projectImages?:
     | T
     | {
-        type?: T;
-        image?: T;
-        imageAltText?: T;
-        imageDescription?: T;
-        comparisonDescription?: T;
-        beforeImage?:
-          | T
-          | {
-              image?: T;
-              altText?: T;
-            };
-        afterImage?:
-          | T
-          | {
-              image?: T;
-              altText?: T;
-            };
+        image1?: T;
+        altText1?: T;
+        image2?: T;
+        altText2?: T;
+        pairDescription?: T;
         id?: T;
       };
   tags?:
@@ -1158,6 +1299,9 @@ export interface ProjectsSelect<T extends boolean = true> {
         tag?: T;
         id?: T;
       };
+  servicesPerformed?: T;
+  relatedTestimonials?: T;
+  dedicatedPage?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1182,7 +1326,10 @@ export interface ServicesSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
-  link?: T;
+  priceDisplay?: T;
+  relatedProjects?: T;
+  relatedTestimonials?: T;
+  dedicatedPage?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1193,11 +1340,13 @@ export interface ServicesSelect<T extends boolean = true> {
 export interface TestimonialsSelect<T extends boolean = true> {
   tenant?: T;
   name?: T;
-  time?: T;
+  testimonialDate?: T;
+  source?: T;
   location?: T;
   service?: T;
   content?: T;
   rating?: T;
+  relatedItems?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1207,8 +1356,10 @@ export interface TestimonialsSelect<T extends boolean = true> {
  */
 export interface FaqItemsSelect<T extends boolean = true> {
   tenant?: T;
+  category?: T;
   question?: T;
   answer?: T;
+  relatedService?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1219,7 +1370,15 @@ export interface FaqItemsSelect<T extends boolean = true> {
 export interface CtasSelect<T extends boolean = true> {
   tenant?: T;
   ctaText?: T;
-  ctaHref?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        internalLink?: T;
+        externalUrl?: T;
+        newTab?: T;
+      };
+  icon?: T;
   ctaClassname?: T;
   ctaType?: T;
   updatedAt?: T;
@@ -1231,6 +1390,7 @@ export interface CtasSelect<T extends boolean = true> {
  */
 export interface InquiriesSelect<T extends boolean = true> {
   tenant?: T;
+  inquiryType?: T;
   firstName?: T;
   lastName?: T;
   email?: T;
@@ -1239,6 +1399,8 @@ export interface InquiriesSelect<T extends boolean = true> {
   service?: T;
   location?: T;
   status?: T;
+  consent?: T;
+  adminNotes?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1480,6 +1642,7 @@ export interface MachineryBlockSelect<T extends boolean = true> {
   description?: T;
   selectedMachinery?: T;
   template?: T;
+  callToAction?: T;
   id?: T;
   blockName?: T;
 }
@@ -1515,6 +1678,46 @@ export interface FormsSelect<T extends boolean = true> {
         required?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pricelists_select".
+ */
+export interface PricelistsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  priceListType?: T;
+  description?: T;
+  sections?: T;
+  callToAction?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "price-list-sections_select".
+ */
+export interface PriceListSectionsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  description?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "price-list-items_select".
+ */
+export interface PriceListItemsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  description?: T;
+  price?: T;
+  section?: T;
+  displayOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }

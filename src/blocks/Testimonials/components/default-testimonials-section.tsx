@@ -55,7 +55,11 @@ const DefaultTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                       {`"${testimonial.content}"`}
                     </blockquote>
                     <p className="font-semibold text-sm text-gray-800">- {testimonial.name}</p>
-                    {testimonial.time && <p className="text-xs text-gray-500 mt-2">{testimonial.time}</p>}
+                    {testimonial.testimonialDate && 
+                      <p className="text-xs text-gray-500 mt-2">
+                        {new Date(testimonial.testimonialDate).toLocaleDateString('sl-SI')} 
+                      </p>
+                    }
                     {testimonial.location && <p className="text-xs text-gray-500">{testimonial.location}</p>}
                     {testimonial.service && <p className="text-xs text-gray-500">{testimonial.service}</p>}
                   </CardContent>

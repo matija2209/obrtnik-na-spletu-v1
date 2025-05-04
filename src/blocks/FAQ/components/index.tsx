@@ -1,4 +1,4 @@
-import DefaultFAQSection from './faq-section'; // Corrected import path
+import DefaultFAQSection from './default-faq-section'; // Corrected import path
 import type { FAQBlock as FaqBlockType, FaqItem as PayloadFaqItem } from '@payload-types'; // Corrected assumed type name and import Payload's FaqItem type
 
 // Define a type for individual FAQ items for internal use if needed, or just use PayloadFaqItem

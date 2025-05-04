@@ -1,5 +1,4 @@
 import { CollectionConfig, Access } from 'payload';
-import { User } from '../../payload-types'; // Import User type
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 
 // Define access control
@@ -30,11 +29,29 @@ export const Testimonials: CollectionConfig = {
       label: 'Ime stranke',
     },
     {
-      name: 'time', // E.g., "pred 1 mesecem", "2 weeks ago"
-      type: 'text',
-      label: 'Čas / Datum',
+      name: 'testimonialDate',
+      type: 'date',
+      label: 'Datum mnenja',
       admin: {
-        description: 'Relativni čas ali specifični datum podaje mnenja.'
+        date: {
+          pickerAppearance: 'dayOnly',
+          displayFormat: 'dd.MM.yyyy',
+        },
+        description: 'Datum, ko je bilo mnenje podano.',
+      }
+    },
+    {
+      name: 'source',
+      type: 'select',
+      label: 'Vir mnenja',
+      options: [
+        { label: 'Google', value: 'google' },
+        { label: 'Facebook', value: 'facebook' },
+        { label: 'Spletna stran', value: 'website' },
+        { label: 'Ročni vnos', value: 'manual' },
+      ],
+      admin: {
+        position: 'sidebar',
       }
     },
     {
@@ -73,5 +90,16 @@ export const Testimonials: CollectionConfig = {
     //   relationTo: 'products', 
     //   label: 'Povezan izdelek/storitev (Neobvezno)',
     // },
+    {
+      name: 'relatedItems',
+      type: 'relationship',
+      label: 'Povezana storitev ali projekt (Neobvezno)',
+      relationTo: ['services', 'projects'], // Link to Services and Projects
+      hasMany: true, // Allow linking multiple services or projects
+      required: false,
+      admin: {
+        description: 'Povežite to mnenje s specifičnimi storitvami ali projekti.',
+      }
+    }
   ],
 }; 
