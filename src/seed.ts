@@ -206,14 +206,16 @@ export const seed = async (payload: Payload): Promise<void> => {
       payload.logger.warn('One or more CTAs failed to seed.');
     }
 
-    // --- Seed Navbar ---
-    payload.logger.info(`Seeding Navbar for tenant ${tenantId}...`);
+    // --- Create Main Menu --- (New Step)
+    payload.logger.info(`Creating Main Menu for tenant ${tenantId}...`);
+    let mainMenu;
     try {
-      await payload.updateGlobal({
-        slug: 'navbar',
+      mainMenu = await payload.create({
+        collection: 'menus',
         data: {
-          title: 'A1 Navigacija',
-          navItems: [
+          tenant: tenantA1.id,
+          title: 'Glavni Meni (A1)', // Admin title for the menu
+          menuItems: [
             { title: 'Domov', hasChildren: false, href: '/' },
             {
               title: 'Storitve',
@@ -221,21 +223,43 @@ export const seed = async (payload: Payload): Promise<void> => {
               children: [
                 { title: 'Vodoinštalacije', href: '/storitve/vodoinstalacije', description: 'Celovite vodovodne inštalacije.', icon: 'Drop' },
                 { title: 'Montaža sanitarne opreme', href: '/storitve/montaza-sanitarne-opreme', description: 'Strokovna montaža opreme.', icon: 'Hands' },
-                // Add more service links if needed
               ],
             },
             { title: 'Projekti', hasChildren: false, href: '/projekti' },
             { title: 'O nas', hasChildren: false, href: '/o-nas' },
-            { title: 'Kontakt', hasChildren: false, href: '#kontakt' }, // Link to contact section
+            { title: 'Kontakt', hasChildren: false, href: '#kontakt' },
           ],
-          // Only add CTA if it was successfully created
+        },
+        req: simulatedReq, // For tenant context
+      });
+      payload.logger.info(`Main Menu created with ID: ${mainMenu.id}`);
+    } catch (err) {
+      payload.logger.error('Error creating Main Menu:', err);
+    }
+
+    // --- Seed Navbar --- (Update to use mainMenu relationship)
+    payload.logger.info(`Seeding Navbar for tenant ${tenantId}...`);
+    try {
+      await payload.updateGlobal({
+        slug: 'navbar',
+        data: {
+          title: 'A1 Navigacija',
+          // REMOVED: navItems array
+          // mainCta relationship might need checking if ctaKontakt is null
+          ...(mainMenu ? { mainMenu: mainMenu.id } : {}), // Link the created menu
           ...(ctaKontakt ? { mainCta: ctaKontakt.id } : {}),
+          // Add default values for new flags if needed, though globals usually fetch defaults
+          showLogoImage: true,
+          showLogoText: true,
+          isTransparent: false,
+          isFixed: true,
         },
         req: simulatedReq, // Re-added simulated req
       });
       payload.logger.info(`Navbar seeded for tenant ${tenantId}.`);
     } catch (err) {
       payload.logger.error('Error seeding Navbar:', err);
+      throw err; // Re-throw the error to stop the seed process if needed
     }
 
     // --- Seed Services ---
@@ -873,7 +897,7 @@ export const seed = async (payload: Payload): Promise<void> => {
               template: 'default',
               title: 'Vaš Zanesljiv Partner za Vodoinštalacije', // Previously heroTitle
               subtitle: 'A1 INŠTALACIJE d.o.o. - Kakovost in zanesljivost na prvem mestu.', // Previously heroSubtitle
-              ...(seededImageIds['hiša-terasa-zunanje-ureditve.jpg'] && { image: seededImageIds['hiša-terasa-zunanje-ureditve.jpg'] }),
+              ...(seededImageIds['hiša-terasa-zunanje-ureditve.jpg'] && { image: [seededImageIds['hiša-terasa-zunanje-ureditve.jpg']] }),
               features: [ // Previously heroFeatures
                 { iconText: '10+', text: 'Let izkušenj' },
                 { iconText: '✓', text: 'Certificirani mojstri' },
@@ -984,34 +1008,85 @@ export const seed = async (payload: Payload): Promise<void> => {
       throw err; // Re-throw the error to stop the seed process if needed
     }
 
-    // --- Seed Footer ---
+    // --- Create Footer Menu --- (New Step)
+    payload.logger.info(`Creating Footer Menu for tenant ${tenantId}...`);
+    let footerMenu;
+    try {
+      footerMenu = await payload.create({
+        collection: 'menus',
+        data: {
+          tenant: tenantA1.id,
+          title: 'Meni za Nogo (A1)', // Admin title
+          menuItems: [
+            // Map quickLinks to simple menuItems (no children/description/icon)
+            { title: 'Domov', hasChildren: false, href: '/' },
+            { title: 'Storitve', hasChildren: false, href: '/storitve' },
+            { title: 'Projekti', hasChildren: false, href: '/projekti' },
+            { title: 'O nas', hasChildren: false, href: '/o-nas' },
+            { title: 'Kontakt', hasChildren: false, href: '#kontakt' },
+          ],
+        },
+        req: simulatedReq, // For tenant context
+      });
+      payload.logger.info(`Footer Menu created with ID: ${footerMenu.id}`);
+    } catch (err) {
+      payload.logger.error('Error creating Footer Menu:', err);
+    }
+
+    // --- Create Social Links Menu --- (New Step)
+    payload.logger.info(`Creating Social Links Menu for tenant ${tenantId}...`);
+    let socialMenu;
+    try {
+      socialMenu = await payload.create({
+        collection: 'menus',
+        data: {
+          tenant: tenantA1.id,
+          title: 'Meni za Družabna Omrežja (A1)', // Admin title
+          menuItems: [
+            {
+              title: 'Facebook', // Title for the link
+              hasChildren: false,
+              href: 'https://facebook.com/a1instalacije', // Direct URL
+            },
+            {
+              title: 'Google Mnenja', // Title for the link
+              hasChildren: false,
+              href: 'https://google.com/maps/place/a1instalacije', // Direct URL (Placeholder)
+            },
+            // Add more social links as simple menu items if needed
+          ],
+        },
+        req: simulatedReq, // For tenant context
+      });
+      payload.logger.info(`Social Links Menu created with ID: ${socialMenu.id}`);
+    } catch (err) {
+      payload.logger.error('Error creating Social Links Menu:', err);
+    }
+
+    // --- Seed Footer --- (Update to use footerMenu relationship)
     payload.logger.info(`Seeding Footer for tenant ${tenantId}...`);
     payload.logger.info('Attempting to update Footer global...');
     await payload.updateGlobal({
       slug: 'footer',
       data: {
-        socialLinks: [
-          {
-            platform: 'facebook',
-            url: 'https://facebook.com/a1instalacije', // From BusinessInfo
-          },
-          {
-            platform: 'google',
-            url: 'https://google.com/maps/place/a1instalacije', // Placeholder, replace with actual Google review/maps link
-          },
-          // Add other relevant social links if needed
-        ],
         copyrightText: '© {{year}} A1 INŠTALACIJE d.o.o. Vse pravice pridržane.',
-        quickLinks: [
-          { label: 'Domov', url: '/' },
-          { label: 'Storitve', url: '/storitve' },
-          { label: 'Projekti', url: '/projekti' },
-          { label: 'O nas', url: '/o-nas' },
-          { label: 'Kontakt', url: '#kontakt' },
+        menuSections: [
+          // Section 1: Using the main footer menu (no title)
+          ...(footerMenu ? [{
+            blockType: 'menuSection' as const, // Ensure literal type
+            menu: footerMenu.id,
+            // title: '', // Optional title, leaving empty
+          }] : []),
+          // Section 2: Using the social menu (with title)
+          ...(socialMenu ? [{
+            blockType: 'menuSection' as const, // Ensure literal type
+            title: 'Povezave', // Example title
+            menu: socialMenu.id,
+          }] : []),
         ],
+        ...(socialMenu ? { socialMenu: socialMenu.id } : {}), // Keep the separate socialMenu field for now, if used elsewhere
         showContactInFooter: true,
-        showPrivacyLinks: true,
-        // logo: logoDocId, // Add logo ID if you seed media and want it in the footer
+        showLogoText: true,
       },
       req: simulatedReq, // Re-added simulated req for tenant context
     });

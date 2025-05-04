@@ -85,6 +85,7 @@ export interface Config {
     'price-list-sections': PriceListSection;
     'price-list-items': PriceListItem;
     banners: Banner;
+    menus: Menu;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -110,6 +111,7 @@ export interface Config {
     'price-list-sections': PriceListSectionsSelect<false> | PriceListSectionsSelect<true>;
     'price-list-items': PriceListItemsSelect<false> | PriceListItemsSelect<true>;
     banners: BannersSelect<false> | BannersSelect<true>;
+    menus: MenusSelect<false> | MenusSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -219,6 +221,8 @@ export interface User {
   password?: string | null;
 }
 /**
+ * Naložite in upravljajte slike ter druge medijske datoteke.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
@@ -265,6 +269,8 @@ export interface Media {
   };
 }
 /**
+ * Predstavite zaključene projekte ali reference.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "projects".
  */
@@ -354,6 +360,8 @@ export interface Project {
   createdAt: string;
 }
 /**
+ * Upravljajte seznam storitev, ki jih ponujate.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services".
  */
@@ -482,7 +490,7 @@ export interface HeroBlock {
   title?: string | null;
   subtitle?: string | null;
   ctas?: (number | Cta)[] | null;
-  image?: (number | null) | Media;
+  image?: (number | Media)[] | null;
   features?:
     | {
         iconText?: string | null;
@@ -495,7 +503,7 @@ export interface HeroBlock {
   blockType: 'hero';
 }
 /**
- * Reusable Call-to-Action buttons.
+ * Upravljajte pozive k dejanju, ki jih lahko vključite na različnih mestih.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ctas".
@@ -648,7 +656,7 @@ export interface ContactBlock {
   blockType: 'contact';
 }
 /**
- * Define different opening hours schedules (e.g., regular, seasonal, emergency).
+ * Določite različne urnike odpiralnega časa (npr. redni, sezonski, nujni).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "opening-hours".
@@ -657,15 +665,15 @@ export interface OpeningHour {
   id: number;
   tenant?: (number | null) | Tenant;
   /**
-   * E.g., "Regular Hours", "Summer Schedule", "Emergency On-Call"
+   * Npr. "Redni urnik", "Poletni urnik", "Dežurstvo"
    */
   name: string;
   /**
-   * Optional. Schedule is active starting from this date.
+   * Neobvezno. Urnik velja od tega datuma dalje.
    */
   startDate?: string | null;
   /**
-   * Optional. Schedule is active until this date.
+   * Neobvezno. Urnik velja do tega datuma.
    */
   endDate?: string | null;
   dailyHours?:
@@ -675,7 +683,7 @@ export interface OpeningHour {
           startTime: string;
           endTime: string;
           /**
-           * Optional notes for this specific time slot (e.g., "Appointments only")
+           * Neobvezne opombe za ta specifični časovni termin (npr. "Samo po naročilu")
            */
           notes?: string | null;
           id?: string | null;
@@ -684,7 +692,7 @@ export interface OpeningHour {
       }[]
     | null;
   /**
-   * Optional general notes for the entire schedule.
+   * Neobvezne splošne opombe za celoten urnik.
    */
   notes?: string | null;
   updatedAt: string;
@@ -815,6 +823,8 @@ export interface Inquiry {
   createdAt: string;
 }
 /**
+ * Upravljajte preusmeritve URL naslovov.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -833,7 +843,7 @@ export interface Redirect {
   createdAt: string;
 }
 /**
- * Reusable forms for website integration.
+ * Ustvarite in upravljajte obrazce za zbiranje podatkov.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms".
@@ -875,7 +885,7 @@ export interface Form {
   createdAt: string;
 }
 /**
- * Upravljajte strukturirane cenike (sestavljene iz sekcij in elementov).
+ * Upravljajte cenike za storitve ali izdelke.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pricelists".
@@ -1002,6 +1012,54 @@ export interface Banner {
    * Izberite neobvezen CTA gumb, ki bo prikazan skupaj s pasico.
    */
   cta?: (number | null) | Cta;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Upravljajte navigacijske menije za uporabo v glavi, nogi ali drugje.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menus".
+ */
+export interface Menu {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * Interno ime za lažje prepoznavanje menija (npr. Glavni meni, Meni za nogo).
+   */
+  title: string;
+  menuItems?:
+    | {
+        title: string;
+        hasChildren?: boolean | null;
+        /**
+         * Vnesite ciljno pot, npr. /o-nas ali #kontakt.
+         */
+        href?: string | null;
+        /**
+         * Dodajte elemente za spustni meni.
+         */
+        children?:
+          | {
+              title: string;
+              /**
+               * Vnesite ciljno pot, npr. /storitve/rezanje-betona.
+               */
+              href: string;
+              /**
+               * Kratek opis, ki se prikaže v spustnem meniju (neobvezno).
+               */
+              description: string;
+              /**
+               * Izberite ikono, ki se prikaže ob elementu v spustnem meniju.
+               */
+              icon?: ('Sparkles' | 'Zap' | 'Drop' | 'Hands' | 'Footprints' | 'Paintbrush') | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1175,6 +1233,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'banners';
         value: number | Banner;
+      } | null)
+    | ({
+        relationTo: 'menus';
+        value: number | Menu;
       } | null)
     | ({
         relationTo: 'payload-jobs';
@@ -1794,6 +1856,33 @@ export interface BannersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menus_select".
+ */
+export interface MenusSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  menuItems?:
+    | T
+    | {
+        title?: T;
+        hasChildren?: T;
+        href?: T;
+        children?:
+          | T
+          | {
+              title?: T;
+              href?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs_select".
  */
 export interface PayloadJobsSelect<T extends boolean = true> {
@@ -1856,6 +1945,8 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Podatki o podjetju
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "business-info".
  */
@@ -1921,44 +2012,37 @@ export interface BusinessInfo {
   createdAt?: string | null;
 }
 /**
+ * Navigacija
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "navbar".
  */
 export interface Navbar {
   id: number;
+  /**
+   * Interni naslov za identifikacijo te globalne nastavitve navigacije (neobvezno).
+   */
   title?: string | null;
-  navItems?:
-    | {
-        title: string;
-        hasChildren?: boolean | null;
-        /**
-         * Vnesite ciljno pot, npr. /o-nas ali #kontakt.
-         */
-        href?: string | null;
-        /**
-         * Dodajte elemente za spustni meni.
-         */
-        children?:
-          | {
-              title: string;
-              /**
-               * Vnesite ciljno pot, npr. /storitve/rezanje-betona.
-               */
-              href: string;
-              /**
-               * Kratek opis, ki se prikaže v spustnem meniju.
-               */
-              description: string;
-              /**
-               * Izberite ikono, ki se prikaže ob elementu v spustnem meniju.
-               */
-              icon?: ('Sparkles' | 'Zap' | 'Drop' | 'Hands' | 'Footprints' | 'Paintbrush') | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
+  /**
+   * Ali naj se v navigaciji prikaže slika logotipa?
+   */
+  showLogoImage?: boolean | null;
+  /**
+   * Ali naj se v navigaciji prikaže besedilni naslov (če je logotip onemogočen ali ni naložen)?
+   */
+  showLogoText?: boolean | null;
+  /**
+   * Ali naj bo ozadje navigacije prozorno (običajno na vrhu strani)?
+   */
+  isTransparent?: boolean | null;
+  /**
+   * Ali naj bo navigacija pripeta na vrh zaslona med drsenjem?
+   */
+  isFixed?: boolean | null;
+  /**
+   * Izberite meni, ki bo uporabljen za glavno navigacijo.
+   */
+  mainMenu: number | Menu;
   /**
    * Izberite CTA gumb, ki bo prikazan v navigaciji.
    */
@@ -1967,40 +2051,43 @@ export interface Navbar {
   createdAt?: string | null;
 }
 /**
+ * Podatki o podjetju
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer".
  */
 export interface Footer {
   id: number;
   /**
-   * Dodajte povezave do družabnih omrežij, ki se bodo prikazale v nogi strani.
-   */
-  socialLinks?:
-    | {
-        platform: 'facebook' | 'instagram' | 'linkedin' | 'youtube' | 'twitter' | 'tiktok' | 'google';
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
    * Besedilo avtorskih pravic, ki bo prikazano na dnu noge. Uporabite {{year}} za dinamično leto.
    */
   copyrightText?: string | null;
-  logo?: (number | null) | Media;
   /**
-   * Dodajte hitre povezave, ki se bodo prikazale v nogi.
+   * Ali naj se v nogi prikaže besedilni naslov?
    */
-  quickLinks?:
-    | {
-        label: string;
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
+  showLogoText?: boolean | null;
+  /**
+   * Dodajte eno ali več sekcij menijev, ki bodo prikazane v nogi.
+   */
+  menuSections?: MenuSectionItem[] | null;
+  /**
+   * Izberite meni, ki vsebuje povezave do družabnih omrežij (neobvezno). Ustvarite nov meni v sekciji "Meniji", če ga še nimate.
+   */
+  socialMenu?: (number | null) | Menu;
   showContactInFooter?: boolean | null;
-  showPrivacyLinks?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MenuSectionItem".
+ */
+export interface MenuSectionItem {
+  title?: string | null;
+  menu: number | Menu;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'menuSection';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2045,23 +2132,11 @@ export interface BusinessInfoSelect<T extends boolean = true> {
  */
 export interface NavbarSelect<T extends boolean = true> {
   title?: T;
-  navItems?:
-    | T
-    | {
-        title?: T;
-        hasChildren?: T;
-        href?: T;
-        children?:
-          | T
-          | {
-              title?: T;
-              href?: T;
-              description?: T;
-              icon?: T;
-              id?: T;
-            };
-        id?: T;
-      };
+  showLogoImage?: T;
+  showLogoText?: T;
+  isTransparent?: T;
+  isFixed?: T;
+  mainMenu?: T;
   mainCta?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2072,27 +2147,28 @@ export interface NavbarSelect<T extends boolean = true> {
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
-  socialLinks?:
-    | T
-    | {
-        platform?: T;
-        url?: T;
-        id?: T;
-      };
   copyrightText?: T;
-  logo?: T;
-  quickLinks?:
+  showLogoText?: T;
+  menuSections?:
     | T
     | {
-        label?: T;
-        url?: T;
-        id?: T;
+        menuSection?: T | MenuSectionItemSelect<T>;
       };
+  socialMenu?: T;
   showContactInFooter?: T;
-  showPrivacyLinks?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MenuSectionItem_select".
+ */
+export interface MenuSectionItemSelect<T extends boolean = true> {
+  title?: T;
+  menu?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

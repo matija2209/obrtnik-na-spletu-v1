@@ -3,6 +3,8 @@ import { Access } from 'payload'
 
 import type { User } from '@payload-types' // Corrected relative path
 
+import { superAdminOrTenantAdminAccess } from '../access/superAdminOrTenantAdmin'
+
 // Define stricter types for access control arguments
 interface AccessArgs {
   req: {
@@ -13,19 +15,25 @@ interface AccessArgs {
 // Access Control Functions
 const isLoggedIn: Access = ({ req }: AccessArgs) => !!req.user
 
+const anyone = () => true
+
 export const Redirects: CollectionConfig = {
   slug: 'redirects',
+  labels: {
+    singular: 'Preusmeritev',
+    plural: 'Preusmeritve',
+  },
   admin: {
     useAsTitle: 'from',
-    defaultColumns: ['from', 'to', 'tenant', 'updatedAt'],
+    description: 'Upravljajte preusmeritve URL naslovov.',
+    group: 'Konfiguracija',
+    defaultColumns: ['from', 'to.type', 'updatedAt'],
   },
   access: {
-    // Allow public read access
-    read: () => true,
-    // Restrict create/update/delete to logged-in users (adjust as needed)
-    create: isLoggedIn,
-    update: isLoggedIn,
-    delete: isLoggedIn,
+    read: anyone, // Allow public read access
+    create: superAdminOrTenantAdminAccess,
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess,
   },
   fields: [
     {

@@ -15,14 +15,21 @@ const formFieldTypes = [
   // { label: 'Select', value: 'select' },
 ]
 
+const anyone = () => true
+
 export const Forms: CollectionConfig = {
   slug: 'forms',
+  labels: {
+    singular: 'Obrazec',
+    plural: 'Obrazci',
+  },
   admin: {
-    useAsTitle: 'label',
-    description: 'Reusable forms for website integration.',
+    useAsTitle: 'title',
+    description: 'Ustvarite in upravljajte obrazce za zbiranje podatkov.',
+    group: 'Vsebina',
   },
   access: {
-    read: () => true, // Define access control as needed
+    read: anyone,
     create: superAdminOrTenantAdminAccess,
     update: superAdminOrTenantAdminAccess,
     delete: superAdminOrTenantAdminAccess,

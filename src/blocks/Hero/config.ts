@@ -58,7 +58,8 @@ const Hero: Block = {
       relationTo: 'media',
       label: 'Slika ozadja',
       required: false,
-  
+      hasMany: true,
+      minRows: 1,
     },
     {
       name: 'features',

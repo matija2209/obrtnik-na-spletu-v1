@@ -4,6 +4,10 @@ import { slugField } from '@/fields/slug';
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
+  labels: {
+    singular: 'Projekt',
+    plural: 'Projekti',
+  },
   access: {
     read: () => true,
     create: superAdminOrTenantAdminAccess,
@@ -12,6 +16,8 @@ export const Projects: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
+    description: 'Predstavite zaključene projekte ali reference.',
+    group: 'Vsebina',
     defaultColumns: ['title', 'projectStatus', 'location', 'updatedAt'],
   },
   fields: [

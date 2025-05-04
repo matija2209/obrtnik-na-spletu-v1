@@ -7,13 +7,14 @@ const anyone: Access = () => true;
 export const Ctas: CollectionConfig = {
   slug: 'ctas',
   labels: {
-    singular: 'Gumb',
-    plural: 'Gumbi',
+    singular: 'Poziv k dejanju (CTA)',
+    plural: 'Pozivi k dejanju (CTA)',
   },
   admin: {
     useAsTitle: 'ctaText', // Use ctaText as the title in the admin UI
     defaultColumns: ['ctaText', 'link.type', 'ctaType', 'updatedAt'],
-    description: 'Reusable Call-to-Action buttons.',
+    description: 'Upravljajte pozive k dejanju, ki jih lahko vključite na različnih mestih.',
+    group: 'Vsebina',
   },
   access: {
     read: anyone,

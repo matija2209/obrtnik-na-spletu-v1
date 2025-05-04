@@ -14,6 +14,7 @@ export const Testimonials: CollectionConfig = {
     useAsTitle: 'name', // Use the person's name as the title in Admin UI
     defaultColumns: ['name', 'service', 'rating', 'createdAt'],
     description: 'Mnenja strank o naših storitvah.',
+    group: 'Vsebina',
   },
   access: {
     read: anyone, // Anyone can read testimonials

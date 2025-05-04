@@ -12,8 +12,8 @@ export const Pricelists: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'updatedAt'],
-    description: 'Upravljajte strukturirane cenike (sestavljene iz sekcij in elementov).',
-    group: 'Pricelists',
+    description: 'Upravljajte cenike za storitve ali izdelke.',
+    group: 'Prodaja',
   },
   access: {
     read: anyone,

@@ -1,8 +1,35 @@
-import { GlobalConfig, Access } from 'payload';
+import { GlobalConfig, Access, Block } from 'payload';
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
+import { Menus } from '../collections/Menus'; // Import Menus to ensure relationTo works
 
 // Define access control - allowing anyone to read, admin to update
 const anyone: Access = () => true;
+
+// Define the Menu Section Block
+const MenuSectionBlock: Block = {
+  slug: 'menuSection',
+  interfaceName: 'MenuSectionItem', // Payload interface name
+  labels: {
+    singular: 'Sekcija Menija',
+    plural: 'Sekcije Menijev',
+  },
+  fields: [
+    {
+      name: 'title',
+      type: 'text',
+      label: 'Naslov Sekcije (neobvezno)',
+      localized: true,
+      required: false,
+    },
+    {
+      name: 'menu',
+      label: 'Izberi Meni',
+      type: 'relationship',
+      relationTo: 'menus',
+      required: true,
+    },
+  ],
+};
 
 export const Footer: GlobalConfig = {
   slug: 'footer',
@@ -11,38 +38,12 @@ export const Footer: GlobalConfig = {
     read: anyone,
     update: superAdminOrTenantAdminAccess,
   },
+  admin:{
+    description: 'Podatki o podjetju',
+    group: 'Konfiguracija',
+    
+  },
   fields: [
-    {
-      name: 'socialLinks',
-      type: 'array',
-      label: 'Družabna omrežja',
-      admin: {
-        description: 'Dodajte povezave do družabnih omrežij, ki se bodo prikazale v nogi strani.',
-      },
-      fields: [
-        {
-          name: 'platform',
-          type: 'select',
-          label: 'Platforma',
-          required: true,
-          options: [
-            { label: 'Facebook', value: 'facebook' },
-            { label: 'Instagram', value: 'instagram' },
-            { label: 'LinkedIn', value: 'linkedin' },
-            { label: 'YouTube', value: 'youtube' },
-            { label: 'Twitter', value: 'twitter' },
-            { label: 'TikTok', value: 'tiktok' },
-            { label: 'Google Review', value: 'google' },
-          ],
-        },
-        {
-          name: 'url',
-          type: 'text',
-          label: 'URL',
-          required: true,
-        },
-      ],
-    },
     {
       name: 'copyrightText',
       type: 'text',
@@ -53,45 +54,39 @@ export const Footer: GlobalConfig = {
       defaultValue: '© {{year}} Vse pravice pridržane.',
     },
     {
-      name: 'logo',
-      type: 'upload',
-      relationTo: 'media',
-      label: 'Logo (opcijsko)',
-      required: false,
+      name: 'showLogoText',
+      type: 'checkbox',
+      label: 'Prikaži besedilo logotipa v nogi?',
+      defaultValue: true,
+      admin: {
+        description: 'Ali naj se v nogi prikaže besedilni naslov?',
+      },
     },
     {
-      name: 'quickLinks',
-      type: 'array',
-      label: 'Hitre povezave',
+      name: 'menuSections',
+      label: 'Sekcije Menijev v Nogi',
+      type: 'blocks',
+      minRows: 0,
+      maxRows: 4,
+      blocks: [MenuSectionBlock],
       admin: {
-        description: 'Dodajte hitre povezave, ki se bodo prikazale v nogi.',
-      },
-      fields: [
-        {
-          name: 'label',
-          type: 'text',
-          label: 'Oznaka',
-          required: true,
-          localized: true,
-        },
-        {
-          name: 'url',
-          type: 'text',
-          label: 'URL',
-          required: true,
-        },
-      ],
+        description: 'Dodajte eno ali več sekcij menijev, ki bodo prikazane v nogi.',
+      }
+    },
+    {
+      name: 'socialMenu',
+      label: 'Meni za Družabna Omrežja',
+      type: 'relationship',
+      relationTo: 'menus',
+      required: false,
+      admin: {
+        description: 'Izberite meni, ki vsebuje povezave do družabnih omrežij (neobvezno). Ustvarite nov meni v sekciji "Meniji", če ga še nimate.',
+      }
     },
     {
       name: 'showContactInFooter',
       type: 'checkbox',
       label: 'Prikaži kontaktne podatke v nogi',
-      defaultValue: true,
-    },
-    {
-      name: 'showPrivacyLinks',
-      type: 'checkbox',
-      label: 'Prikaži povezave do Pravnih obvestil in Zasebnosti',
       defaultValue: true,
     },
   ],

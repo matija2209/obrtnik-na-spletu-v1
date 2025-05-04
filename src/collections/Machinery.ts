@@ -11,6 +11,7 @@ export const Machinery: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'type', 'updatedAt'],
     description: 'Podatki o gradbeni mehanizaciji.',
+    group: 'Vsebina',
   },
   access: {
     read: () => true,

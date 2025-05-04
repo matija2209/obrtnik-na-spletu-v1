@@ -12,6 +12,11 @@ export const BusinessInfo: GlobalConfig = {
     read: anyone,
     update: superAdminOrTenantAdminAccess, // Only admins can update business info
   },
+  admin:{
+    description: 'Podatki o podjetju',
+    group: 'Konfiguracija',
+    
+  },
   fields: [
     {
       type: 'tabs',

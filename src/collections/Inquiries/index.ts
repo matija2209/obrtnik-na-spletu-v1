@@ -18,7 +18,7 @@ export const Inquiries: CollectionConfig = {
   admin: {
     useAsTitle: 'firstName',
     defaultColumns: ['inquiryType', 'firstName', 'lastName', 'email', 'service', 'status', 'createdAt'],
-    group: 'Management',
+    group: 'Prodaja',
   },
   access: {
     read: superAdminOrTenantAdminAccess,

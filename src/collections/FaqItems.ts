@@ -14,6 +14,7 @@ export const FaqItems: CollectionConfig = {
     useAsTitle: 'question', // Use the question as the title in Admin UI
     defaultColumns: ['question', 'updatedAt'],
     description: 'Pogosta vprašanja in odgovori.',
+    group: 'Vsebina', // Grouping in admin UI
   },
   access: {
     read: anyone, // Anyone can read FAQs

@@ -9,6 +9,11 @@ export const Media: CollectionConfig = {
         singular: 'Slika',
         plural: 'Slike',
     },
+    admin: {
+        useAsTitle: 'alt',
+        description: 'Naložite in upravljajte slike ter druge medijske datoteke.',
+        group: 'Vsebina',
+    },
     access: {
       read: () => true,
       create: superAdminOrTenantAdminAccess,

@@ -13,7 +13,8 @@ export const PriceListSections: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'displayOrder', 'updatedAt'],
     description: 'Kategorije ali sekcije znotraj cenika (npr. Predjedi, Vrtanje).',
-    group: 'Pricelists', // Group related collections in admin UI
+    group: 'Ceniki', // Group related collections in admin UI
+    hidden: true, // Typically managed via Pricelist collection
   },
   access: {
     read: anyone,

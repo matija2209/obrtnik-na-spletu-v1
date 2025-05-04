@@ -19,6 +19,7 @@ import { BusinessInfo } from '@/globals/BusinessInfo'
 import { Machinery } from '@/collections/Machinery'
 import { OpeningHours } from '@/collections/OpeningHours'
 import { Tenants } from '@/collections/Tenants'
+import { Menus } from '@/collections/Menus'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import type { CollectionConfig, GlobalConfig } from 'payload';
 import type { GlobalAfterChangeHook } from 'payload';
@@ -120,6 +121,7 @@ const allCollections: CollectionConfig[] = [
   PriceListSections, // Add new
   PriceListItems, // Add new
   Banners, // Add the Banners collection here
+  Menus, // Add the Menus collection here
 ];
 
 const allGlobals: GlobalConfig[] = [
@@ -280,6 +282,7 @@ export default buildConfig({
         [PriceListSections.slug]: {}, // Add new
         [PriceListItems.slug]: {}, // Add new
         [Banners.slug]: {}, // Add Banners to multi-tenant config
+        [Menus.slug]: {}, // Add Menus to multi-tenant config
         // Globals seem to be handled differently or implicitly here
         // If you need explicit tenant control for globals like Footer, Navbar, BusinessInfo,
         // you might need to adjust how they are registered or how the plugin handles them.

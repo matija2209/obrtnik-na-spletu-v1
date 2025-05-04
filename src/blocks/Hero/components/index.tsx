@@ -12,8 +12,9 @@ const HeroBlockComponent = ({ ...block }: HeroBlock) => {
   switch (template) {
     case "default": {
       // Ensure image is Media type before passing to getImageUrl
+      const firstImage = Array.isArray(image) && image.length > 0 ? image[0] : undefined
       const imageUrl =
-        typeof image === "object" && image !== null ? getImageUrl(image) : undefined
+        typeof firstImage === "object" && firstImage !== null ? getImageUrl(firstImage) : undefined
       // Validate CTAs ensure they are Cta objects
       const validCtas = validateCtas(ctas)
 
@@ -42,8 +43,9 @@ const HeroBlockComponent = ({ ...block }: HeroBlock) => {
     case "one-hero-section": {
       const validCtas = validateCtas(ctas)
 
+      const firstImage = Array.isArray(image) && image.length > 0 ? image[0] : undefined
       const imageUrl =
-        typeof image === "object" && image !== null ? getImageUrl(image) : undefined
+        typeof firstImage === "object" && firstImage !== null ? getImageUrl(firstImage) : undefined
 
       // Use optional chaining or provide defaults
       const finalTitle = title ?? undefined

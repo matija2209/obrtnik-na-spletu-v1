@@ -15,7 +15,7 @@ export const Banners: CollectionConfig = {
     useAsTitle: 'internalName', // Use internalName as the title in the admin UI
     defaultColumns: ['internalName', 'isActive', 'startDate', 'endDate', 'updatedAt'],
     description: 'Pasice za prikazovanje obvestil, ponudb, itd.', // Translated description
-    group: 'Vsebina spletne strani', // Translated group name
+    group: 'Vsebina', // Translated group name
   },
   access: {
     read: anyone, // Anyone can potentially read active banners (frontend logic will filter)

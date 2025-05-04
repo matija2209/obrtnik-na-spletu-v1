@@ -3,7 +3,7 @@ import Link from 'next/link';
 import CurrentYear from '../misc/current-year';
 import Logo from '../common/logo';
 import { getLogoUrl } from '@/lib/payload';
-import type { BusinessInfo, Footer as FooterType, Navbar as NavbarType, Media } from '@payload-types';
+import type { BusinessInfo, Footer as FooterType, Navbar as NavbarType, Media, Menu, MenuSectionItem } from '@payload-types';
 import { Facebook, Instagram, Linkedin, Youtube, Twitter, LocateIcon, Phone, Mail } from 'lucide-react';
 import { getImageUrl } from '@/utilities/getImageUrl';
 
@@ -31,22 +31,10 @@ const socialIconMap: { [key: string]: React.ElementType } = {
 };
 
 async function Footer({ footerData, businessInfoData, navbarData }: FooterProps) {
-  // Use navbarData prop for navigation links (as per original logic)
-  const navigationLinks = navbarData.navItems?.map(item => ({
-    text: item.title,
-    href: item.hasChildren ? '#' : item.href || '#'
-  })) || [];
-
-  // Use footerData for quick links if available, otherwise use navbarData
-  const quickLinks = footerData.quickLinks && footerData.quickLinks.length > 0 
-    ? footerData.quickLinks.map(link => ({ text: link.label, href: link.url }))
-    : navigationLinks;
-
   // Calculate logo URLs using businessInfoData prop
   const logoDarkUrl = getLogoUrl(businessInfoData, 'dark');
-  const footerLogoUrl = footerData.logo && typeof footerData.logo === 'object' 
-    ? getImageUrl(footerData.logo as Media) 
-    : logoDarkUrl;
+  // Removed footerData.logo logic, using only businessInfoData logo
+  const footerLogoUrl = logoDarkUrl; // Use the dark logo by default for footer
 
   // Format copyright text
   const copyrightText = footerData.copyrightText
@@ -60,7 +48,7 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Logo & Basic Info */}
           <div className="flex flex-col items-start space-y-4">
-            <Logo logoSrc={footerLogoUrl ?? logoDarkUrl} location="footer" title={businessInfoData.companyName} />
+            <Logo logoSrc={footerLogoUrl} location="footer" title={businessInfoData.companyName} />
             <div className="text-sm space-y-1">
               <p className="font-semibold">{businessInfoData.companyName}</p>
               {businessInfoData.vatId && <p>Davčna št.: {businessInfoData.vatId}</p>}
@@ -69,23 +57,40 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="space-y-2 text-sm">
-            <p className="font-semibold text-gray-900 mb-2">Hitre Povezave</p>
-            <ul className="space-y-2">
-              {quickLinks.map((link, index) => (
-                <li key={index}>
-                  <Link
-                    href={link.href}
-                    className="hover:text-blue-600 transition-colors">
-                    {link.text}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Dynamic Menu Sections */}
+          {footerData.menuSections?.map((section, sectionIndex) => {
+            // Ensure the menu relation is populated and has items
+            const menu = section.menu as Menu; // Type assertion, ensure populated
+            const menuItems = menu?.menuItems;
 
-          {/* Contact Info (conditional) */}
+            if (!menuItems || menuItems.length === 0) {
+              return null; // Don't render section if menu is empty or not populated
+            }
+
+            return (
+              <div key={section.id || sectionIndex} className="space-y-2 text-sm">
+                {/* Optional Section Title */}
+                {section.title && (
+                  <p className="font-semibold text-gray-900 mb-2">{section.title}</p>
+                )}
+                {/* Menu Items */}
+                <ul className="space-y-2">
+                  {menuItems.map((item, itemIndex) => (
+                    <li key={item.id || itemIndex}>
+                      <Link
+                        href={item.href || '#'} // Use href directly from menu item
+                        className="hover:text-blue-600 transition-colors"
+                      >
+                        {item.title} {/* Use title directly */}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
+
+          {/* Contact Info (conditional) - Moved potentially to adjust grid layout */}
           {footerData.showContactInFooter !== false && (
             <div className="space-y-3 text-sm">
               <p className="font-semibold text-gray-900 mb-2">Kontakt</p>
@@ -107,16 +112,21 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
             </div>
           )}
 
-          {/* Social Links */}
+          {/* Social Links - derived from socialMenu */}
           <div className="space-y-2 text-sm">
             <p className="font-semibold text-gray-900 mb-2">Povežite se z nami</p>
             <div className="flex space-x-4">
-              {footerData.socialLinks?.map((link, index) => {
-                const IconComponent = socialIconMap[link.platform];
+              {/* Type assertion used here, ensure footerData includes a populated socialMenu */}
+              {(footerData as any)?.socialMenu?.menuItems?.map((link: any, index: number) => { // Added explicit types
+                // Use link.title (lowercase) as the key for socialIconMap
+                const platformKey = link.title?.toLowerCase();
+                const IconComponent = platformKey ? socialIconMap[platformKey] : null;
+                const url = link.href || '#'; // Use href for the link URL
+
                 return IconComponent ? (
-                  <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600">
+                  <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600">
                     <IconComponent size={20} />
-                    <span className="sr-only">{link.platform}</span>
+                    <span className="sr-only">{link.title}</span> {/* Use title for screen reader */}
                   </a>
                 ) : null;
               })}
@@ -129,15 +139,6 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
           <p className="text-center md:text-left mb-4 md:mb-0">
             {copyrightText}
           </p>
-          {footerData.showPrivacyLinks !== false && (
-            <div className="flex space-x-4">
-              {legalLinks.map((link, index) => (
-                <Link key={index} href={link.href} className="hover:text-blue-600">
-                  {link.text}
-                </Link>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </footer>

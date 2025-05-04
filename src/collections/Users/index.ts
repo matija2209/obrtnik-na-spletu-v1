@@ -38,6 +38,11 @@ const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'email',
+    group: 'Uporabniki',
+  },
+  labels: {
+    singular: 'Uporabnik',
+    plural: 'Uporabniki',
   },
   auth: {
     useAPIKey: true,
