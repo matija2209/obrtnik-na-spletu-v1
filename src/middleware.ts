@@ -6,10 +6,10 @@ export function middleware(req: NextRequest) {
   const pathname = url.pathname; // Original pathname
 
   // Specific rewrite for admin subdomain root
-  // if (hostname === 'admin.obrtniknaspletu.si' && pathname === '/') {
-  //   url.pathname = '/admin';
-  //   return NextResponse.rewrite(url);
-  // }
+  if (hostname === 'admin.obrtniknaspletu.si' && pathname === '/') {
+    url.pathname = '/admin';
+    return NextResponse.rewrite(url);
+  }
 
   // If the path starts with /admin, let it pass through directly
   // if (pathname.startsWith('/admin')) {
