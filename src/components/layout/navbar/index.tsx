@@ -5,7 +5,7 @@ import DesktopNav from './desktop-navbar';
 import MobileNav from './mobile-navbar';
 import Logo from '@/components/common/logo';
 
-import type { Cta, Navbar as NavbarType } from '@payload-types';
+import type { Cta, Navbar as NavbarType, Menu } from '@payload-types';
 
 
 // Define the NavItem interface
@@ -56,12 +56,18 @@ const Navbar = ({
   // Calculate effective scrolled state, hardcoding forceBackground to true
   const effectiveScrolled = isScrolled || true; // Force background
 
-  // Map navbarData to the expected NavItem format
-  const dynamicNavItems: NavItem[] = navbarData.navItems?.map(item => ({
+  // Extract menu items from the mainMenu relationship
+  // Ensure mainMenu is populated and is an object before accessing menuItems
+  const mainMenuItems = (typeof navbarData.mainMenu === 'object' && navbarData.mainMenu?.menuItems) 
+    ? navbarData.mainMenu.menuItems 
+    : null;
+
+  // Map menu items to the expected NavItem format using Payload types
+  const dynamicNavItems: NavItem[] = mainMenuItems?.map((item: NonNullable<Menu['menuItems']>[number]) => ({
     title: item.title,
     href: item.href || '#',
     hasChildren: Boolean(item.hasChildren),
-    children: item.children?.map((child: any) => ({
+    children: item.children?.map((child: NonNullable<NonNullable<Menu['menuItems']>[number]['children']>[number]) => ({ // Explicitly type the child using indexed access
       title: child.title,
       href: child.href,
       description: child.description ?? '',
