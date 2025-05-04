@@ -33,9 +33,10 @@ const anyone: Access = () => true;
 export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: {
-    singular: 'Page',
-    plural: 'Pages',
+    singular: 'Stran',
+    plural: 'Strani',
   },
+  
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
