@@ -191,44 +191,64 @@ export const queryPageBySlug = async ({
   console.log('Computed slug value:', slugValue);
   
   try {
-    // Query only by tenant, then filter by slug in memory
-    console.log('Querying pages by tenant only, will filter by slug in memory');
-    
-    // Create the tenant query with correct typing
-    let tenantQuery: Where = {};
-    
-    if (tenant) {
-      tenantQuery = {
-        'tenant.slug': {
-          equals: tenant,
-        }
-      };
-    }
-    
-    console.log('Tenant query:', JSON.stringify(tenantQuery, null, 2));
+    // Fetch all pages without any where condition
+    console.log('Fetching all pages without where condition, will filter manually');
     
     // Get all pages for this tenant
     const pagesQuery = await payload.find({
       collection: 'pages',
       overrideAccess: overrideAccess || draft,
       draft,
-      where: tenantQuery,
       depth: 2,
       limit: 100, // Increase limit to find the right page
     });
     
-    console.log(`Found ${pagesQuery.totalDocs} pages for tenant`);
+    console.log(`Found ${pagesQuery.totalDocs} total pages`);
+    console.log('Page IDs:', pagesQuery.docs.map(doc => doc.id));
     
     if (pagesQuery.docs.length > 0) {
-      console.log('Available page fields:', Object.keys(pagesQuery.docs[0]));
+      // Log the structure of the first page for debugging
+      const samplePage = pagesQuery.docs[0];
+      console.log('Sample page structure:', JSON.stringify({
+        id: samplePage.id,
+        title: samplePage.title,
+        // Only include tenant if it exists
+        tenant: samplePage.tenant,
+        // Log other important fields
+        ...(samplePage.slug ? { slug: samplePage.slug } : {}),
+      }, null, 2));
       
-      // Log all pages and their slugs for debugging
-      pagesQuery.docs.forEach((page, index) => {
-        console.log(`Page ${index + 1} - ID: ${page.id}, Title: ${page.title}, Slug: ${page.slug}`);
-      });
+      // First filter by tenant
+      let filteredPages = pagesQuery.docs;
       
-      // Find the page with matching slug
-      const matchingPage = pagesQuery.docs.find(page => {
+      if (tenant) {
+        console.log(`Filtering pages for tenant: ${tenant}`);
+        filteredPages = filteredPages.filter(page => {
+          // Check if page has tenant field and if it matches
+          const pageTenant = page.tenant;
+          if (!pageTenant) {
+            console.log(`Page ${page.id} has no tenant field`);
+            return false;
+          }
+          
+          // Check if tenant is an object with slug or a string
+          if (typeof pageTenant === 'object' && pageTenant.slug) {
+            console.log(`Comparing page tenant "${pageTenant.slug}" with "${tenant}"`);
+            return pageTenant.slug === tenant;
+          } else if (typeof pageTenant === 'string') {
+            console.log(`Comparing page tenant ID "${pageTenant}" with "${tenant}"`);
+            return pageTenant === tenant;
+          }
+          
+          return false;
+        });
+      }
+      
+      console.log(`Found ${filteredPages.length} pages for tenant`);
+      
+      // Now filter by slug
+      console.log(`Filtering for slug: ${slugValue}`);
+      const matchingPages = filteredPages.filter(page => {
         if (!page.slug) {
           console.log(`Page ${page.id} has no slug field`);
           return false;
@@ -238,14 +258,14 @@ export const queryPageBySlug = async ({
         return page.slug === slugValue;
       });
       
-      if (matchingPage) {
-        console.log('Found matching page!');
-        return matchingPage as Page;
+      if (matchingPages.length > 0) {
+        console.log(`Found ${matchingPages.length} matching pages!`);
+        return matchingPages[0] as Page;
       } else {
         console.log(`No page found with slug "${slugValue}"`);
       }
     } else {
-      console.log('No pages found for tenant');
+      console.log('No pages found at all');
     }
     
     return null;
@@ -255,7 +275,8 @@ export const queryPageBySlug = async ({
       message: error?.message,
       code: error?.code,
       status: error?.status,
-      data: error?.data
+      data: error?.data,
+      stack: error?.stack
     });
     return null;
   } finally {
