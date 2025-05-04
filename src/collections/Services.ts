@@ -66,11 +66,19 @@ export const Services: CollectionConfig = {
       ],
     },
     {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-      label: 'Slika',
+      name: 'images',
+      label: 'Slike',
+      type: 'array',
       required: false,
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Slika',
+          required: true,
+        },
+      ],
     },
     {
       name: 'link',

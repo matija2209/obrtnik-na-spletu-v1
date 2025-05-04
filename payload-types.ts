@@ -375,7 +375,12 @@ export interface Service {
         id?: string | null;
       }[]
     | null;
-  image?: (number | null) | Media;
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
   link?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -1171,7 +1176,12 @@ export interface ServicesSelect<T extends boolean = true> {
         featureText?: T;
         id?: T;
       };
-  image?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   link?: T;
   updatedAt?: T;
   createdAt?: T;

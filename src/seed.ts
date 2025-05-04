@@ -240,7 +240,7 @@ export const seed = async (payload: Payload): Promise<void> => {
           description: 'Nudimo celovite rešitve za vodovodne inštalacije, od načrtovanja do izvedbe in vzdrževanja.',
           features: [{ featureText: 'Novogradnje' }, { featureText: 'Adaptacije' }, { featureText: 'Popravila' }],
           link: '/storitve/vodoinstalacije',
-          // image: mediaDocId, // Add image ID if you seed media
+          images: [], // Changed from image: mediaDocId to images: []
         },
       });
       payload.logger.info(`Created Service: ${serviceVodoinstalacije.id}`);
@@ -257,6 +257,7 @@ export const seed = async (payload: Payload): Promise<void> => {
           description: 'Strokovna montaža tuš kabin, kadi, WC školjk, umivalnikov in ostale sanitarne opreme.',
           features: [{ featureText: 'Montaža' }, { featureText: 'Priklop' }, { featureText: 'Svetovanje' }],
           link: '/storitve/montaza-sanitarne-opreme',
+          images: [], // Added images: [] for consistency
         },
       });
       payload.logger.info(`Created Service: ${serviceMontaza.id}`);

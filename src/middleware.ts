@@ -5,6 +5,11 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   const pathname = url.pathname; // Original pathname
 
+  // If the path starts with /admin, let it pass through directly
+  if (pathname.startsWith('/admin')) {
+    return NextResponse.next();
+  }
+
   const tenantSlugPrefix = '/tenant-slugs/';
   let tenantSlug: string | null = null;
 
