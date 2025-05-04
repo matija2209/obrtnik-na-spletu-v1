@@ -1,0 +1,212 @@
+[
+    {
+        "timestamp": "2025-05-04 15:05:11",
+        "original_path": "input/a1_instalacije/f385c05a-449e-4196-a9bd-8ba71c06c518.jpeg",
+        "new_path": "output/a1_instalacije/nagrada-a1-instalacije-doo.jpg",
+        "alt_text": "Lesena nagrada z napisom PRIMERJAM.si, IZBIRA STRANK 2022 in A1 IN\u0160TALACIJE d.o.o. ter oceno 5.0 s petimi zvezdicami. Nagrada je postavljena na armaturni plo\u0161\u010di avtomobila."
+    },
+    {
+        "timestamp": "2025-05-04 15:05:13",
+        "original_path": "input/a1_instalacije/10dfb0a4-109e-4eee-a57b-a84bb82c1db0.jpeg",
+        "new_path": "output/a1_instalacije/polaganje-keramike-laser-nivelir.jpg",
+        "alt_text": "Polaganje kerami\u010dnih plo\u0161\u010dic v prostoru s pomo\u010djo laserskega nivelirja. Plo\u0161\u010dice so polo\u017eene in fiksirane s plasti\u010dnimi distan\u010dniki."
+    },
+    {
+        "timestamp": "2025-05-04 15:05:15",
+        "original_path": "input/a1_instalacije/d51375ac-1813-4ea6-9328-b47d7af31a79 (1).jpeg",
+        "new_path": "output/a1_instalacije/kopalnica-prenova-plo\u0161\u010dice-okno.jpg",
+        "alt_text": "Kopalnica v prenovi s svetlimi plo\u0161\u010dicami in oknom. Na tleh je polo\u017een parket."
+    },
+    {
+        "timestamp": "2025-05-04 15:05:17",
+        "original_path": "input/a1_instalacije/1a5f247d-ddd0-4ef8-8c1e-900ddc096a53.jpeg",
+        "new_path": "output/a1_instalacije/polaganje-keramike-kopalnica-prenova.jpg",
+        "alt_text": "Fotografija prikazuje polaganje kerami\u010dnih plo\u0161\u010dic v kopalnici med prenovo. Plo\u0161\u010dice so svetle s pisanimi vzorci, modri distan\u010dniki pa zagotavljajo enakomerne fuge."
+    },
+    {
+        "timestamp": "2025-05-04 15:05:20",
+        "original_path": "input/a1_instalacije/708ce1b8-24ac-48f5-be7b-9c9c4539f8ef (1).jpeg",
+        "new_path": "output/a1_instalacije/polaganje-keramike-v-kopalnici.jpg",
+        "alt_text": "Fotografija prikazuje polaganje kerami\u010dnih plo\u0161\u010dic v kopalnici. Vidni so tudi orodje in naprave za polaganje plo\u0161\u010dic."
+    },
+    {
+        "timestamp": "2025-05-04 15:05:24",
+        "original_path": "input/a1_instalacije/02fcd114-7c36-4c22-b717-562290e6555b.jpeg",
+        "new_path": "output/a1_instalacije/notranjost-sobe-s-pe\u010djo-televizorjem.jpg",
+        "alt_text": "Notranjost sobe prikazuje pe\u010d iz rde\u010dih opek, televizor na steni in leseno oblogo na stropu. V ozadju je stena z vzorcem cvetja in vrata."
+    },
+    {
+        "timestamp": "2025-05-04 15:05:26",
+        "original_path": "input/a1_instalacije/0949f159-fb74-444a-bb74-a77f40ce9d81.jpeg",
+        "new_path": "output/a1_instalacije/hi\u0161a-terasa-zunanje-ureditve.jpg",
+        "alt_text": "Zunanja terasa hi\u0161e s tlakovci in leseno nadstre\u0161nico. Na vrtu je vidna trava in cvetje."
+    },
+    {
+        "timestamp": "2025-05-04 15:05:28",
+        "original_path": "input/a1_instalacije/7bd142c5-4f48-4ceb-bee7-24712b1f9323.jpeg",
+        "new_path": "output/a1_instalacije/talno-ogrevanje-sistem-namestitev.jpg",
+        "alt_text": "Talno ogrevanje je name\u0161\u010deno v sobi, s \u010drnimi plo\u0161\u010dami in belimi cevmi. Sistem je pripravljen za pokrivanje s talno oblogo."
+    },
+    {
+        "timestamp": "2025-05-04 15:05:30",
+        "original_path": "input/a1_instalacije/1fcd4ba1-ef06-4664-a66a-c6d192697dc3.jpeg",
+        "new_path": "output/a1_instalacije/kopalnica-prenova-polaganje-plo\u0161\u010dic.jpg",
+        "alt_text": "Kopalnica v fazi prenove s sve\u017ee polo\u017eenimi kerami\u010dnimi plo\u0161\u010dicami na stenah in lesenimi talnimi oblogami. Vidni so tudi elementi za sanitarno opremo in okno."
+    },
+    {
+        "timestamp": "2025-05-04 15:05:32",
+        "original_path": "input/a1_instalacije/4233ec0e-63b2-41e3-a95e-2d6777e8449c (1).jpeg",
+        "new_path": "output/a1_instalacije/soba-keramika-stena-elektrika.jpg",
+        "alt_text": "Prazna soba s kerami\u010dnimi plo\u0161\u010dicami na tleh in belimi stenami. Na steni je elektri\u010dna vti\u010dnica."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:13",
+        "original_path": "input/a1_instalacije/567ec393-8abc-4c8a-a251-9cf81c49e2ec.jpeg",
+        "new_path": "output/a1_instalacije/hi\u0161a-terasa-dvori\u0161\u010de-zunanjost.jpg",
+        "alt_text": "Zunanji pogled na hi\u0161o s tlakovano teraso in zelenico. Na terasi so vidni ostanki gradbenih del."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:15",
+        "original_path": "input/a1_instalacije/a25c11f5-7cac-4011-bc5d-3324f1e9c8ab.jpeg",
+        "new_path": "output/a1_instalacije/kopalnica-s-keramicnimi-ploscicami.jpg",
+        "alt_text": "Kopalnica s kerami\u010dnimi plo\u0161\u010dicami in lesenim podom. Viden je tudi okenski okvir in priklju\u010dki za sanitarno opremo."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:17",
+        "original_path": "input/a1_instalacije/8e897973-fd18-4718-b61b-c1d5b5c88c93.jpeg",
+        "new_path": "output/a1_instalacije/kopalnica-umivalnik-wc-pralni-stroj.jpg",
+        "alt_text": "Notranjost kopalnice s sodobnim umivalnikom, strani\u0161\u010dem, pralnim strojem Samsung in tu\u0161 kabino. Na pultu pralnega stroja je \u010distilo Tandil."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:20",
+        "original_path": "input/a1_instalacije/19938465-4b89-4c09-a84c-bee8e948d030.jpeg",
+        "new_path": "output/a1_instalacije/bathroom-tiles-plumbing-fixtures.jpg",
+        "alt_text": "A newly tiled bathroom features neutral-toned wall and floor tiles, with plumbing fixtures visible on the wall. A white bucket sits on the floor."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:24",
+        "original_path": "input/a1_instalacije/d746cc24-bde4-41fb-b1e6-9dd0b8555008.jpeg",
+        "new_path": "output/a1_instalacije/gorenje-bojler-vodovodne-napeljave.jpg",
+        "alt_text": "Bojler Gorenje je name\u0161\u010den na steni s priklju\u010denimi vodovodnimi napeljavami. Na polici pod njim sta orodje in posoda."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:25",
+        "original_path": "input/a1_instalacije/12b1bf12-b961-4dae-9b83-2f867e659595.jpeg",
+        "new_path": "output/a1_instalacije/talno-ogrevanje-modra-izolacija.jpg",
+        "alt_text": "Talno ogrevanje je name\u0161\u010deno na modri izolaciji. Bele cevi za talno ogrevanje so polo\u017eene v vzorcu na modri izolaciji."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:27",
+        "original_path": "input/a1_instalacije/373a7e50-6213-4bf5-b50c-89a4dd83feac.jpeg",
+        "new_path": "output/a1_instalacije/kopalnica-prha-\u010drna-armatura.jpg",
+        "alt_text": "Sodobna kopalnica s \u010drno prho in armaturo. Prha ima steklena vrata s \u010drnim okvirjem."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:42",
+        "original_path": "input/a1_instalacije/8a393861-2470-4e72-940f-bbbf392d8fa2.jpeg",
+        "new_path": "output/a1_instalacije/kopalnica-plo\u0161\u010dice-stene-prenova.jpg",
+        "alt_text": "Notranjost kopalnice s svetlimi kerami\u010dnimi plo\u0161\u010dicami na stenah. Prikazuje del prenove kopalnice z name\u0161\u010denimi plo\u0161\u010dicami in pripravami za sanitarno opremo."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:43",
+        "original_path": "input/a1_instalacije/87c80b05-f258-4c46-adb4-d9d58ca5db19.jpeg",
+        "new_path": "output/a1_instalacije/nova-lesen-tlakovanje-notranjost.jpg",
+        "alt_text": "Nova lesena talna obloga v notranjosti z nedokon\u010danimi stenami. Tlakovanje je svetlo rjave barve in ima videz lesa."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:45",
+        "original_path": "input/a1_instalacije/069eeb6b-3e5c-4c9b-a311-a3db8b0fbb46.jpeg",
+        "new_path": "output/a1_instalacije/polaganje-keramike-renoviranje-kopalnice.jpg",
+        "alt_text": "Fotografija prikazuje polaganje kerami\u010dnih plo\u0161\u010dic v kopalnici med prenovo. Plo\u0161\u010dice so pritrjene s kri\u017eci za enakomerne fuge."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:47",
+        "original_path": "input/a1_instalacije/3391deb6-af50-42ac-a23f-74c391734080.jpeg",
+        "new_path": "output/a1_instalacije/tiles-installation-bathroom-wall.jpg",
+        "alt_text": "Stena polnjena s kerami\u010dnimi plo\u0161\u010dicami z uporabo izravnalnega sistema. Vidni so tudi vodovodne cevi in \u0161katla za vgradnjo."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:49",
+        "original_path": "input/a1_instalacije/03aff140-80ff-428d-87f7-d2db3e746731.jpeg",
+        "new_path": "output/a1_instalacije/polaganje-keramike-izravnalni-sistem.jpg",
+        "alt_text": "Prikazano je polaganje kerami\u010dnih plo\u0161\u010dic z uporabo izravnalnega sistema. Modri distan\u010dniki zagotavljajo enakomerne fuge med plo\u0161\u010dicami."
+    },
+    {
+        "timestamp": "2025-05-04 15:06:50",
+        "original_path": "input/a1_instalacije/d397caf6-d7ea-4fca-a8cb-93407020b963.jpeg",
+        "new_path": "output/a1_instalacije/vodovodne-instalacije-a1-mehanovic.jpg",
+        "alt_text": "Oglas za vodovodne instalacije A1 instalacije d.o.o. z Miralemom Mehanovicem, ki ponuja storitve na podro\u010dju vode, gretja, elektrike, keramike in adaptacije kopalnic."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:14",
+        "original_path": "input/a1_instalacije/60c837ea-6e24-4716-9121-43e513cd50b2.jpeg",
+        "new_path": "output/a1_instalacije/soba-keramika-opeka-notranjost.jpg",
+        "alt_text": "Soba s kerami\u010dnimi plo\u0161\u010dicami na tleh in pe\u010djo iz opeke v kotu. Na pe\u010di je steklenica \u010distila."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:16",
+        "original_path": "input/a1_instalacije/43dcfd54-1ec4-4d24-866f-dc16a6f51ee0.jpeg",
+        "new_path": "output/a1_instalacije/kuhinja-sodobna-notranjost-okno.jpg",
+        "alt_text": "Sodobna kuhinja z oknom, ki gleda na balkon. Kuhinja ima \u010drne elemente in leseno pult."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:18",
+        "original_path": "input/a1_instalacije/8899db75-77ad-4017-9274-bc1c9ccbd0d9.jpeg",
+        "new_path": "output/a1_instalacije/kopalnica-stenske-plo\u0161\u010dice-vti\u010dnica.jpg",
+        "alt_text": "Stena v kopalnici je oblo\u017eena s svetlimi kerami\u010dnimi plo\u0161\u010dicami. Na steni je name\u0161\u010dena vti\u010dnica in priklju\u010dki za vodo."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:20",
+        "original_path": "input/a1_instalacije/600bbcae-da70-4bd3-8c03-338e1c33a875.jpeg",
+        "new_path": "output/a1_instalacije/kopalnica-prenova-plo\u0161\u010dice-stran.jpg",
+        "alt_text": "Kopalnica v prenovi s sve\u017ee polo\u017eenimi belimi plo\u0161\u010dicami in modrimi distan\u010dniki. V ozadju je strani\u0161\u010de in modra stena."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:22",
+        "original_path": "input/a1_instalacije/2ca2ba93-b00e-4bc7-be2f-f7b954a88477.jpeg",
+        "new_path": "output/a1_instalacije/notranjost-sobe-s-pe\u010djo.jpg",
+        "alt_text": "Notranjost sobe s kerami\u010dnimi tlemi, pe\u010djo iz ope\u010dnatih plo\u0161\u010dic in lesenimi vrati. Stena je okra\u0161ena z zelenim vzorcem."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:23",
+        "original_path": "input/a1_instalacije/980ee6c9-b63f-41d3-8908-646c0e014cfd.jpeg",
+        "new_path": "output/a1_instalacije/bathroom-toilet-water-heater.jpg",
+        "alt_text": "A bathroom features a wall-mounted toilet, a white water heater, and beige tile walls. A small shelf is built into the wall above the toilet."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:25",
+        "original_path": "input/a1_instalacije/c55da416-98ad-4cf9-8716-48a50b763f82 (1).jpeg",
+        "new_path": "output/a1_instalacije/soba-s-plo-icami-okno.jpg",
+        "alt_text": "Prazen prostor s plo\u0161\u010dicami in oknom, ki gleda na zunanjo teraso. Plo\u0161\u010dice so svetlo sive barve in so polo\u017eene v vzorcu opeke."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:32",
+        "original_path": "input/a1_instalacije/0de5520e-8c4b-486e-8112-d4cccbea4825.jpeg",
+        "new_path": "output/a1_instalacije/talno-ogrevanje-razdelilnik-cevi.jpg",
+        "alt_text": "Slika prikazuje razdelilnik talnega ogrevanja s priklju\u010denimi belimi cevmi, name\u0161\u010denimi na modri izolaciji. Na tleh so tudi orodja za monta\u017eo."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:34",
+        "original_path": "input/a1_instalacije/7319829d-592c-4d1a-8d1e-7b8d15db0b90.jpeg",
+        "new_path": "output/a1_instalacije/kuhinja-sodobna-\u010drna-bela.jpg",
+        "alt_text": "Sodobna kuhinja z belimi zgornjimi omaricami in \u010drnimi spodnjimi omaricami ter lesenim pultom. V ospredju je lesena talna obloga."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:36",
+        "original_path": "input/a1_instalacije/951054df-5d9b-47d2-aea2-6c13314a3aeb.jpeg",
+        "new_path": "output/a1_instalacije/nedokon\u010dana-kopalnica-prenova-notranjost.jpg",
+        "alt_text": "Nedokon\u010dana kopalnica s kerami\u010dnimi plo\u0161\u010dicami in lesenimi tlemi. Vidi se odprtina za vrata in napeljave na steni."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:42",
+        "original_path": "input/a1_instalacije/9261fdfb-7925-4596-b206-c0eac05b0be1.jpeg",
+        "new_path": "output/a1_instalacije/vti\u010dnice-stenske-pipe-kopalnica.jpg",
+        "alt_text": "Dve vti\u010dnici na steni v kopalnici, pod njima pa so name\u0161\u010dene stenske pipe. Stena je oblo\u017eena s svetlimi kerami\u010dnimi plo\u0161\u010dicami."
+    },
+    {
+        "timestamp": "2025-05-04 15:07:44",
+        "original_path": "input/a1_instalacije/ff9b9007-361e-4953-8c21-05bbbf16aa54.jpeg",
+        "new_path": "output/a1_instalacije/kopalnica-talne-plo\u0161\u010dice-odtok.jpg",
+        "alt_text": "Pogled od zgoraj na talne plo\u0161\u010dice v kopalnici z odtokom in delom steklene tu\u0161 kabine. Plo\u0161\u010dice so bele z marmornatim vzorcem."
+    }
+]

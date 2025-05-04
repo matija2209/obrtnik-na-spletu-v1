@@ -125,6 +125,14 @@ export const getNavbar = async (query = {}) => {
   })
 }
 
+export const getFooter = async (query = {}) => {
+  const payload = await getPayloadClient()
+  return payload.findGlobal({
+    slug: 'footer',
+    ...query,
+  })
+}
+
 // Logo utilities
 export function getLogoUrl(businessData?: any, variant: 'light' | 'dark' = 'dark'): string {
   if (variant === 'light') {

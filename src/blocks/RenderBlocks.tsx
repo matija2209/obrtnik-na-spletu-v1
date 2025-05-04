@@ -37,17 +37,26 @@ export const RenderBlocks: React.FC<{
       <Fragment>
         {blocks.map((block, index) => {
           const { blockType } = block
-
           if (blockType && blockType in blockComponents) {
             const Block = blockComponents[blockType]
 
             if (Block) {
-              return (
+              const blockContent = (
                 <React.Fragment key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} disableInnerContainer />
                 </React.Fragment>
               )
+
+              if (blockType === "gallery" || blockType === "projectHighlights") {
+                return (
+                  <div className=" relative z-50" key={index}>
+                    {blockContent}
+                  </div>
+                )
+              } else {
+                return blockContent
+              }
             }
           }
           return null

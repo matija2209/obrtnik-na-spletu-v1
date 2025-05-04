@@ -6,8 +6,10 @@ import { notFound, redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import React from 'react'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { queryPageBySlug } from '@/lib/payload'
+import { queryPageBySlug, getNavbar, getBusinessInfo, getLogoUrl, getFooter } from '@/lib/payload'
 import { LivePreviewListener } from '@/components/admin/live-preview-listener'
+import Footer from '@/components/layout/footer'
+import Navbar from '@/components/layout/navbar'
 
 // eslint-disable-next-line no-restricted-exports
 export default async function TenantSlugPage({
@@ -58,6 +60,13 @@ export default async function TenantSlugPage({
   // Get draft mode status
   const { isEnabled: draft } = await draftMode()
 
+  // Fetch global data in parallel
+  const [navbarData, businessInfoData, footerData] = await Promise.all([
+    getNavbar(),
+    getBusinessInfo(),
+    getFooter(),
+  ])
+
   // Query for the page, passing draft status
   const page = await queryPageBySlug({
     slug,
@@ -71,11 +80,33 @@ export default async function TenantSlugPage({
     return notFound()
   }
 
+  // Prepare Navbar props
+  const logoLightUrl = getLogoUrl(businessInfoData, 'light')
+  const logoDarkUrl = getLogoUrl(businessInfoData, 'dark')
+  const companyName = businessInfoData?.companyName ?? 'Podjetje'
+  const phoneNumber = businessInfoData?.phoneNumber ?? ''
+  const email = businessInfoData?.email ?? ''
+  const location = businessInfoData?.location ?? ''
+
   // Render the page layout blocks
   return (
     <>
+      <Navbar 
+        navbarData={navbarData}
+        logoLightUrl={logoLightUrl}
+        logoDarkUrl={logoDarkUrl}
+        companyName={companyName}
+        phoneNumber={phoneNumber}
+        email={email}
+        location={location}
+      />
       {draft && <LivePreviewListener />}
       <RenderBlocks blocks={page.layout} />
+      <Footer 
+        footerData={footerData} 
+        businessInfoData={businessInfoData} 
+        navbarData={navbarData}
+      />
     </>
   )
 }
