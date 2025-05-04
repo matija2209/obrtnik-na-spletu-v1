@@ -145,8 +145,8 @@ export default buildConfig({
       baseDir: path.resolve(__dirname, 'src'),
     },
     meta: {
-      title: 'Obrtnik na spletu',
-      description: 'Obrtnik na spletu',
+      title: 'Admin - Obrtnik na spletu',
+      description: 'Administracija za spletno stran Obrtnik na spletu.',
 
       icons:[
         {
