@@ -191,64 +191,63 @@ export const queryPageBySlug = async ({
   console.log('Computed slug value:', slugValue);
   
   try {
-    // Fetch all pages without any where condition
-    console.log('Fetching all pages without where condition, will filter manually');
+    // First, look up the tenant ID from the tenant slug
+    console.log(`Looking up tenant ID for slug: ${tenant}`);
+    let tenantId = null;
     
-    // Get all pages for this tenant
+    if (tenant) {
+      const tenantQuery = await payload.find({
+        collection: 'tenants',
+        where: {
+          slug: {
+            equals: tenant
+          }
+        },
+        limit: 1
+      });
+      
+      if (tenantQuery.docs.length > 0) {
+        tenantId = tenantQuery.docs[0].id;
+        console.log(`Found tenant with ID: ${tenantId}`);
+      } else {
+        console.log(`No tenant found with slug: ${tenant}`);
+      }
+    }
+    
+    // Fetch pages with tenant ID if we found one
+    console.log('Fetching pages...');
+    let whereCondition = {};
+    
+    if (tenantId) {
+      whereCondition = {
+        tenant: {
+          equals: tenantId
+        }
+      };
+      console.log(`Using where condition:`, JSON.stringify(whereCondition, null, 2));
+    }
+    
     const pagesQuery = await payload.find({
       collection: 'pages',
       overrideAccess: overrideAccess || draft,
       draft,
+      where: whereCondition,
       depth: 2,
-      limit: 100, // Increase limit to find the right page
+      limit: 100,
     });
     
-    console.log(`Found ${pagesQuery.totalDocs} total pages`);
+    console.log(`Found ${pagesQuery.totalDocs} pages for tenant ID: ${tenantId}`);
     console.log('Page IDs:', pagesQuery.docs.map(doc => doc.id));
     
     if (pagesQuery.docs.length > 0) {
-      // Log the structure of the first page for debugging
-      const samplePage = pagesQuery.docs[0];
-      console.log('Sample page structure:', JSON.stringify({
-        id: samplePage.id,
-        title: samplePage.title,
-        // Only include tenant if it exists
-        tenant: samplePage.tenant,
-        // Log other important fields
-        ...(samplePage.slug ? { slug: samplePage.slug } : {}),
-      }, null, 2));
+      // Log the structure of all pages
+      pagesQuery.docs.forEach((page, index) => {
+        console.log(`Page ${index + 1} - ID: ${page.id}, Title: ${page.title}, Tenant: ${page.tenant}, Slug: ${page.slug}`);
+      });
       
-      // First filter by tenant
-      let filteredPages = pagesQuery.docs;
-      
-      if (tenant) {
-        console.log(`Filtering pages for tenant: ${tenant}`);
-        filteredPages = filteredPages.filter(page => {
-          // Check if page has tenant field and if it matches
-          const pageTenant = page.tenant;
-          if (!pageTenant) {
-            console.log(`Page ${page.id} has no tenant field`);
-            return false;
-          }
-          
-          // Check if tenant is an object with slug or a string
-          if (typeof pageTenant === 'object' && pageTenant.slug) {
-            console.log(`Comparing page tenant "${pageTenant.slug}" with "${tenant}"`);
-            return pageTenant.slug === tenant;
-          } else if (typeof pageTenant === 'string') {
-            console.log(`Comparing page tenant ID "${pageTenant}" with "${tenant}"`);
-            return pageTenant === tenant;
-          }
-          
-          return false;
-        });
-      }
-      
-      console.log(`Found ${filteredPages.length} pages for tenant`);
-      
-      // Now filter by slug
+      // Filter by slug
       console.log(`Filtering for slug: ${slugValue}`);
-      const matchingPages = filteredPages.filter(page => {
+      const matchingPages = pagesQuery.docs.filter(page => {
         if (!page.slug) {
           console.log(`Page ${page.id} has no slug field`);
           return false;
@@ -265,7 +264,7 @@ export const queryPageBySlug = async ({
         console.log(`No page found with slug "${slugValue}"`);
       }
     } else {
-      console.log('No pages found at all');
+      console.log('No pages found for tenant');
     }
     
     return null;
