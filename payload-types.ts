@@ -84,6 +84,7 @@ export interface Config {
     pricelists: Pricelist;
     'price-list-sections': PriceListSection;
     'price-list-items': PriceListItem;
+    banners: Banner;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -108,6 +109,7 @@ export interface Config {
     pricelists: PricelistsSelect<false> | PricelistsSelect<true>;
     'price-list-sections': PriceListSectionsSelect<false> | PriceListSectionsSelect<true>;
     'price-list-items': PriceListItemsSelect<false> | PriceListItemsSelect<true>;
+    banners: BannersSelect<false> | BannersSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -954,6 +956,56 @@ export interface PriceListItem {
   createdAt: string;
 }
 /**
+ * Pasice za prikazovanje obvestil, ponudb, itd.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banners".
+ */
+export interface Banner {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * Služi samo za identifikacijo v administracijskem vmesniku.
+   */
+  internalName: string;
+  /**
+   * Glavna vsebina, ki bo prikazana v pasici.
+   */
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Označite to polje, da bo pasica potencialno vidna na spletni strani (ob upoštevanju datumov).
+   */
+  isActive?: boolean | null;
+  /**
+   * Pasica bo aktivna od tega datuma/ure (neobvezno).
+   */
+  startDate?: string | null;
+  /**
+   * Pasica bo neaktivna po tem datumu/uri (neobvezno).
+   */
+  endDate?: string | null;
+  /**
+   * Izberite neobvezen CTA gumb, ki bo prikazan skupaj s pasico.
+   */
+  cta?: (number | null) | Cta;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-jobs".
  */
@@ -1119,6 +1171,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'price-list-items';
         value: number | PriceListItem;
+      } | null)
+    | ({
+        relationTo: 'banners';
+        value: number | Banner;
       } | null)
     | ({
         relationTo: 'payload-jobs';
@@ -1718,6 +1774,21 @@ export interface PriceListItemsSelect<T extends boolean = true> {
   price?: T;
   section?: T;
   displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banners_select".
+ */
+export interface BannersSelect<T extends boolean = true> {
+  tenant?: T;
+  internalName?: T;
+  content?: T;
+  isActive?: T;
+  startDate?: T;
+  endDate?: T;
+  cta?: T;
   updatedAt?: T;
   createdAt?: T;
 }

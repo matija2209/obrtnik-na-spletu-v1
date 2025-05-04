@@ -730,7 +730,8 @@ export const seed = async (payload: Payload): Promise<void> => {
     try {
         const { default: path } = await import('path');
         const { default: fs } = await import('fs/promises');
-        const imagesDir = path.resolve(__dirname, '../../seed/images'); // Adjust path if needed
+        const imagesDir = path.resolve(process.cwd(), 'seed/images'); // Resolve from project root
+        payload.logger.info(`Resolved image directory path: ${imagesDir}`); // Log the resolved path
         const files = await fs.readdir(imagesDir);
         const imageFiles = files.filter(file => /\.(jpg|jpeg|png|webp)$/i.test(file));
 
@@ -764,6 +765,11 @@ export const seed = async (payload: Payload): Promise<void> => {
 
     } catch (err) {
       payload.logger.error('Error reading image directory or seeding media:', err);
+      if (err instanceof Error) {
+        payload.logger.error('Stack trace:', err.stack); // Log stack trace
+      } else {
+        payload.logger.error('Full error object:', err); // Log the full error if it's not an Error instance
+      }
     }
 
     // --- Update Services with Images ---

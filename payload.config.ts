@@ -36,6 +36,7 @@ import { Forms } from '@/collections/Forms'; // Import the Forms collection
 import { Pricelists } from '@/collections/Pricelists'; // Import the new Pricelists collection
 import { PriceListSections } from '@/collections/PriceListSections'; // Import new
 import { PriceListItems } from '@/collections/PriceListItems'; // Import new
+import { Banners } from '@/collections/Banners'; // Import the new Banners collection
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -118,6 +119,7 @@ const allCollections: CollectionConfig[] = [
   Pricelists, // Add the Pricelists collection here
   PriceListSections, // Add new
   PriceListItems, // Add new
+  Banners, // Add the Banners collection here
 ];
 
 const allGlobals: GlobalConfig[] = [
@@ -277,6 +279,7 @@ export default buildConfig({
         [Pricelists.slug]: {},
         [PriceListSections.slug]: {}, // Add new
         [PriceListItems.slug]: {}, // Add new
+        [Banners.slug]: {}, // Add Banners to multi-tenant config
         // Globals seem to be handled differently or implicitly here
         // If you need explicit tenant control for globals like Footer, Navbar, BusinessInfo,
         // you might need to adjust how they are registered or how the plugin handles them.
