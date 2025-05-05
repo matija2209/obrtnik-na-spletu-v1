@@ -29,6 +29,9 @@ importers:
       '@payloadcms/next':
         specifier: ^3.36.1
         version: 3.36.1(@types/react@19.1.2)(graphql@16.11.0)(monaco-editor@0.52.2)(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.36.1(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+      '@payloadcms/plugin-form-builder':
+        specifier: ^3.36.1
+        version: 3.36.1(@types/react@19.1.2)(monaco-editor@0.52.2)(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.36.1(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       '@payloadcms/plugin-multi-tenant':
         specifier: ^3.36.1
         version: 3.36.1(@payloadcms/ui@3.36.1(@types/react@19.1.2)(monaco-editor@0.52.2)(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.36.1(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3))(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.36.1(graphql@16.11.0)(typescript@5.8.3))
@@ -1349,6 +1352,13 @@ packages:
 
   '@payloadcms/plugin-cloud-storage@3.36.1':
     resolution: {integrity: sha512-9diDn7r6G6ihlzIUGwsMR/LI8iN+n6M1RIViYzcvn8J9qHzxlWCXoWiN6Sy1jf/FTk2VvRdeAWB+o4AEC/rjGQ==}
+    peerDependencies:
+      payload: 3.36.1
+      react: ^19.0.0 || ^19.0.0-rc-65a56d0e-20241020
+      react-dom: ^19.0.0 || ^19.0.0-rc-65a56d0e-20241020
+
+  '@payloadcms/plugin-form-builder@3.36.1':
+    resolution: {integrity: sha512-gKBgXSAjfkCqPBgH2DGw6XY0VC5hN7moh1HT7R6whvu+HQxWitMK1WAsTmXMgRPmh0V4l1HdI6UtUVq/iYoRHg==}
     peerDependencies:
       payload: 3.36.1
       react: ^19.0.0 || ^19.0.0-rc-65a56d0e-20241020
@@ -5705,6 +5715,20 @@ snapshots:
       find-node-modules: 2.1.3
       payload: 3.36.1(graphql@16.11.0)(typescript@5.8.3)
       range-parser: 1.2.1
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - monaco-editor
+      - next
+      - supports-color
+      - typescript
+
+  '@payloadcms/plugin-form-builder@3.36.1(@types/react@19.1.2)(monaco-editor@0.52.2)(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.36.1(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
+    dependencies:
+      '@payloadcms/ui': 3.36.1(@types/react@19.1.2)(monaco-editor@0.52.2)(next@15.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.77.4))(payload@3.36.1(graphql@16.11.0)(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+      escape-html: 1.0.3
+      payload: 3.36.1(graphql@16.11.0)(typescript@5.8.3)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
     transitivePeerDependencies:

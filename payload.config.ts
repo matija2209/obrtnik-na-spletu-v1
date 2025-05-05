@@ -33,11 +33,11 @@ import { seed } from './src/seed'; // Import the seed function
 import { Pages } from '@/collections/Pages';
 import { Footer } from '@/globals/Footer';
 import { Redirects } from '@/collections/Redirects'; // Import the new collection
-import { Forms } from '@/collections/Forms'; // Import the Forms collection
 import { Pricelists } from '@/collections/Pricelists'; // Import the new Pricelists collection
 import { PriceListSections } from '@/collections/PriceListSections'; // Import new
 import { PriceListItems } from '@/collections/PriceListItems'; // Import new
 import { Banners } from '@/collections/Banners'; // Import the new Banners collection
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder' // Import form builder plugin
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -95,7 +95,7 @@ const addDeployHook = <T extends CollectionConfig | GlobalConfig>(config: T): T 
       ...existingHooks,
       afterChange: [
         ...existingAfterChange,
-        triggerVercelDeploy as any,
+        triggerVercelDeploy as any, // Cast needed because hook types might not perfectly align depending on context
       ],
     },
   };
@@ -116,7 +116,6 @@ const allCollections: CollectionConfig[] = [
   OpeningHours,
   Pages,
   Redirects, // Add the Redirects collection here
-  Forms, // Add the Forms collection here
   Pricelists, // Add the Pricelists collection here
   PriceListSections, // Add new
   PriceListItems, // Add new
@@ -234,6 +233,27 @@ export default buildConfig({
   //     await seed(payload);
   // },
   plugins: [
+    formBuilderPlugin({
+      redirectRelationships: [Pages.slug], // Use Pages collection slug for redirects
+      // Override default fields or add custom ones if needed
+      // fields: { ... }, 
+      // Add deploy hook to form and submission collections
+      formOverrides: {
+        hooks: {
+          afterChange: [triggerVercelDeploy as CollectionAfterChangeHook],
+        },
+        // Add other overrides like access control if needed for multi-tenancy
+        // access: { ... },
+      },
+      formSubmissionOverrides: {
+        // Remove the deploy hook as it's not needed for submissions
+        // hooks: {
+        //   afterChange: [triggerVercelDeploy as CollectionAfterChangeHook],
+        // },
+        // Add other overrides like access control if needed for multi-tenancy
+        // access: { ... },
+      },
+    }),
     s3Storage({
       collections: {
         [Media.slug]: true,
@@ -249,7 +269,7 @@ export default buildConfig({
         forcePathStyle: true,
       },
     }),
-    multiTenantPlugin<Config>({
+    multiTenantPlugin<Config>({ // Ensure this comes after formBuilderPlugin if it needs to modify its collections
       tenantField: {
         access: {
           read: () => true,
@@ -276,22 +296,23 @@ export default buildConfig({
         [Media.slug]: {},
         [Pages.slug]: {},
         [OpeningHours.slug]: {},
-        [Redirects.slug]: {}, // Add Redirects to multi-tenant config
-        [Forms.slug]: {}, // Add Forms to multi-tenant config
+        [Redirects.slug]: {},
+        'forms': {}, // Add default form builder collection slug
+        'form-submissions': {}, // Add default form builder submissions slug
         [Pricelists.slug]: {},
         [PriceListSections.slug]: {}, // Add new
         [PriceListItems.slug]: {}, // Add new
-        [Banners.slug]: {}, // Add Banners to multi-tenant config
-        [Menus.slug]: {}, // Add Menus to multi-tenant config
-        // Globals seem to be handled differently or implicitly here
-        // If you need explicit tenant control for globals like Footer, Navbar, BusinessInfo,
-        // you might need to adjust how they are registered or how the plugin handles them.
-        // Check the plugin documentation for handling globals.
-        // Example (if needed and supported):
-        // [Footer.slug]: { isGlobal: true },
-        // [Navbar.slug]: { isGlobal: true },
-        // [BusinessInfo.slug]: { isGlobal: true },
-      },
+        [Banners.slug]: {},
+        [Menus.slug]: {},
+      } as any, // Cast to any to bypass strict type checking for dynamic slugs
+      // Globals seem to be handled differently or implicitly here
+      // If you need explicit tenant control for globals like Footer, Navbar, BusinessInfo,
+      // you might need to adjust how they are registered or how the plugin handles them.
+      // Check the plugin documentation for handling globals.
+      // Example (if needed and supported):
+      // [Footer.slug]: { isGlobal: true },
+      // [Navbar.slug]: { isGlobal: true },
+      // [BusinessInfo.slug]: { isGlobal: true },
     }),
   ],
   secret: process.env.PAYLOAD_SECRET,
