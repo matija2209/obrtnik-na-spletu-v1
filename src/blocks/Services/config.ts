@@ -1,12 +1,11 @@
 import type { Block } from 'payload';
 
-
-const Services: Block = {
+const Service: Block = {
   slug: 'services',
   interfaceName: 'ServicesBlock',
   labels: {
-    singular: 'Services Block',
-    plural: 'Services Blocks',
+    singular: 'Services Section',
+    plural: 'Services Sections',
   },
   fields: [
     {
@@ -14,49 +13,78 @@ const Services: Block = {
       label: 'Template',
       type: 'select',
       required: true,
-      defaultValue: 'default',
       options: [
         {
-          label: 'Default Layout',
+          label: 'Default',
           value: 'default',
         },
-        // Add more template options here
+        {
+          label: 'Service Cards',
+          value: 'service-cards',
+        },
+        {
+          label: 'Big Cards',
+          value: 'big-cards',
+        },
+        {
+          label: 'Simple List',
+          value: 'simple-list',
+        },
+        {
+          label: 'Simple Card',
+          value: 'simple-card',
+        },
+        {
+          label: 'Service Feature Row',
+          value: 'service-feature-row',
+        },
+        {
+          label: 'Rounded Cards',
+          value: 'rounded-cards',
+        },
       ],
+      defaultValue: 'default',
     },
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov sekcije storitev',
-      required: false,
-      localized: true,
-      defaultValue: '',
+      label: 'Section Title',
     },
     {
       name: 'description',
       type: 'textarea',
-      label: 'Opis sekcije storitev',
-      localized: true,
-      defaultValue: '',
+      label: 'Section Description',
     },
     {
       name: 'selectedServices',
       type: 'relationship',
       relationTo: 'services',
       hasMany: true,
-      label: 'Izbrane storitve',
-      required: false,
-
+      label: 'Select Services',
+      admin: {
+        description: 'Select the services to display in this section.',
+      },
     },
-    {
-      name: 'serviceCta',
-      type: 'relationship',
-      relationTo: 'ctas',
-      hasMany: false,
-      required: false,
-      label: 'CTA gumb sekcije storitev',
-  
-    }
-  ]
-};
+    // {
+    //   name: 'cta',
+    //   type: 'relationship',
+    //   hasMany: true,
+    //   relationTo: 'ctas',
+    //   label: 'Call to Action',
+    //   required: false,
+    //   admin: {
+    //     description: 'Select a call to action button to display in this section.',
+    //   },
+    // },
+    // You might want to add a CTA field specific to the services, like 'View Service Details'
+    // {
+    //   name: 'serviceCta',
+    //   label: 'Service Call to Action Label',
+    //   type: 'text',
+    //   defaultValue: 'Learn More',
+    // },
+    // TODO: Consider adding an 'alternateLayout' boolean field here if needed
+  ],
+}; 
 
-export default Services; 
+export default Service;

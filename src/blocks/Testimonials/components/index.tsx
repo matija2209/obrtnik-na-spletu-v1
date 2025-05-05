@@ -1,4 +1,7 @@
 import DefaultTestimonialsSection from './default-testimonials-section';
+import SingleTestimonialSection from './single-testimonial-section';
+import SideCarouselSection from './side-carousel-section';
+import ThreeCarouselSection from './three-carousel-section';
 import type { TestimonialsBlock as TestimonialsBlockType, Testimonial as PayloadTestimonial, Cta } from '@payload-types'; // Assuming TestimonialsBlock is the type name
 
 // Helper to check if an item is a Testimonial object (not a number ID)
@@ -10,33 +13,53 @@ const isTestimonialObject = (item: number | PayloadTestimonial): item is Payload
 //   typeof item === 'object' && item !== null; // Removed as CTA is not directly on the block type
 
 const TestimonialsBlock = ({ ...block }: TestimonialsBlockType) => {
-  // Assuming a template field might exist
+  // Validate selectedTestimonials: ensure it's an array of PayloadTestimonial objects
+  const validTestimonials = (block.selectedTestimonials ?? []) 
+    .map((item: number | PayloadTestimonial) => isTestimonialObject(item) ? item : null) 
+    .filter((item: PayloadTestimonial | null): item is PayloadTestimonial => item !== null);
+
+  // Render nothing or a message if no testimonials are valid (unless a specific template handles this)
+  if (validTestimonials.length === 0) {
+    // In a real app, you might want to log this or show a placeholder in dev/preview
+    return null; 
+  }
+
   switch (block?.template) {
+    case 'single-testimonial':
+      return (
+        <SingleTestimonialSection
+          title={block.title}
+          description={block.description} // Pass description
+          testimonials={validTestimonials}
+          // Assuming default bgColor is fine, or you might add a bgColor field to the block config
+        />
+      );
+    case 'side-carousel':
+      return (
+        <SideCarouselSection
+          title={block.title}
+          description={block.description} // Pass description (though might not be used by template)
+          testimonials={validTestimonials}
+          // Assuming default bgColor ('bg-background') is desired for this template
+        />
+      );
+    case 'three-carousel':
+      return (
+        <ThreeCarouselSection
+          title={block.title}
+          description={block.description} // Pass description (though might not be used by template)
+          testimonials={validTestimonials}
+          // Assuming default bgColor ('bg-secondary') is desired for this template
+        />
+      );
     case 'default':
-    default: // Defaulting to render DefaultTestimonialsSection
-      // Validate selectedTestimonials: ensure it's an array of PayloadTestimonial objects
-      const validTestimonials = (block.selectedTestimonials ?? []) // Use selectedTestimonials
-        .map((item: number | PayloadTestimonial) => isTestimonialObject(item) ? item : null) // Update map signature
-        .filter((item: PayloadTestimonial | null): item is PayloadTestimonial => item !== null);
-
-      // Validate CTA - Removed as CTA is not directly on the block type
-      // const validCta = isCtaObject(block.cta) ? block.cta : undefined; 
-
-      // DefaultTestimonialsSection requires testimonials, so maybe render nothing or a message if none are valid?
-      if (validTestimonials.length === 0) {
-        // Optionally return null or a placeholder if no testimonials
-         return null; 
-        // return <div>No testimonials available.</div>;
-      }
-
+    default: 
       return (
         <DefaultTestimonialsSection
           title={block.title ?? undefined}
-          testimonials={validTestimonials} // Pass validated testimonials
-          // cta={validCta} // Removed prop
+          testimonials={validTestimonials} 
         />
       );
-      // Add other cases for different templates if needed
   }
 
   // Fallback

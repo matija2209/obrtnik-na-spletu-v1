@@ -3,3 +3,46 @@ description:
 globs:
 alwaysApply: false
 ---
+# Rule: Adding New Block Component Templates
+
+This rule outlines the standard flow for wiring up a Payload block to its corresponding React component, based on the pattern used for several existing blocks.
+
+## Flow:
+
+1.  **Identify Block & Files:**
+    *   Locate the block's main component file: `[src/blocks/[BlockName]/components/index.tsx](mdc:src/blocks/[BlockName]/components/index.tsx)` (replace `[BlockName]` with the actual block name, e.g., `FAQ`).
+    *   Find the corresponding section component within the same directory, usually named like `default-[block-name]-section.tsx` or `[block-name]-section.tsx`. Example: `[src/blocks/FAQ/components/faq-section.tsx](mdc:src/blocks/FAQ/components/faq-section.tsx)`. Use `list_dir` tool if unsure.
+
+2.  **Inspect Section Component:**
+    *   Read the section component file (e.g., `faq-section.tsx`) using the `read_file` tool to determine the exact props it requires (`title`, `description`, data arrays like `faqData`, `services`, `testimonials`, etc.).
+
+3.  **Update Block Index Component (`index.tsx`):**
+    *   **Import Types:** Import the specific block type (e.g., `FAQBlock`) and any related data types (e.g., `FaqItem`, `Media`, `Cta`, `Service`, `Testimonial`) from `[@payload-types](mdc:payload-types.ts)`. Use aliasing if needed (e.g., `FAQBlock as FaqBlockType`).
+    *   **Import Section Component:** Import the component identified in step 1 (e.g., `import DefaultFAQSection from './faq-section';`).
+    *   **Implement Component Logic:**
+        *   Define the component signature: `const [BlockName]Block = ({ ...block }: [BlockName]BlockType) => { ... };`.
+        *   Use a `switch (block?.template)` if multiple templates are possible, otherwise a simple return might suffice.
+        *   **Data Handling (inside `default` or specific template case):**
+            *   Extract simple props: `title={block.title ?? undefined}`.
+            *   **Validate Relationship Fields:** For fields linking to other collections (e.g., `selectedFaqs`, `selectedServices`, `highlightedProjects`, `selectedTestimonials`), ensure the data passed to the section component is an array of *objects*, not just IDs (which Payload relationships often contain).
+                *   Add a type guard helper function (e.g., `isFaqObject`) to check if an item in the array is the expected object type (usually checking `typeof item === 'object'` and key properties like `'question' in item`). The type signature should match the relationship type (e.g., `number | PayloadFaqItem`).
+                *   Use `.map()` and `.filter()` with the type guard to process the array:
+                    ```typescript
+                    // Example for a field named 'selectedItems' of type (number | PayloadItemType)[]
+                    const validItems = (block.selectedItems ?? [])
+                      .map((item: number | PayloadItemType) => isItemObject(item) ? item : null)
+                      .filter((item: PayloadItemType | null): item is PayloadItemType => item !== null);
+                    ```
+            *   **Handle Missing Required Data:** If the section component requires certain data (like `validItems`), check if the array is empty after validation and return `null` or a placeholder to prevent errors or rendering an empty section.
+            *   **Render Section Component:** Pass the validated props: `<DefaultSectionComponent title={...} items={validItems} />`. Match prop names carefully to the section component's requirements (e.g., `faqData` vs `items`).
+    *   **Export:** `export default [BlockName]Block;`.
+
+4.  **Iterate & Debug:** Use the linter errors provided. Fix any TypeScript/linter errors by double-checking type imports, field names in the block data (`block.fieldName`), and prop names expected by the section component.
+
+## Key Files Referenced:
+
+*   Block Index Component: `[src/blocks/[BlockName]/components/index.tsx](mdc:src/blocks/[BlockName]/components/index.tsx)`
+*   Section Component: `[src/blocks/[BlockName]/components/[section-component-name].tsx](mdc:src/blocks/[BlockName]/components/[section-component-name].tsx)`
+*   Payload Generated Types: `[payload-types.ts](mdc:payload-types.ts)`
+*   Payload Config (Block Definitions): `[payload.config.ts](mdc:payload.config.ts)` (Blocks might be defined here or imported from collection definitions)
+*   Example Block Definition in Collection: `[src/collections/Pages.ts](mdc:src/collections/Pages.ts)` (Illustrates how blocks are defined in collections like `Pages`)

@@ -1,18 +1,19 @@
 import TitleSubtitle from '@/components/headings/title-subtitle'
 import { ContainedSection } from '@/components/layout/container-section'
 import FollowerIcons from '@/components/misc/follower-icons'
-import { Button } from '@/components/ui/button'
 import type { Cta, HeroBlock } from '@payload-types'
-import Link from 'next/link'
+
 
 type DefaultHeroBlockProps = {
   title: string;
   subtitle: string;
   ctas: Cta[];
   imageUrl: string;
+  kicker?: string;
+  includeFollowersBadge: boolean;
 }
 
-function DefaultHeroBlock({title, subtitle, ctas, imageUrl}: DefaultHeroBlockProps) {
+function DefaultHeroBlock({title, subtitle, ctas, imageUrl, kicker, includeFollowersBadge}: DefaultHeroBlockProps) {
 
   return (
     <ContainedSection 
@@ -27,15 +28,17 @@ function DefaultHeroBlock({title, subtitle, ctas, imageUrl}: DefaultHeroBlockPro
       {/* Content */}
       <div className="container animate-fade-in mx-auto px-4 max-w-7xl relative z-10">
         <TitleSubtitle
-          preTitle="+27 LET IZKUŠENJ"
-          title="Profesionalno Rezanje in Vrtanje Betona po Sloveniji"
-          subtitle="Zanesljive in natančne rešitve za vaše gradbene projekte"
+          preTitle={kicker}
+          title={title}
+          subtitle={subtitle}
           ctas={ctas}
         />
-        <div className="mt-8">
-          <p className="text-sm font-semibold mb-2 text-amber-500">Stotine zadovoljnih strank</p>
-          <FollowerIcons />
-        </div>
+        {includeFollowersBadge && (
+          <div className="mt-8">
+            <p className="text-sm font-semibold mb-2 text-amber-500">Stotine zadovoljnih strank</p>
+            <FollowerIcons />
+          </div>
+        )}
       </div>
     </div>
   </ContainedSection>

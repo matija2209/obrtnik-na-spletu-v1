@@ -23,8 +23,19 @@ const Hero: Block = {
           label: 'One Hero Section',
           value: 'one-hero-section',
         },
-
+        {
+          label: 'Two Column Hero',
+          value: 'two-column-hero',
+        },
       ],
+    },
+    {
+      name: 'kicker',
+      type: 'text',
+      label: 'Kicker',
+      required: false,
+      localized: true,
+      defaultValue: '',
     },
     {
       name: 'title',
@@ -40,6 +51,13 @@ const Hero: Block = {
       label: 'Podnaslov',
       localized: true,
       defaultValue: '',
+    },
+    {
+      name: 'includeFollowersBadge',
+      label: 'Include Followers Badge',
+      type: 'checkbox',
+      defaultValue: false,
+      required: false,
     },
     {
       name: 'ctas',

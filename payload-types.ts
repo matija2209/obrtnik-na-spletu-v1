@@ -486,9 +486,11 @@ export interface Page {
  * via the `definition` "HeroBlock".
  */
 export interface HeroBlock {
-  template: 'default' | 'one-hero-section';
+  template: 'default' | 'one-hero-section' | 'two-column-hero';
+  kicker?: string | null;
   title?: string | null;
   subtitle?: string | null;
+  includeFollowersBadge?: boolean | null;
   ctas?: (number | Cta)[] | null;
   image?: (number | Media)[] | null;
   features?:
@@ -541,11 +543,20 @@ export interface Cta {
  * via the `definition` "ServicesBlock".
  */
 export interface ServicesBlock {
-  template: 'default';
+  template:
+    | 'default'
+    | 'service-cards'
+    | 'big-cards'
+    | 'simple-list'
+    | 'simple-card'
+    | 'service-feature-row'
+    | 'rounded-cards';
   title?: string | null;
   description?: string | null;
+  /**
+   * Select the services to display in this section.
+   */
   selectedServices?: (number | Service)[] | null;
-  serviceCta?: (number | null) | Cta;
   id?: string | null;
   blockName?: string | null;
   blockType: 'services';
@@ -593,10 +604,11 @@ export interface AboutBlock {
  * via the `definition` "TestimonialsBlock".
  */
 export interface TestimonialsBlock {
-  template: 'default';
+  template: 'default' | 'single-testimonial' | 'side-carousel' | 'three-carousel' | 'three-column-carousel-recycled';
   title?: string | null;
   description?: string | null;
   selectedTestimonials?: (number | Testimonial)[] | null;
+  googleReviewCta?: (number | null) | Cta;
   id?: string | null;
   blockName?: string | null;
   blockType: 'testimonials';
@@ -1615,8 +1627,10 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface HeroBlockSelect<T extends boolean = true> {
   template?: T;
+  kicker?: T;
   title?: T;
   subtitle?: T;
+  includeFollowersBadge?: T;
   ctas?: T;
   image?: T;
   features?:
@@ -1638,7 +1652,6 @@ export interface ServicesBlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   selectedServices?: T;
-  serviceCta?: T;
   id?: T;
   blockName?: T;
 }
@@ -1684,6 +1697,7 @@ export interface TestimonialsBlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   selectedTestimonials?: T;
+  googleReviewCta?: T;
   id?: T;
   blockName?: T;
 }

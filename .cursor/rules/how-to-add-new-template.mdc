@@ -1,0 +1,63 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Payload Block Structure & Adding New Templates
+
+This project uses Payload CMS blocks to create reusable page sections. Here's how the `Hero` block is structured, followed by the steps to add a new template:
+
+## Block Structure (Example: Hero Block)
+
+1.  **Configuration**: The block's fields (like title, subtitle, image, ctas, features) and available templates (`default`, `one-hero-section`, `two-column-hero`) are defined in `[src/blocks/Hero/config.ts](mdc:src/blocks/Hero/config.ts)`.
+2.  **Component Implementation**: The React components that render the block on the frontend are located in `[src/blocks/Hero/components/](mdc:src/blocks/Hero/components)`.
+3.  **Template Dispatcher**: The `[src/blocks/Hero/components/index.tsx](mdc:src/blocks/Hero/components/index.tsx)` component acts as a dispatcher. It receives the block data, performs necessary validation, processes data, and then renders the appropriate template component based on the `template` field selected in the CMS.
+4.  **Template Components**: Each template value defined in the config has a corresponding component file (e.g., `[src/blocks/Hero/components/two-column-hero-block.tsx](mdc:src/blocks/Hero/components/two-column-hero-block.tsx)`). These components are primarily presentational and receive validated props from the dispatcher.
+5.  **Data Types**: The structure of the block data is defined in `[payload-types.ts](mdc:payload-types.ts)`.
+6.  **Utilities**: Common functions like `[src/utilities/validateCtas.ts](mdc:src/utilities/validateCtas.ts)` and `[src/utilities/getImageUrl.ts](mdc:src/utilities/getImageUrl.ts)` are used for validation and data processing within the dispatcher.
+
+## Commonly Used Components & Utilities
+
+When building new block templates, you will likely need these common elements:
+
+*   **`ContainedSection`**: Wraps the entire block section, providing consistent padding, max-width, background colors/images, and optional grid lines.
+    *   **Import**: `import { ContainedSection } from '@/components/layout/container-section';`
+    *   **Usage**: Typically the outermost element in your template component. Configure its props (`bgColor`, `maxWidth`, `padding`, `verticalPadding`, `backgroundImage`, etc.) based on the block's needs.
+*   **`SectionHeading`**: Used for creating standardized section titles and descriptions. It uses a compound component pattern.
+    *   **Import**: `import SectionHeading from '@/components/layout/section-heading';`
+    *   **Usage**:
+        ```tsx
+        <SectionHeading>
+          <SectionHeading.Title>Your Title Here</SectionHeading.Title>
+          <SectionHeading.Description>Your description here.</SectionHeading.Description>
+        </SectionHeading>
+        ```
+*   **`getImageUrl`**: A utility function to safely extract the URL from a Payload Media object or one of its size variants.
+    *   **Import**: `import { getImageUrl } from '@/utilities/getImageUrl';`
+    *   **Usage**: `const imageUrl = getImageUrl(blockData.imageField);` or `const thumbnailUrl = getImageUrl(blockData.imageField?.sizes?.thumbnail);`
+
+## Steps to Add a New Template to an Existing Block (e.g., Hero)
+
+1.  **Update Config**: Add a new option to the `template.options` array in the block's configuration file (e.g., `[src/blocks/Hero/config.ts](mdc:src/blocks/Hero/config.ts)`). Define a unique `value` (e.g., `my-new-template`) and a user-friendly `label`.
+2.  **Generate Types**: Run `pnpm generate:types` in the terminal to update `[payload-types.ts](mdc:payload-types.ts)` with the new template value.
+    *   You can find all generated Payload types in `[payload-types.ts](mdc:payload-types.ts)`.
+3.  **Create Component**: Create a new React component file for the template within the block's `components` directory (e.g., `[src/blocks/Hero/components/my-new-template.tsx](mdc:src/blocks/Hero/components/my-new-template.tsx)`).
+    *   This component should be purely presentational, accepting validated props.
+    *   Define its props interface based on the data it needs to render.
+    *   Utilize `ContainedSection`, `SectionHeading`, `getImageUrl`, etc., as needed.
+4.  **Update Dispatcher**: Edit the block's dispatcher component (`[src/blocks/Hero/components/index.tsx](mdc:src/blocks/Hero/components/index.tsx)`):
+    *   Import the newly created template component.
+    *   Add a new `case` to the `switch (template)` statement matching the `value` defined in step 1.
+    *   Inside this `case`, implement validation logic: check for required fields, validate relationships (like CTAs using `validateCtas`), process data (like image URLs using `getImageUrl`).
+    *   If validation fails, return a `MissingFieldsAlert` component.
+    *   If validation passes, render the new template component, passing the validated and processed data as props according to its interface.
+
+This pattern (config, components directory, dispatcher index, template components) is common for blocks within this project.
+
+## Refactoring Note
+
+When refactoring code from other projects into a new block template, ensure you maintain the original UI and UX design as much as possible. Adapt the data handling and API interactions to conform to the patterns described above (using the dispatcher for validation/processing, `getImageUrl` for images, `validateCtas` for buttons, etc.) and the data structures defined in `payload-types.ts`.
+
+## Important Note on Data/Props
+
+When implementing a new template component, if you notice that the required data or props are not available within the existing block's data structure (as defined in the block's config and `[payload-types.ts](mdc:payload-types.ts)`), please point this out. Suggest necessary modifications to the block's configuration (`config.ts`) to include the required fields. Remember to regenerate types (`pnpm generate:types`) after updating the configuration.

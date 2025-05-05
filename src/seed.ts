@@ -895,8 +895,10 @@ export const seed = async (payload: Payload): Promise<void> => {
             {
               blockType: 'hero', // Matches the slug defined in src/blocks/Hero/index.ts
               template: 'default',
+              kicker: 'A1 INŠTALACIJE', // Added Kicker
               title: 'Vaš Zanesljiv Partner za Vodoinštalacije', // Previously heroTitle
               subtitle: 'A1 INŠTALACIJE d.o.o. - Kakovost in zanesljivost na prvem mestu.', // Previously heroSubtitle
+              includeFollowersBadge: true, // Added flag
               ...(seededImageIds['hiša-terasa-zunanje-ureditve.jpg'] && { image: [seededImageIds['hiša-terasa-zunanje-ureditve.jpg']] }),
               features: [ // Previously heroFeatures
                 { iconText: '10+', text: 'Let izkušenj' },

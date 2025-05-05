@@ -13,14 +13,18 @@ interface HeroProps {
   imageUrl?: string;
   title?: string;
   subtitle?: string;
-  ctas?:Cta[]
+  ctas?:Cta[];
+  kicker?: string;
+  includeFollowersBadge: boolean;
 }
 
 const OneHeroSection: React.FC<HeroProps> = ({
   title,
   subtitle,
   ctas,
-  imageUrl
+  imageUrl,
+  kicker,
+  includeFollowersBadge,
 }) => {
 
   
@@ -39,10 +43,17 @@ const OneHeroSection: React.FC<HeroProps> = ({
     <div className='w-full md:w-1/2'>
 
           <TitleSubtitle
+            preTitle={kicker}
             title={title}
             subtitle={subtitle}
             ctas={ctas}
           />
+          {includeFollowersBadge && (
+            <div className="mt-8">
+              <p className="text-sm font-semibold mb-2 text-amber-500">Stotine zadovoljnih strank</p>
+              <FollowerIcons />
+            </div>
+          )}
     </div>
       </div>
       {

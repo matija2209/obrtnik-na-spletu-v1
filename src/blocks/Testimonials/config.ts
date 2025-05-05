@@ -1,4 +1,5 @@
 import type { Block } from 'payload';
+import type { TestimonialsBlock } from '@payload-types';
 
 
 const Testimonials: Block = {
@@ -19,6 +20,22 @@ const Testimonials: Block = {
         {
           label: 'Default Layout',
           value: 'default',
+        },
+        {
+          label: 'Single Testimonial Carousel',
+          value: 'single-testimonial',
+        },
+        {
+          label: 'Side Carousel',
+          value: 'side-carousel',
+        },
+        {
+          label: 'Three Column Carousel',
+          value: 'three-carousel',
+        },
+        {
+          label: 'Three Column Carousel (Recycled)',
+          value: 'three-column-carousel-recycled',
         },
         // Add more template options here
       ],
@@ -45,7 +62,17 @@ const Testimonials: Block = {
       hasMany: true,
       label: 'Izbrana mnenja',
       required: false,
-  
+    },
+    // Add googleReviewCta field based on recycled code
+    {
+      name: 'googleReviewCta',
+      label: 'Google Review CTA',
+      type: 'relationship',
+      relationTo: 'ctas',
+      hasMany: false, // Allow only one CTA
+      admin: {
+        condition: (_, siblingData: Partial<TestimonialsBlock>) => siblingData.template === 'three-column-carousel-recycled',
+      }
     }
   ]
 };
