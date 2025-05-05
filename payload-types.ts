@@ -179,6 +179,32 @@ export interface Tenant {
    */
   slug: string;
   /**
+   * Define the color palette for this tenant.
+   */
+  colors?: {
+    primary?: string | null;
+    primaryForeground?: string | null;
+    secondary?: string | null;
+    secondaryForeground?: string | null;
+    accent?: string | null;
+    accentForeground?: string | null;
+    background?: string | null;
+    foreground?: string | null;
+  };
+  /**
+   * Define fonts and weights for this tenant.
+   */
+  typography?: {
+    displayFont?: string | null;
+    bodyFont?: string | null;
+    headingWeight?: string | null;
+    bodyWeight?: string | null;
+  };
+  /**
+   * Controls the roundness of elements (e.g., buttons, cards). Use rem, px, etc.
+   */
+  radius?: string | null;
+  /**
    * If checked, logging in is not required to read. Useful for building public pages.
    */
   allowPublicRead?: boolean | null;
@@ -1304,6 +1330,27 @@ export interface TenantsSelect<T extends boolean = true> {
   name?: T;
   domain?: T;
   slug?: T;
+  colors?:
+    | T
+    | {
+        primary?: T;
+        primaryForeground?: T;
+        secondary?: T;
+        secondaryForeground?: T;
+        accent?: T;
+        accentForeground?: T;
+        background?: T;
+        foreground?: T;
+      };
+  typography?:
+    | T
+    | {
+        displayFont?: T;
+        bodyFont?: T;
+        headingWeight?: T;
+        bodyWeight?: T;
+      };
+  radius?: T;
   allowPublicRead?: T;
   updatedAt?: T;
   createdAt?: T;

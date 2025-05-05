@@ -27,7 +27,25 @@ export const seed = async (payload: Payload): Promise<void> => {
       data: {
         name: 'A1 INŠTALACIJE d.o.o.',
         slug: 'a1-instalacije',
-        domain:"a1-instalacije.si"
+        domain:"a1-instalacije.si",
+        // Add theme fields with default values
+        colors: {
+          primary: 'oklch(0.82 0.1663 83.77)',
+          primaryForeground: 'oklch(0.985 0 0)',
+          secondary: 'oklch(0.32 0.1025 253.89)',
+          secondaryForeground: 'oklch(0.98 0.005 0)',
+          accent: 'oklch(0.77 0.1687 67.36)',
+          accentForeground: 'oklch(0.205 0 0)',
+          background: 'oklch(1 0 0)',
+          foreground: 'oklch(0.145 0 0)',
+        },
+        typography: {
+          displayFont: 'Inter, system-ui, sans-serif',
+          bodyFont: 'Inter, system-ui, sans-serif',
+          headingWeight: '700',
+          bodyWeight: '400',
+        },
+        radius: '0.625rem',
         // domain: 'a1.localhost', // Optional: Add domain if needed
       },
     });

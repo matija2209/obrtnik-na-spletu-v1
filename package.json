@@ -21,6 +21,7 @@
     "seed": "SEED=true pnpm run payload migrate:fresh && SEED=true pnpm run dev"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.802.0",
     "@hookform/resolvers": "^5.0.1",
     "@next/third-parties": "^15.3.1",
     "@payloadcms/admin-bar": "^3.36.1",
@@ -63,6 +64,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "cross-env": "^7.0.3",
+    "culori": "^4.0.1",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "geist": "^1.4.1",
@@ -76,6 +78,7 @@
     "payload": "^3.36.1",
     "payload-admin-bar": "^1.0.7",
     "react": "^19.0.0",
+    "react-colorful": "^5.6.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",
@@ -92,6 +95,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/culori": "^4.0.0",
     "@types/google.maps": "^3.58.1",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.17",
