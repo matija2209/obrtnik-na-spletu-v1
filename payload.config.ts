@@ -24,8 +24,8 @@ import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import type { CollectionConfig, GlobalConfig } from 'payload';
 import type { GlobalAfterChangeHook } from 'payload';
 import type { PayloadRequest } from 'payload';
-import type { CollectionAfterChangeHook } from 'payload';
-import type { Config } from './payload-types'
+import type { CollectionAfterChangeHook, CollectionSlug } from 'payload';
+import type { Config, Tenant } from './payload-types'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { isSuperAdmin } from '@/access/isSuperAdminAccess'
 import { getUserTenantIDs } from '@/utilities/getUserTenantIDs'
@@ -38,6 +38,7 @@ import { PriceListSections } from '@/collections/PriceListSections'; // Import n
 import { PriceListItems } from '@/collections/PriceListItems'; // Import new
 import { Banners } from '@/collections/Banners'; // Import the new Banners collection
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder' // Import form builder plugin
+import { seoPlugin } from '@payloadcms/plugin-seo'; // Import SEO plugin
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -269,7 +270,62 @@ export default buildConfig({
         forcePathStyle: true,
       },
     }),
-    multiTenantPlugin<Config>({ // Ensure this comes after formBuilderPlugin if it needs to modify its collections
+    seoPlugin({ // Configure SEO Plugin
+      collections: [
+        Pages.slug,
+        Projects.slug,
+        Services.slug,
+      ],
+      uploadsCollection: Media.slug,
+      tabbedUI: true, // Enable tabbed UI
+      generateTitle: ({ doc }) => `Obrtnik na spletu — ${doc?.title ?? ''}`, // Basic title generation
+      generateDescription: ({ doc }) => doc?.excerpt ?? '', // Use excerpt field if available
+      generateImage: ({ doc }) => doc?.featuredImage ?? null, // Use featuredImage field if available
+      generateURL: async ({ doc, collectionSlug, req }) => {
+        const payload = req.payload;
+        // Default to the site URL from env, fallback to localhost for dev
+        const defaultBaseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+        let baseUrl = defaultBaseUrl;
+        let path = '/';
+
+        const tenantId = typeof doc?.tenant === 'object' ? doc.tenant?.id : doc?.tenant;
+
+        if (tenantId) {
+          try {
+            const tenant = await payload.findByID({
+              collection: Tenants.slug as CollectionSlug,
+              id: tenantId,
+              depth: 0,
+            }) as Tenant;
+
+            if (tenant) {
+               if (tenant.domain) {
+                 baseUrl = `https://${tenant.domain}`;
+               } else {
+                 // Construct URL using tenant slug structure
+                 baseUrl = `${defaultBaseUrl}/tenant-slugs/${tenant.slug}`;
+               }
+            }
+          } catch (error) {
+            payload.logger.error(`Error fetching tenant ${tenantId} for SEO URL generation: ${error instanceof Error ? error.message : error}`);
+            // Fallback to default base URL if tenant fetch fails
+          }
+        }
+
+        // Construct path based on collection and slug
+        // Assuming Pages are routed at the root of the tenant/site, others are nested
+        if (collectionSlug === Pages.slug) {
+          path = `/${doc?.slug ?? ''}`;
+        } else {
+          path = `/${collectionSlug}/${doc?.slug ?? ''}`;
+        }
+
+        // Combine base URL and path, ensuring no double slashes
+        const fullUrl = `${baseUrl}${path}`.replace(/([^:]\/)\/+/g, '$1');
+        return fullUrl;
+      }
+    }),
+    multiTenantPlugin<Config>({ // Multi-Tenant plugin should generally come after other plugins modifying collections
       tenantField: {
         access: {
           read: () => true,

@@ -558,54 +558,64 @@ export const seed = async (payload: Payload): Promise<void> => {
       payload.logger.warn('One or more FAQ Items failed to seed.');
     }
 
-    // --- Seed Forms --- (New Section)
-    payload.logger.info('Attempting to seed Forms...');
+    // --- Seed Forms --- (Using formBuilderPlugin collection)
+    payload.logger.info('Attempting to seed Forms (using formBuilderPlugin)...');
     payload.logger.info(`Seeding Forms for tenant ${tenantId}...`);
     let contactForm;
     try {
       payload.logger.info('Attempting to create Form: Kontaktni Obrazec');
       contactForm = await payload.create({
-        collection: 'forms',
+        collection: 'forms', // Use the slug from formBuilderPlugin
         data: {
           tenant: tenantA1.id,
-          title: 'Stopite v stik',
-          subtitle: 'Izpolnite obrazec in odgovorili vam bomo v najkrajšem možnem času.',
-          label: 'Kontaktni Obrazec (Glavni)', // Internal label
-          replyToEmail: 'info.a1instalacije@gmail.com', // Should match business info
-          // redirectUrl: '/hvala', // Optional redirect
+          title: 'Stopite v stik', // Form title for admin/selection
+          // submitButtonLabel: 'Pošlji sporočilo', // Default is 'Submit', customize if needed
+          // confirmationType: 'message', // Default
+          // confirmationMessage: [{ type: 'p', children: [{ text: 'Hvala za vaše sporočilo!' }] }], // Customize if needed
+          // Add other form builder fields if needed (e.g., emailsToSendTo)
           fields: [
             {
               name: 'ime_priimek',
               label: 'Ime in Priimek',
-              type: 'text',
+              blockType: 'text', // Use blockType instead of type
               required: true,
+              width: 100, // Example width
             },
             {
               name: 'email',
               label: 'Email Naslov',
-              type: 'email',
+              blockType: 'email', // Use blockType instead of type
               required: true,
+              width: 100,
             },
             {
               name: 'telefon',
               label: 'Telefonska številka (Neobvezno)',
-              type: 'text',
+              blockType: 'text', // Use blockType instead of type
               required: false,
+              width: 100,
             },
             {
               name: 'sporocilo',
               label: 'Vaše sporočilo',
-              type: 'textarea',
+              blockType: 'textarea', // Use blockType instead of type
               required: true,
+              width: 100,
             },
             {
               name: 'strinjanje',
               label: 'Strinjam se s pogoji zasebnosti',
-              type: 'checkbox',
+              blockType: 'checkbox', // Use blockType instead of type
               required: true,
+              width: 100,
             },
           ],
+          // Note: 'replyToEmail' and 'redirectUrl' are not standard top-level form builder fields.
+          // Emails are configured within the 'emails' array field of the form builder collection.
+          // Redirects are configured via 'confirmationType: redirect' and the 'redirect' field.
+          // You might need to adjust where you store 'replyToEmail' or handle redirects differently.
         },
+         req: simulatedReq, // Pass req for tenant context if needed
       });
       payload.logger.info(`Created Form: ${contactForm.id}`);
       payload.logger.info(`Forms seeded: ${contactForm.id}`);

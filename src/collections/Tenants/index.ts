@@ -48,6 +48,9 @@ export const Tenants: CollectionConfig = {
       type: 'group',
       admin: {
         description: 'Define the color palette for this tenant.',
+        components: {
+          Field: '/collections/Tenants/fields/tenant-fields',
+        },
       },
       fields: [
         {
