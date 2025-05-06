@@ -48,9 +48,7 @@ export const Tenants: CollectionConfig = {
       type: 'group',
       admin: {
         description: 'Define the color palette for this tenant.',
-        components: {
-          Field: '/collections/Tenants/fields/tenant-fields',
-        },
+        
       },
       fields: [
         {
@@ -58,6 +56,15 @@ export const Tenants: CollectionConfig = {
           label: 'Primary Color',
           type: 'text',
           defaultValue: 'oklch(0.82 0.1663 83.77)',
+          // https://payloadcms.com/docs/fields/overview#admin-options
+          // https://payloadcms.com/docs/fields/overview#custom-components
+          admin:{
+            components:{
+              // TextFieldServerComponent
+              // https://payloadcms.com/docs/fields/text#custom-components
+              Field: '/collections/Tenants/fields/tenant-fields',
+            }
+          }
         },
         {
           name: 'primaryForeground',
