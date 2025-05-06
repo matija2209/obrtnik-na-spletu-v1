@@ -71,42 +71,91 @@ export const Tenants: CollectionConfig = {
           label: 'Primary Foreground Color',
           type: 'text',
           defaultValue: 'oklch(0.985 0 0)',
+          admin:{
+            components:{
+              // TextFieldServerComponent
+              // https://payloadcms.com/docs/fields/text#custom-components
+              Field: '/collections/Tenants/fields/tenant-fields',
+            }
+          }
         },
         {
           name: 'secondary',
           label: 'Secondary Color',
           type: 'text',
           defaultValue: 'oklch(0.32 0.1025 253.89)',
+          admin:{
+            components:{
+              // TextFieldServerComponent
+              // https://payloadcms.com/docs/fields/text#custom-components
+              Field: '/collections/Tenants/fields/tenant-fields',
+            }
+          }
         },
         {
           name: 'secondaryForeground',
           label: 'Secondary Foreground Color',
           type: 'text',
           defaultValue: 'oklch(0.98 0.005 0)',
+          admin:{
+            components:{
+              // TextFieldServerComponent
+              // https://payloadcms.com/docs/fields/text#custom-components
+              Field: '/collections/Tenants/fields/tenant-fields',
+            }
+          }
         },
         {
           name: 'accent', 
           label: 'Accent Color',
           type: 'text',
           defaultValue: 'oklch(0.77 0.1687 67.36)',
+          admin:{
+            components:{
+              // TextFieldServerComponent
+              // https://payloadcms.com/docs/fields/text#custom-components
+              Field: '/collections/Tenants/fields/tenant-fields',
+            }
+          }
         },
         {
           name: 'accentForeground',
           label: 'Accent Foreground Color',
           type: 'text',
           defaultValue: 'oklch(0.205 0 0)',
+          admin:{
+            components:{
+              // TextFieldServerComponent
+              // https://payloadcms.com/docs/fields/text#custom-components
+              Field: '/collections/Tenants/fields/tenant-fields',
+            }
+          }
         },
         {
           name: 'background', 
           label: 'Background Color',
           type: 'text',
           defaultValue: 'oklch(1 0 0)',
+          admin:{
+            components:{
+              // TextFieldServerComponent
+              // https://payloadcms.com/docs/fields/text#custom-components
+              Field: '/collections/Tenants/fields/tenant-fields',
+            }
+          }
         },
         {
           name: 'foreground',
           label: 'Foreground Color (Text)',
           type: 'text',
           defaultValue: 'oklch(0.145 0 0)',
+          admin:{
+            components:{
+              // TextFieldServerComponent
+              // https://payloadcms.com/docs/fields/text#custom-components
+              Field: '/collections/Tenants/fields/tenant-fields',
+            }
+          }
         },
       ],
     },

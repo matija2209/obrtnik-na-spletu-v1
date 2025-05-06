@@ -1,12 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { useField } from '@payloadcms/ui'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import type { TextFieldClientComponent, TextField } from 'payload'
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+
 
 // Define Color Types
+import { TextFieldClientComponent } from 'payload'
 type THSL = { h: number; s: number; l: number };
 type TRGB = { r: number; g: number; b: number };
 type TLCH = { l: number; c: number; h: number };
