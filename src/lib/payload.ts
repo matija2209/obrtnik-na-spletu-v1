@@ -4,7 +4,7 @@ import type {
   Project, 
   Service, 
   Page,
-  Inquiry,
+  FormSubmission,
 } from '../../payload-types'
 
 import configPromise from '@payload-config'
@@ -20,6 +20,32 @@ export const getPayloadClient = async (): Promise<Payload> => {
     config: configPromise,
   })
 }
+
+// Function to get Tenant ID by slug
+export const getTenantIdBySlug = async (slug: string): Promise<number | null> => {
+  const payload = await getPayloadClient();
+  try {
+    const tenantQuery = await payload.find({
+      collection: 'tenants',
+      where: {
+        slug: {
+          equals: slug,
+        },
+      },
+      limit: 1,
+      depth: 0, // We only need the ID
+    });
+
+    if (tenantQuery.docs.length > 0 && tenantQuery.docs[0].id) {
+      return tenantQuery.docs[0].id;
+    }
+    console.log(`Tenant not found for slug: ${slug} or ID missing. Query result:`, JSON.stringify(tenantQuery, null, 2));
+    return null;
+  } catch (error) {
+    console.error(`Error fetching tenant ID for slug ${slug}:`, error);
+    return null;
+  }
+};
 
 // Collection utility functions
 export const getProjects = async (query = {}) => {
@@ -90,15 +116,6 @@ export const getCtas = async (query = {}) => {
   })
 }
 
-
-
-export const createInquiry = async (data: Inquiry) => {
-  const payload = await getPayloadClient()
-  return payload.create({
-    collection: 'inquiries',
-    data,
-  })
-}
 
 export const getMedia = async (query = {}) => {
   const payload = await getPayloadClient()
@@ -273,4 +290,32 @@ export const queryPageBySlug = async ({
   } finally {
     console.log('====== QUERY PAGE BY SLUG - END ======');
   }
+};
+
+// Function to create a form submission
+export const createFormSubmission = async (
+  formId: string,
+  submissionData: Record<string, any>,
+  tenantId: number,
+): Promise<FormSubmission> => {
+  const payload = await getPayloadClient(); // Get payload instance internally
+
+  // Transform submissionData to the format expected by the form-builder plugin
+  const formattedSubmissionData = Object.entries(submissionData).map(
+    ([key, value]) => ({
+      field: key,
+      value: value,
+    }),
+  );
+
+  // Create a new submission in the 'form-submissions' collection
+  const submission = await payload.create({
+    collection: 'form-submissions', // Default slug for form submissions by the plugin
+    data: {
+      form: Number(formId), // Link to the submitted form
+      submissionData: formattedSubmissionData, // The actual submitted data
+      tenant: tenantId, // Added tenant ID
+    },
+  });
+  return submission as FormSubmission; // Cast to FormSubmission type
 };

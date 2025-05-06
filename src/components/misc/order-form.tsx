@@ -53,75 +53,75 @@ const OrderForm = () => {
         return
       }
       
-      startTransition(async () => {
-        try {
-          // Get current form values
-          const formValues = form.getValues()
+      // startTransition(async () => {
+      //   try {
+      //     // Get current form values
+      //     const formValues = form.getValues()
           
-          // Ensure all form values are included in the FormData
-          Object.entries(formValues).forEach(([key, value]) => {
-            // Only set if the value exists and is not already in the FormData
-            if (value && !formData.has(key)) {
-              formData.set(key, value)
-            }
-          })
+      //     // Ensure all form values are included in the FormData
+      //     Object.entries(formValues).forEach(([key, value]) => {
+      //       // Only set if the value exists and is not already in the FormData
+      //       if (value && !formData.has(key)) {
+      //         formData.set(key, value)
+      //       }
+      //     })
           
-          // Log form data for debugging
-          console.log("Form data being submitted:", {
-            name: formData.get("name"),
-            email: formData.get("email"),
-            phone: formData.get("phone"),
-            service: formData.get("service"),
-            message: formData.get("message"),
-          })
+      //     // Log form data for debugging
+      //     console.log("Form data being submitted:", {
+      //       name: formData.get("name"),
+      //       email: formData.get("email"),
+      //       phone: formData.get("phone"),
+      //       service: formData.get("service"),
+      //       message: formData.get("message"),
+      //     })
           
-          // Ensure required fields are set
-          if (!formData.get("name") || !formData.get("service")) {
-            setFormError("Prosimo, izpolnite vsa obvezna polja.")
-            return
-          }
+      //     // Ensure required fields are set
+      //     if (!formData.get("name") || !formData.get("service")) {
+      //       setFormError("Prosimo, izpolnite vsa obvezna polja.")
+      //       return
+      //     }
           
-          // Extract values from FormData for the server action
-          const submitData = {
-            name: formData.get("name") as string,
-            email: formData.get("email") as string,
-            message: `
-              Service: ${formData.get("service")}
-              Phone: ${formData.get("phone") || "Not provided"}
-              Message: ${formData.get("message") || "No additional message"}
-            `,
-          }
+      //     // Extract values from FormData for the server action
+      //     const submitData = {
+      //       name: formData.get("name") as string,
+      //       email: formData.get("email") as string,
+      //       message: `
+      //         Service: ${formData.get("service")}
+      //         Phone: ${formData.get("phone") || "Not provided"}
+      //         Message: ${formData.get("message") || "No additional message"}
+      //       `,
+      //     }
           
-          console.log("Submitting form to server action...");
-          const result = await submitContactForm(submitData)
-          console.log("Server action response:", result);
+      //     console.log("Submitting form to server action...");
+          // const result = await submitContactForm(submitData)
+          // console.log("Server action response:", result);
           
-          if (result.success) {
-            console.log("Form submission successful!");
-            setSuccess(true)
-            form.reset()
-            setTimeout(() => {
-              redirect("/hvala-za-povprasevanje")
-            }, 1000)
-          } else {
-            // Handle errors
-            console.error("Form submission errors:", result.message, result.errors)
-            setFormError(result.message || "Prišlo je do napake pri pošiljanju. Prosimo, poskusite znova.")
-            if (result.errors) {
-              result.errors.forEach((error) => {
-                const fieldName = error.path as keyof ContactFormData
-                form.setError(fieldName, {
-                  type: "manual",
-                  message: error.message || "Napaka pri validaciji",
-                })
-              })
-            }
-          }
-        } catch (error) {
-          console.error("Form submission error:", error)
-          setFormError("Prišlo je do nepričakovane napake. Prosimo, poskusite znova.")
-        }
-      })
+        //   if (result.success) {
+        //     console.log("Form submission successful!");
+        //     setSuccess(true)
+        //     form.reset()
+        //     setTimeout(() => {
+        //       redirect("/hvala-za-povprasevanje")
+        //     }, 1000)
+        //   } else {
+        //     // Handle errors
+        //     console.error("Form submission errors:", result.message, result.errors)
+        //     setFormError(result.message || "Prišlo je do napake pri pošiljanju. Prosimo, poskusite znova.")
+        //     if (result.errors) {
+        //       result.errors.forEach((error:any) => {
+        //         const fieldName = error.path as keyof ContactFormData
+        //         form.setError(fieldName, {
+        //           type: "manual",
+        //           message: error.message || "Napaka pri validaciji",
+        //         })
+        //       })
+        //     }
+        //   }
+        // } catch (error) {
+        //   console.error("Form submission error:", error)
+        //   setFormError("Prišlo je do nepričakovane napake. Prosimo, poskusite znova.")
+        // }
+      // })
     }
     
     return (

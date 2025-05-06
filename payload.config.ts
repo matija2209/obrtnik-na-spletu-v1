@@ -13,7 +13,7 @@ import { Testimonials } from '@/collections/Testimonials'
 import { FaqItems } from '@/collections/FaqItems'
 import { Services } from '@/collections/Services'
 import { Ctas } from '@/collections/Ctas'
-import { Inquiries } from '@/collections/Inquiries/index'
+
 import { Navbar } from '@/globals/Navbar'
 import { BusinessInfo } from '@/globals/BusinessInfo'
 import { Machinery } from '@/collections/Machinery'
@@ -113,7 +113,6 @@ const allCollections: CollectionConfig[] = [
   Testimonials,
   FaqItems,
   Ctas,
-  Inquiries,
   Machinery,
   OpeningHours,
   Pages,
@@ -252,9 +251,18 @@ export default buildConfig({
     formBuilderPlugin({
       redirectRelationships: [Pages.slug], // Use Pages collection slug for redirects
       // Override default fields or add custom ones if needed
+      defaultToEmail: process.env.DEFAULT_TO_EMAIL || 'matija@obrtniknaspletu.si',
       // fields: { ... }, 
       // Add deploy hook to form and submission collections
       formOverrides: {
+        labels:{
+          singular:"Obrazec",
+          plural:"Obraci",
+        },
+        admin:{
+          group:"Prodaja",
+
+        },
         hooks: {
           afterChange: [triggerVercelDeploy as CollectionAfterChangeHook],
         },
@@ -262,6 +270,14 @@ export default buildConfig({
         // access: { ... },
       },
       formSubmissionOverrides: {
+        labels:{
+          singular:"Povpraševanje",
+          plural:"Povpraševanja",
+        },
+        admin:{
+          group:"Prodaja",
+          
+        }
         // Remove the deploy hook as it's not needed for submissions
         // hooks: {
         //   afterChange: [triggerVercelDeploy as CollectionAfterChangeHook],
@@ -362,7 +378,6 @@ export default buildConfig({
         [Testimonials.slug]: {},
         [FaqItems.slug]: {},
         [Ctas.slug]: {},
-        [Inquiries.slug]: {},
         [Machinery.slug]: {},
         [Media.slug]: {},
         [Pages.slug]: {},
@@ -376,14 +391,6 @@ export default buildConfig({
         [Banners.slug]: {},
         [Menus.slug]: {},
       } as any, // Cast to any to bypass strict type checking for dynamic slugs
-      // Globals seem to be handled differently or implicitly here
-      // If you need explicit tenant control for globals like Footer, Navbar, BusinessInfo,
-      // you might need to adjust how they are registered or how the plugin handles them.
-      // Check the plugin documentation for handling globals.
-      // Example (if needed and supported):
-      // [Footer.slug]: { isGlobal: true },
-      // [Navbar.slug]: { isGlobal: true },
-      // [BusinessInfo.slug]: { isGlobal: true },
     }),
   ],
   secret: process.env.PAYLOAD_SECRET,

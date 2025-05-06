@@ -50,6 +50,13 @@ const Contact: Block = {
    
     },
     {
+      name: 'form',
+      type: 'relationship',
+      relationTo: 'forms',
+      hasMany: false,
+      label: 'Form',
+    },
+    {
       name: 'phoneNumber',
       type: 'text',
       label: 'Telefonska številka',

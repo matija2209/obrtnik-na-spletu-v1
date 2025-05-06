@@ -3,6 +3,7 @@ import type { ContactBlock as ContactBlockType } from '@payload-types'; // Assum
 
 const ContactBlock = ({ ...block }: ContactBlockType) => {
   // Assuming a template field might exist, though not strictly necessary if only one template
+  const form = block?.form;
   switch (block?.template) {
     case 'default':
     default: // Defaulting to render DefaultContactSection
@@ -10,6 +11,7 @@ const ContactBlock = ({ ...block }: ContactBlockType) => {
         <DefaultContactSection
           title={block.title ?? undefined}
           description={block.description ?? undefined}
+          form={form}
           // Add other props from ContactBlockType if needed by DefaultContactSection in the future
         />
       );

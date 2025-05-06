@@ -1,79 +1,74 @@
 "use server";
 
-import { z } from "zod";
-import { sendContactEmailWithBrevo } from "@/lib/brevo";
-import { createContactEmailContent, createReplyToVisitorEmailContent } from "@/utils/prepare-email";
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  message: z.string().min(10, {
-    message: "Message must be at least 10 characters.",
-  }),
-});
+import { createFormSubmission } from '@/lib/payload';
+import { getTenantIdBySlug } from '@/lib/payload';
 
-type FormData = z.infer<typeof formSchema>;
 
-export async function submitContactForm(formData: FormData) {
+interface SubmitActionArgs {
+  formId: string;
+  submissionData: Record<string, any>;
+  tenantSlug: string;
+}
+
+export async function submitContactForm(args: SubmitActionArgs) {
   'use server';
+  console.log("submitContactForm received tenantSlug:", args.tenantSlug);
+  const { formId, submissionData, tenantSlug } = args;
+  
+  const tenantIdNumber = await getTenantIdBySlug(tenantSlug);
+
+  if (tenantIdNumber === null) {
+    console.error("Invalid tenant slug provided or tenant not found:", tenantSlug);
+    return {
+      success: false,
+      message: "Invalid tenant identifier provided.",
+    };
+  }
+
   try {
-    // 1. Validate the form data
-    const validatedData = formSchema.parse(formData);
-    const { name, email, message } = validatedData;
+    // Create a new submission using the dedicated function
+    const submission = await createFormSubmission(formId, submissionData, tenantIdNumber);
 
-    // 2. Prepare emails using the functions from prepare-email.ts
+    // The form-builder plugin handles emails and confirmation messages based on form config.
+    // We can retrieve the form's confirmation message if needed, or rely on a generic one.
+    // For simplicity, returning a generic success message here.
+    // To get form-specific confirmation:
+    // const formConfig = await payload.findByID({ collection: 'forms', id: formId, depth: 0 });
+    // const confirmationMessage = formConfig?.confirmationMessage || "Form submitted successfully!";
 
-    // Prepare admin notification email
-    const adminEmail = await createContactEmailContent(
-      name,
-      email,
-      message,
-    );
+    return { 
+      success: true, 
+      message: "Form submitted successfully!" // Replace with formConfig.confirmationMessage if dynamic
+    };
 
-    // Send email to admin
-    await sendContactEmailWithBrevo({
-      from: name,
-      textContent: adminEmail.textContent,
-      htmlContent: adminEmail.htmlContent,
-      to: "kontakt@rezanje-betona.si", // Admin email address
-      subject: `Nov kontaktni obrazec na Rezanje-Betona.si`,
-    });
-
-    // Prepare auto-reply email to the visitor
-    const visitorEmail = await createReplyToVisitorEmailContent(
-      name,
-    );
-
-    // Send auto-reply to visitor
-    await sendContactEmailWithBrevo({
-      from: "Rezanje Betona",
-      textContent: visitorEmail.textContent,
-      htmlContent: visitorEmail.htmlContent,
-      to: email,
-      subject: "Zahvala za vaše povpraševanje - Rezanje Betona", // Updated subject in Slovenian
-    });
-
-    return { success: true, message: "Your message has been sent successfully!" };
-  } catch (error) {
-    console.error("Error submitting contact form:", error);
+  } catch (error: any) {
+    // payloadInstance.logger.error(`Error submitting form ID ${formId}:`, error); // payloadInstance no longer available here
+    console.error(`Error submitting form ID ${formId}:`, error); // Generic error logging
     
-    if (error instanceof z.ZodError) {
-      // Return validation errors
+    // Handle Payload validation errors or other errors from the create operation
+    if (error.data && Array.isArray(error.data)) {
+      // Format Payload validation errors to be compatible with react-hook-form
+      const fieldErrors = error.data.map((err: { field?: string, message: string }) => ({
+        path: err.field || 'form', // Fallback to a general form error if field is not specified
+        message: err.message,
+      }));
       return { 
         success: false, 
-        message: "Validation failed",
-        errors: error.errors.map(e => ({
-          path: e.path.join('.'),
-          message: e.message
-        }))
+        message: error.message || "Validation failed. Please check your input.",
+        errors: fieldErrors,
       };
+    } else if (error instanceof Error) {
+        return { 
+            success: false, 
+            message: error.message || "An unexpected error occurred while submitting the form."
+        };
     }
     
-    return { success: false, message: "Failed to send your message. Please try again later." };
+    return { 
+      success: false, 
+      message: "Failed to submit form due to an unexpected error. Please try again later." 
+    };
   }
 }
 

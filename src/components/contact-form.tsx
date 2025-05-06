@@ -1,10 +1,10 @@
 'use client';
 
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useTransition, useState } from "react";
-import { submitContactForm } from "@/actions/form";
+import { useParams } from 'next/navigation'; // Import useParams
+import { submitContactForm } from "@/actions/form"; // This will need to be updated later
+import { type Form as PayloadFormType } from "@payload-types"; // Import the Form type
 
 import { 
   Form, 
@@ -16,10 +16,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea"; // Keep for potential 'textarea' field type
 import { Alert, AlertDescription } from "@/components/ui/alert";
+// Import other UI components as needed for different field types (e.g., Select)
 
-export function ContactForm() {
+interface ContactFormProps {
+  form: PayloadFormType;
+}
+
+export function ContactForm({ form: payloadForm }: ContactFormProps) {
+  const params = useParams(); // Get URL parameters
+  const tenantSlug = params.tenant as string; // Extract tenantSlug
 
   const [isPending, startTransition] = useTransition();
   const [formStatus, setFormStatus] = useState<{
@@ -27,50 +34,47 @@ export function ContactForm() {
     message?: string;
   } | null>(null);
   
-  // Define form schema
-  const formSchema = z.object({
-    name: z.string().min(2, {
-      message: "Ime mora vsebovati vsaj 2 znaka."
-    }),
-    email: z.string().email({
-      message: "Vnesite veljaven e-poštni naslov."
-    }),
-    message: z.string().min(10, {
-      message: "Sporočilo mora vsebovati vsaj 10 znakov."
-    }),
-  });
-  
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      message: "",
-    },
+  // react-hook-form setup. Default values can be dynamically generated.
+  // Schema validation will also need to be dynamic based on payloadForm.fields
+  const form = useForm({
+    // resolver: zodResolver(formSchema), // This needs to be dynamic
+    defaultValues: payloadForm.fields?.reduce((acc, field) => {
+      if ('name' in field && field.name) { // Ensure field has a name property
+        // @ts-ignore // field type is complex, handle specific blockTypes later
+        acc[field.name] = field.defaultValue || "";
+      }
+      return acc;
+    }, {} as Record<string, any>) || {},
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: Record<string, any>) {
     setFormStatus(null);
 
     startTransition(async () => {
       try {
-        const result = await submitContactForm(values);
+        // The submitContactForm action will need to be adapted
+        // It should receive the form ID and the submitted values
+        const result = await submitContactForm({
+          formId: String(payloadForm.id),
+          submissionData: values,
+          tenantSlug: tenantSlug, // Pass the tenantSlug
+        });
         
         if (result.success) {
           form.reset();
           setFormStatus({
             success: true,
-            message: "Vaše sporočilo je bilo uspešno poslano!"
+            message: result.message || "Your message has been sent successfully!"
           });
         } else {
           setFormStatus({
             success: false,
-            message: result.message || "Napaka pri pošiljanju sporočila. Poskusite znova."
+            message: result.message || "Failed to send message. Please try again."
           });
           
-          // If there are validation errors, set them in the form
+          // Handle server-side validation errors if provided
           if (result.errors) {
-            result.errors.forEach(error => {
+            result.errors.forEach((error: { path: string; message: string }) => {
               form.setError(error.path as any, { 
                 type: "server", 
                 message: error.message 
@@ -82,70 +86,62 @@ export function ContactForm() {
         console.error("Error submitting form:", error);
         setFormStatus({
           success: false,
-          message: "Prišlo je do nepričakovane napake. Poskusite znova kasneje."
+          message: "An unexpected error occurred. Please try again later."
         });
       }
     });
   }
 
+  // Helper function to render appropriate input based on field type
+  const renderField = (fieldConfig: any) => {
+    // Ensure fieldConfig is an object and has a 'name' and 'blockType'
+    if (typeof fieldConfig !== 'object' || !fieldConfig || !('name' in fieldConfig) || !('blockType' in fieldConfig)) {
+      // Or handle this case more gracefully, e.g., log an error or return null
+      return <p key={Math.random()}>Invalid field configuration</p>; 
+    }
+    
+    const fieldName = fieldConfig.name;
+
+    return (
+      <FormField
+        control={form.control}
+        // @ts-ignore
+        name={fieldName}
+        key={fieldName}
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>{fieldConfig.label || fieldName}</FormLabel>
+            <FormControl>
+              {/* Basic input for now, expand with switch for blockType */}
+              {fieldConfig.blockType === 'textarea' ? (
+                <Textarea placeholder={fieldConfig.placeholder || ''} {...field} />
+              ) : fieldConfig.blockType === 'email' ? (
+                 <Input type="email" placeholder={fieldConfig.placeholder || ''} {...field} />
+              ) : (
+                <Input placeholder={fieldConfig.placeholder || ''} {...field} />
+              )}
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    );
+  };
+
   return (
     <Form {...form}>
-      <form id="contact" onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-4 rounded-lg shadow-sm">
+      <form id={String(payloadForm.id)} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-4 rounded-lg shadow-sm">
         {formStatus && (
           <Alert variant={formStatus.success ? "default" : "destructive"}>
             <AlertDescription>{formStatus.message}</AlertDescription>
           </Alert>
         )}
         
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ime</FormLabel>
-              <FormControl>
-                <Input placeholder="Janez Novak" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>E-pošta</FormLabel>
-              <FormControl>
-                <Input placeholder="janez@primer.si" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sporočilo</FormLabel>
-              <FormControl>
-                <Textarea 
-                  placeholder="Vaše sporočilo..." 
-                  className="h-24 resize-none"
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {payloadForm.fields?.map(renderField)}
         
         <Button 
           type="submit" 
-          disabled={isPending}
+          disabled={isPending || !payloadForm.fields || payloadForm.fields.length === 0} // Disable if no fields
         >
           {isPending ? (
             <>
@@ -153,10 +149,10 @@ export function ContactForm() {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Pošiljanje...
+              Sending...
             </>
           ) : (
-            "Pošlji"
+            payloadForm.submitButtonLabel || "Submit"
           )}
         </Button>
       </form>

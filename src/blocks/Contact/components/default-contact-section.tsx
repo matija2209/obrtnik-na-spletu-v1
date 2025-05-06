@@ -2,18 +2,20 @@ import React from 'react';
 import { ContainedSection } from '@/components/layout/container-section';
 import { ContactForm } from '@/components/contact-form';
 import SectionHeading from '@/components/layout/section-heading';
-import { Cta } from '@payload-types';
+import { Cta, type Form as PayloadFormType } from '@payload-types';
 
 interface ContactSectionProps {
   title?: string;
   description?: string;
   cta?: Cta[];
   imageUrl?: string;
+  form?: PayloadFormType | null | number;
 }
 
 export default function DefaultContactSection({
   title,
   description,
+  form,
 }: ContactSectionProps) {
   return (
     <ContainedSection
@@ -31,7 +33,11 @@ export default function DefaultContactSection({
         </SectionHeading>
       </div>
       <div className=" rounded-lg ">
-        <ContactForm />
+        {form && typeof form === 'object' ? (
+          <ContactForm form={form} />
+        ) : (
+          <p className="text-white">No form selected or form data is invalid.</p>
+        )}
       </div>
 
     </ContainedSection>

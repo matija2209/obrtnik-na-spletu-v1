@@ -562,66 +562,170 @@ export const seed = async (payload: Payload): Promise<void> => {
     payload.logger.info('Attempting to seed Forms (using formBuilderPlugin)...');
     payload.logger.info(`Seeding Forms for tenant ${tenantId}...`);
     let contactForm;
+    let defaultSiteContactForm; // New default form for the contact block
+
     try {
-      payload.logger.info('Attempting to create Form: Kontaktni Obrazec');
+      payload.logger.info('Attempting to create Form: Stopite v stik (A1 Specifični)');
       contactForm = await payload.create({
-        collection: 'forms', // Use the slug from formBuilderPlugin
+        collection: 'forms',
         data: {
           tenant: tenantA1.id,
-          title: 'Stopite v stik', // Form title for admin/selection
-          // submitButtonLabel: 'Pošlji sporočilo', // Default is 'Submit', customize if needed
-          // confirmationType: 'message', // Default
-          // confirmationMessage: [{ type: 'p', children: [{ text: 'Hvala za vaše sporočilo!' }] }], // Customize if needed
-          // Add other form builder fields if needed (e.g., emailsToSendTo)
+          title: 'Stopite v stik',
+          submitButtonLabel: 'Pošlji sporočilo',
+          confirmationType: 'message',
+          confirmationMessage: { 
+            root: {
+              type: 'root',
+              children: [{ type: 'p', children: [{ text: 'Hvala za vaše sporočilo! Odgovorili vam bomo v najkrajšem možnem času.' }], version: 1 }],
+              direction: null,
+              format: '',
+              indent: 0,
+              version: 1,
+            }
+          },
           fields: [
             {
-              name: 'ime_priimek',
+              name: 'name',
               label: 'Ime in Priimek',
-              blockType: 'text', // Use blockType instead of type
+              blockType: 'text',
               required: true,
-              width: 100, // Example width
+              width: 100,
             },
             {
               name: 'email',
-              label: 'Email Naslov',
-              blockType: 'email', // Use blockType instead of type
+              label: 'Vaš Email Naslov',
+              blockType: 'email',
               required: true,
               width: 100,
             },
             {
-              name: 'telefon',
-              label: 'Telefonska številka (Neobvezno)',
-              blockType: 'text', // Use blockType instead of type
-              required: false,
-              width: 100,
-            },
-            {
-              name: 'sporocilo',
-              label: 'Vaše sporočilo',
-              blockType: 'textarea', // Use blockType instead of type
+              name: 'message',
+              label: 'Sporočilo',
+              blockType: 'textarea',
               required: true,
               width: 100,
             },
             {
-              name: 'strinjanje',
-              label: 'Strinjam se s pogoji zasebnosti',
-              blockType: 'checkbox', // Use blockType instead of type
+              name: 'privacyConsent',
+              label: 'Strinjam se s politiko zasebnosti in obdelavo osebnih podatkov.',
+              blockType: 'checkbox',
               required: true,
               width: 100,
             },
           ],
-          // Note: 'replyToEmail' and 'redirectUrl' are not standard top-level form builder fields.
-          // Emails are configured within the 'emails' array field of the form builder collection.
-          // Redirects are configured via 'confirmationType: redirect' and the 'redirect' field.
-          // You might need to adjust where you store 'replyToEmail' or handle redirects differently.
+          // Configure emails for this default form
+          emails: [
+            {
+              emailTo: '{{tenant.email}}', // Example: Send to tenant's primary email
+              emailFrom: '{{field.email}}', // Reply to user's email
+              subject: 'Novo sporočilo preko spletne strani',
+              message: { 
+                root: {
+                  type: 'root',
+                  children: [
+                    { type: 'p', children: [{ text: 'Prejeli ste novo sporočilo:' }], version: 1 },
+                    { type: 'p', children: [{ text: 'Ime: {{field.name}}' }], version: 1 },
+                    { type: 'p', children: [{ text: 'Email: {{field.email}}' }], version: 1 },
+                    { type: 'p', children: [{ text: 'Sporočilo: {{field.message}}' }], version: 1 },
+                  ],
+                  direction: null,
+                  format: '',
+                  indent: 0,
+                  version: 1,
+                }
+              }
+            }
+          ]
         },
-         req: simulatedReq, // Pass req for tenant context if needed
+        req: simulatedReq, 
       });
       payload.logger.info(`Created Form: ${contactForm.id}`);
       payload.logger.info(`Forms seeded: ${contactForm.id}`);
     } catch (err) {
       payload.logger.error('Error creating Form (Kontaktni Obrazec):', err);
-      payload.logger.warn('Form seeding failed.');
+      payload.logger.warn('Form seeding failed for A1 Specific form.'); // Clarified log
+    }
+
+    // --- Seed Default Contact Form --- (NEW)
+    try {
+      payload.logger.info('Attempting to create Form: Default Website Contact Form');
+      defaultSiteContactForm = await payload.create({
+        collection: 'forms',
+        data: {
+          tenant: tenantA1.id,
+          title: 'Default Website Contact Form', // Generic title
+          submitButtonLabel: 'Pošlji sporočilo',
+          confirmationType: 'message',
+          confirmationMessage: { 
+            root: {
+              type: 'root',
+              children: [{ type: 'p', children: [{ text: 'Hvala za vaše sporočilo! Odgovorili vam bomo v najkrajšem možnem času.' }], version: 1 }],
+              direction: null,
+              format: '',
+              indent: 0,
+              version: 1,
+            }
+          },
+          fields: [
+            {
+              name: 'name',
+              label: 'Ime in Priimek',
+              blockType: 'text',
+              required: true,
+              width: 100,
+            },
+            {
+              name: 'email',
+              label: 'Vaš Email Naslov',
+              blockType: 'email',
+              required: true,
+              width: 100,
+            },
+            {
+              name: 'message',
+              label: 'Sporočilo',
+              blockType: 'textarea',
+              required: true,
+              width: 100,
+            },
+            {
+              name: 'privacyConsent',
+              label: 'Strinjam se s politiko zasebnosti in obdelavo osebnih podatkov.',
+              blockType: 'checkbox',
+              required: true,
+              width: 100,
+            },
+          ],
+          // Configure emails for this default form
+          emails: [
+            {
+              emailTo: '{{tenant.email}}', // Example: Send to tenant's primary email
+              emailFrom: '{{field.email}}', // Reply to user's email
+              subject: 'Novo sporočilo preko spletne strani',
+              message: { 
+                root: {
+                  type: 'root',
+                  children: [
+                    { type: 'p', children: [{ text: 'Prejeli ste novo sporočilo:' }], version: 1 },
+                    { type: 'p', children: [{ text: 'Ime: {{field.name}}' }], version: 1 },
+                    { type: 'p', children: [{ text: 'Email: {{field.email}}' }], version: 1 },
+                    { type: 'p', children: [{ text: 'Sporočilo: {{field.message}}' }], version: 1 },
+                  ],
+                  direction: null,
+                  format: '',
+                  indent: 0,
+                  version: 1,
+                }
+              }
+            }
+          ]
+        },
+        req: simulatedReq, 
+      });
+      payload.logger.info(`Created Default Website Contact Form: ${defaultSiteContactForm.id}`);
+    } catch (err) {
+      payload.logger.error('Error creating Default Website Contact Form:', err);
+      payload.logger.warn('Default form seeding failed.');
     }
 
     // --- Seed Media (Images) ---
@@ -1007,6 +1111,8 @@ export const seed = async (payload: Payload): Promise<void> => {
               phoneNumber: '069 653335',
               address: 'Stegne 35, 1000 Ljubljana',
               template: 'default', // Ensure template is set if required
+              // Link the newly seeded default contact form (NEW)
+              ...(defaultSiteContactForm ? { form: defaultSiteContactForm.id } : {}),
             },
             // Machinery block - can remain hidden or you can add content
             // {
