@@ -39,6 +39,7 @@ import { PriceListItems } from '@/collections/PriceListItems'; // Import new
 import { Banners } from '@/collections/Banners'; // Import the new Banners collection
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder' // Import form builder plugin
 import { seoPlugin } from '@payloadcms/plugin-seo'; // Import SEO plugin
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'; // Import nodemailer adapter
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -233,6 +234,20 @@ export default buildConfig({
   // onInit: async (payload) => {
   //     await seed(payload);
   // },
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.DEFAULT_FROM_EMAIL || 'ne-odgovarjaj@obrtniknaspletu.si',
+    defaultFromName: process.env.DEFAULT_FROM_NAME || 'Obrtnik na spletu',
+    transportOptions: {
+      host: process.env.BREVO_SMTP_HOST,
+      port: parseInt(process.env.BREVO_SMTP_PORT || '587', 10), // Ensure port is a number
+      auth: {
+        user: process.env.BREVO_SMTP_LOGIN,
+        pass: process.env.BREVO_SMTP_KEY, // Use the second BREVO_SMTP_KEY for the password
+      },
+      // secure: true, // Use true if your SMTP server uses SSL/TLS on port 465. Brevo typically uses port 587 with STARTTLS, so secure: false (default) is often correct.
+                     // If you use port 465, set secure: true. For port 587, secure is usually false because STARTTLS is used.
+    },
+  }),
   plugins: [
     formBuilderPlugin({
       redirectRelationships: [Pages.slug], // Use Pages collection slug for redirects
