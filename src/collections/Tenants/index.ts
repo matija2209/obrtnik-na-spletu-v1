@@ -21,13 +21,13 @@ export const Tenants: CollectionConfig = {
     useAsTitle: 'name',
     group: 'Struktura',
     defaultColumns:["name","domain","updatedAt"],
-    components:{
-      views:{
-        list:{
-          Component:"/components/admin/collections/tenants/tenants-list.tsx"
-        }
-      }
-    }
+    // components:{
+    //   views:{
+    //     list:{
+    //       Component:"/components/admin/collections/tenants/tenants-list.tsx"
+    //     }
+    //   }
+    // }
   },
   hooks: {
     afterChange: [afterChangeHook],
