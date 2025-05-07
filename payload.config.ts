@@ -140,10 +140,10 @@ if (!process.env.NEXT_PUBLIC_SERVER_URL) {
 
 export default buildConfig({
   admin: {
-    
     importMap: {
       baseDir: path.resolve(__dirname, 'src'),
     },
+    
     meta: {
       title: 'Admin - Obrtnik na spletu',
       description: 'Administracija za spletno stran Obrtnik na spletu.',
@@ -177,10 +177,18 @@ export default buildConfig({
       ],
     },
     user: Users.slug,
+    
     components: {
       graphics: {
         Logo: '/graphics/Logo/index.tsx#Logo',
       },
+      beforeDashboard:["/components/admin/test-dashboard.tsx"],
+      beforeLogin:["/components/admin/login-pomoc.tsx"],
+      views:{
+        dashboard:{
+          Component:"/components/admin/test-dashboard.tsx"
+        }
+      }
     },
     livePreview: {
       breakpoints: [

@@ -13,6 +13,10 @@ export const Tenants: CollectionConfig = {
     read: ()=>true,
     update: updateAccess,
   },
+  labels:{
+    singular:"Naročnik",
+    plural:"Naročniki"
+  },
   admin: {
     useAsTitle: 'name',
   },
@@ -161,35 +165,85 @@ export const Tenants: CollectionConfig = {
     },
     {
       name: 'typography',
-      label: 'Theme Typography',
       type: 'group',
       admin: {
-        description: 'Define fonts and weights for this tenant.',
+        description: 'Define fonts, weights, and subsets for this tenant. These will be used with next/font/google.',
       },
       fields: [
         {
-          name: 'displayFont',
-          label: 'Display Font Family',
-          type: 'text',
-          defaultValue: 'Inter, system-ui, sans-serif', 
+          name: 'headingFont',
+          type: 'group',
+          label: 'Heading Font',
+          fields: [
+            {
+              name: 'name', // e.g., "Roboto", "Open_Sans"
+              label: 'Font Name',
+              type: 'select',
+              required: true,
+              defaultValue: 'Inter',
+              options: [ // Predefined list of supported Google Fonts
+                { label: 'Inter', value: 'Inter' },
+                { label: 'Roboto', value: 'Roboto' },
+                { label: 'Open Sans', value: 'Open_Sans' },
+                { label: 'Lato', value: 'Lato' },
+                { label: 'Montserrat', value: 'Montserrat' },
+                // Add other Google Fonts you want to support
+              ],
+              admin: { description: "Select a Google Font. Ensure it matches the 'next/font/google' import name (e.g., 'Open_Sans' for Open Sans)." }
+            },
+            {
+              name: 'weights', // e.g., ["400", "700"]
+              label: 'Font Weights',
+              type: 'array',
+              minRows: 1,
+              fields: [{ name: 'weight', type: 'text', required: true, admin: { description: "e.g., '400', '700', 'variable' if it's a variable font."} }],
+              defaultValue: [{ weight: '700' }],
+            },
+            {
+                name: 'subsets',
+                label: 'Subsets (Optional)',
+                type: 'array',
+                fields: [{ name: 'subset', type: 'text', required: true, admin: { description: "e.g., 'latin', 'latin-ext'. Defaults to 'latin'."}}],
+                defaultValue: [{ subset: 'latin' }]
+            }
+          ]
         },
         {
           name: 'bodyFont',
-          label: 'Body Font Family',
-          type: 'text',
-          defaultValue: 'Inter, system-ui, sans-serif',
-        },
-        {
-          name: 'headingWeight',
-          label: 'Heading Font Weight',
-          type: 'text', 
-          defaultValue: '700',
-        },
-        {
-          name: 'bodyWeight',
-          label: 'Body Font Weight',
-          type: 'text',
-          defaultValue: '400',
+          type: 'group',
+          label: 'Body Font (Paragraphs)',
+          fields: [
+            {
+              name: 'name',
+              label: 'Font Name',
+              type: 'select',
+              required: true,
+              defaultValue: 'Inter',
+              options: [ // Keep consistent with displayFont options
+                { label: 'Inter', value: 'Inter' },
+                { label: 'Roboto', value: 'Roboto' },
+                { label: 'Open Sans', value: 'Open_Sans' },
+                { label: 'Lato', value: 'Lato' },
+                { label: 'Montserrat', value: 'Montserrat' },
+              ],
+              admin: { description: "Select a Google Font." }
+            },
+            {
+              name: 'weights',
+              label: 'Font Weights',
+              type: 'array',
+              minRows: 1,
+              fields: [{ name: 'weight', type: 'text', required: true }],
+              defaultValue: [{ weight: '400' }],
+            },
+            {
+                name: 'subsets',
+                label: 'Subsets (Optional)',
+                type: 'array',
+                fields: [{ name: 'subset', type: 'text', required: true }],
+                defaultValue: [{ subset: 'latin' }]
+            }
+          ]
         },
       ],
     },

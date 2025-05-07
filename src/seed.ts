@@ -40,10 +40,16 @@ export const seed = async (payload: Payload): Promise<void> => {
           foreground: 'oklch(0.145 0 0)',
         },
         typography: {
-          displayFont: 'Inter, system-ui, sans-serif',
-          bodyFont: 'Inter, system-ui, sans-serif',
-          headingWeight: '700',
-          bodyWeight: '400',
+          headingFont: {
+            name: 'Inter',
+            weights: [{ weight: '700' }],
+            subsets: [{ subset: 'latin' }],
+          },
+          bodyFont: {
+            name: 'Inter',
+            weights: [{ weight: '400' }],
+            subsets: [{ subset: 'latin' }],
+          },
         },
         radius: '0.625rem',
         // domain: 'a1.localhost', // Optional: Add domain if needed

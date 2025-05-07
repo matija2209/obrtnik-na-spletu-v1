@@ -4,46 +4,40 @@ import { r2 } from '@/lib/r2-client';
 import { generateTenantCSS } from '@/utilities/css-generator';
 import type { Tenant } from '@payload-types';
 
-// Debounce function to prevent multiple rapid CSS generations
+// Debounce function to prevent multiple rapid generations
 const pendingTenants = new Map();
 const DEBOUNCE_TIME = 2000; // 2 seconds
 
-// Extend the global scope to include cssProcessingTimeout
+// Extend the global scope to include assetProcessingTimeout
 declare global {
-  var cssProcessingTimeout: NodeJS.Timeout | null;
+  var assetProcessingTimeout: NodeJS.Timeout | null;
 }
 
 const afterChangeHook: CollectionAfterChangeHook<Tenant> = async ({ doc, req }) => {
   if (!doc?.slug) {
-    req.payload.logger.warn(`Tenant document ${doc?.id} is missing required fields for CSS generation.`);
+    req.payload.logger.warn(`Tenant document ${doc?.id} is missing required fields for asset generation.`);
     return;
   }
   
-  // Store the tenant in the pending map with latest timestamp
   pendingTenants.set(doc.slug, {
     timestamp: Date.now(),
     tenant: doc,
     payload: req.payload
   });
   
-  // Schedule processing if not already scheduled
-  if (!global.cssProcessingTimeout) {
-    global.cssProcessingTimeout = setTimeout(processAllPendingTenants, DEBOUNCE_TIME);
+  if (!global.assetProcessingTimeout) {
+    global.assetProcessingTimeout = setTimeout(processAllPendingTenants, DEBOUNCE_TIME);
   }
   
-  // Return immediately to unblock the CMS operation
   return;
 };
 
-// Process all tenants that have been updated
 async function processAllPendingTenants() {
-  // Clear the timeout reference
-  global.cssProcessingTimeout = null;
+  global.assetProcessingTimeout = null;
   
-  // Get pending tenants that haven't been updated in the last DEBOUNCE_TIME
   const now = Date.now();
-  const tenantsToProcess: Tenant[] = []; // Explicitly type the array
-  let payloadInstance: Payload | null = null; // Explicitly type and allow null
+  const tenantsToProcess: Tenant[] = [];
+  let payloadInstance: Payload | null = null;
   
   pendingTenants.forEach((data, slug) => {
     if (now - data.timestamp >= DEBOUNCE_TIME) {
@@ -53,59 +47,91 @@ async function processAllPendingTenants() {
     }
   });
   
-  // If there are still pending tenants, schedule another processing
   if (pendingTenants.size > 0) {
-    global.cssProcessingTimeout = setTimeout(processAllPendingTenants, DEBOUNCE_TIME);
+    global.assetProcessingTimeout = setTimeout(processAllPendingTenants, DEBOUNCE_TIME);
   }
   
-  // Process each tenant that's ready
   if (tenantsToProcess.length > 0 && payloadInstance) {
     try {
-      // Use type assertion to assure TypeScript payloadInstance is not null here
       const currentPayload = payloadInstance as Payload;
-      currentPayload.logger.info(`Processing CSS for ${tenantsToProcess.length} tenants`);
+      currentPayload.logger.info(`Processing assets for ${tenantsToProcess.length} tenants`);
       
-      // Process tenant CSS in parallel
       await Promise.all(tenantsToProcess.map(tenant => 
-        processAndUploadTenantCSS(tenant, currentPayload)
+        processAndUploadTenantAssets(tenant, currentPayload) // Changed function name here
       ));
       
-      // Update manifest only once after all individual tenant files are uploaded
       await updateManifestAndVersions(currentPayload);
       
-    } catch (error: any) { // Catch any type of error
-       // Use type assertion here as well, in case the error happens before assignment inside try
+    } catch (error: any) {
        if (payloadInstance) {
-         (payloadInstance as Payload).logger.error(`Batch CSS processing error: ${error?.message || error}`);
+         (payloadInstance as Payload).logger.error(`Batch asset processing error: ${error?.message || error}`);
        }
     }
   }
 }
 
-// CSS processing for a single tenant
-async function processAndUploadTenantCSS(tenant: Tenant, payload: Payload) { // Add type annotations
+// Asset processing for a single tenant (CSS and Theme Config JSON)
+async function processAndUploadTenantAssets(tenant: Tenant, payload: Payload) { // Renamed and updated
   const cssFileName = `tenant-styles/${tenant.slug}.css`;
-  
+  const configFileName = `tenant-configs/${tenant.slug}.json`; // New config file name
+  let cssSuccess = false;
+  let configSuccess = false;
+
   try {
-    // Generate and upload CSS
+    payload.logger.info(`Processing assets for tenant ${tenant.slug}`);
+
+    // 1. Generate and Upload CSS
     payload.logger.info(`Generating CSS for tenant ${tenant.slug}`);
     const css = generateTenantCSS(tenant);
-    
     const cssUploadResult = await r2.uploadFile(cssFileName, css, {
       contentType: 'text/css',
-      cacheControl: 'public, max-age=3600',
+      cacheControl: 'public, max-age=3600', // Existing cache for CSS
     });
     
     if (!cssUploadResult.success) {
       payload.logger.error(`Failed to upload CSS for ${tenant.slug}: ${cssUploadResult.error}`);
-      return false;
+    } else {
+      payload.logger.info(`Successfully uploaded CSS for ${tenant.slug}.`);
+      cssSuccess = true;
+    }
+
+    // 2. Prepare and Upload Tenant Theme Configuration JSON
+    const themeConfig = {
+      slug: tenant.slug,
+      colors: tenant.colors, // Include colors as per plan, can be adjusted
+      typography: {
+        headingFont: tenant.typography?.headingFont ? {
+          name: tenant.typography.headingFont.name,
+          weights: tenant.typography.headingFont.weights?.map(w => w.weight),
+          subsets: tenant.typography.headingFont.subsets?.map(s => s.subset),
+        } : undefined,
+        bodyFont: tenant.typography?.bodyFont ? {
+          name: tenant.typography.bodyFont.name,
+          weights: tenant.typography.bodyFont.weights?.map(w => w.weight),
+          subsets: tenant.typography.bodyFont.subsets?.map(s => s.subset),
+        } : undefined,
+      },
+      // Add any other configurations the layout might need from the tenant
+    };
+    console.log(themeConfig);
+    
+    payload.logger.info(`Uploading theme config for tenant ${tenant.slug} to ${configFileName}`);
+    const configUploadResult = await r2.uploadFile(configFileName, JSON.stringify(themeConfig, null, 2), {
+      contentType: 'application/json',
+      cacheControl: 'public, max-age=300', // Cache for config as per plan
+    });
+
+    if (!configUploadResult.success) {
+      payload.logger.error(`Failed to upload theme config for ${tenant.slug}: ${configUploadResult.error}`);
+    } else {
+      payload.logger.info(`Successfully uploaded theme config for ${tenant.slug}.`);
+      configSuccess = true;
     }
     
-    payload.logger.info(`Successfully uploaded CSS for ${tenant.slug}`);
-    return true;
-    
-  } catch (error: any) { // Catch any type of error
-    payload.logger.error(`Error processing CSS for tenant ${tenant.slug}: ${error?.message || error}`);
+    return cssSuccess && configSuccess; // Return overall success status
+
+  } catch (error: any) {
+    payload.logger.error(`Error processing assets for tenant ${tenant.slug}: ${error?.message || error}`);
     return false;
   }
 }

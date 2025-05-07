@@ -1,1 +1,5 @@
-Define global TypeScript types and interfaces, accessible throughout the project, within the `types/global.d.ts` file. 
+---
+description: 
+globs: 
+alwaysApply: false
+---

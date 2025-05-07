@@ -192,13 +192,51 @@ export interface Tenant {
     foreground?: string | null;
   };
   /**
-   * Define fonts and weights for this tenant.
+   * Define fonts, weights, and subsets for this tenant. These will be used with next/font/google.
    */
-  typography?: {
-    displayFont?: string | null;
-    bodyFont?: string | null;
-    headingWeight?: string | null;
-    bodyWeight?: string | null;
+  typography: {
+    headingFont: {
+      /**
+       * Select a Google Font. Ensure it matches the 'next/font/google' import name (e.g., 'Open_Sans' for Open Sans).
+       */
+      name: 'Inter' | 'Roboto' | 'Open_Sans' | 'Lato' | 'Montserrat';
+      weights?:
+        | {
+            /**
+             * e.g., '400', '700', 'variable' if it's a variable font.
+             */
+            weight: string;
+            id?: string | null;
+          }[]
+        | null;
+      subsets?:
+        | {
+            /**
+             * e.g., 'latin', 'latin-ext'. Defaults to 'latin'.
+             */
+            subset: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
+    bodyFont: {
+      /**
+       * Select a Google Font.
+       */
+      name: 'Inter' | 'Roboto' | 'Open_Sans' | 'Lato' | 'Montserrat';
+      weights?:
+        | {
+            weight: string;
+            id?: string | null;
+          }[]
+        | null;
+      subsets?:
+        | {
+            subset: string;
+            id?: string | null;
+          }[]
+        | null;
+    };
   };
   /**
    * Controls the roundness of elements (e.g., buttons, cards). Use rem, px, etc.
@@ -1497,10 +1535,40 @@ export interface TenantsSelect<T extends boolean = true> {
   typography?:
     | T
     | {
-        displayFont?: T;
-        bodyFont?: T;
-        headingWeight?: T;
-        bodyWeight?: T;
+        headingFont?:
+          | T
+          | {
+              name?: T;
+              weights?:
+                | T
+                | {
+                    weight?: T;
+                    id?: T;
+                  };
+              subsets?:
+                | T
+                | {
+                    subset?: T;
+                    id?: T;
+                  };
+            };
+        bodyFont?:
+          | T
+          | {
+              name?: T;
+              weights?:
+                | T
+                | {
+                    weight?: T;
+                    id?: T;
+                  };
+              subsets?:
+                | T
+                | {
+                    subset?: T;
+                    id?: T;
+                  };
+            };
       };
   radius?: T;
   allowPublicRead?: T;

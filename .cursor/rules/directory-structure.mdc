@@ -1,2 +1,5 @@
-- General reusable components should be placed in `src/components/`.
-- Components specific to page sections (like Hero, Services, etc.) should be placed in `src/components/sections/`. 
+---
+description: 
+globs: 
+alwaysApply: false
+---
