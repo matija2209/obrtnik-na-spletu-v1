@@ -45,49 +45,64 @@ export const Footer: GlobalConfig = {
   },
   fields: [
     {
-      name: 'copyrightText',
-      type: 'text',
-      label: 'Besedilo avtorskih pravic',
-      admin: {
-        description: 'Besedilo avtorskih pravic, ki bo prikazano na dnu noge. Uporabite {{year}} za dinamično leto.',
-      },
-      defaultValue: '© {{year}} Vse pravice pridržane.',
-    },
-    {
-      name: 'showLogoText',
-      type: 'checkbox',
-      label: 'Prikaži besedilo logotipa v nogi?',
-      defaultValue: true,
-      admin: {
-        description: 'Ali naj se v nogi prikaže besedilni naslov?',
-      },
-    },
-    {
-      name: 'menuSections',
-      label: 'Sekcije Menijev v Nogi',
-      type: 'blocks',
-      minRows: 0,
-      maxRows: 4,
-      blocks: [MenuSectionBlock],
-      admin: {
-        description: 'Dodajte eno ali več sekcij menijev, ki bodo prikazane v nogi.',
-      }
-    },
-    {
-      name: 'socialMenu',
-      label: 'Meni za Družabna Omrežja',
-      type: 'relationship',
-      relationTo: 'menus',
-      required: false,
-      admin: {
-        description: 'Izberite meni, ki vsebuje povezave do družabnih omrežij (neobvezno). Ustvarite nov meni v sekciji "Meniji", če ga še nimate.',
-      }
-    },
-    {
-      name: 'showContactInFooter',
-      type: 'checkbox',
-      label: 'Prikaži kontaktne podatke v nogi',
-      defaultValue: true,
+      type: 'tabs', // Add tabs field
+      tabs: [
+        {
+          label: 'General Settings',
+          fields: [
+            {
+              name: 'copyrightText',
+              type: 'text',
+              label: 'Besedilo avtorskih pravic',
+              admin: {
+                description: 'Besedilo avtorskih pravic, ki bo prikazano na dnu noge. Uporabite {{year}} za dinamično leto.',
+              },
+              defaultValue: '© {{year}} Vse pravice pridržane.',
+            },
+            {
+              name: 'showLogoText',
+              type: 'checkbox',
+              label: 'Prikaži besedilo logotipa v nogi?',
+              defaultValue: true,
+              admin: {
+                description: 'Ali naj se v nogi prikaže besedilni naslov?',
+              },
+            },
+            {
+              name: 'showContactInFooter',
+              type: 'checkbox',
+              label: 'Prikaži kontaktne podatke v nogi',
+              defaultValue: true,
+            },
+          ],
+        },
+        {
+          label: 'Meniji',
+          fields: [
+            {
+              name: 'menuSections',
+              label: 'Sekcije Menijev v Nogi',
+              type: 'blocks',
+              minRows: 0,
+              maxRows: 4,
+              blocks: [MenuSectionBlock],
+              admin: {
+                description: 'Dodajte eno ali več sekcij menijev, ki bodo prikazane v nogi.',
+              }
+            },
+            {
+              name: 'socialMenu',
+              label: 'Meni za Družabna Omrežja',
+              type: 'relationship',
+              relationTo: 'menus',
+              required: false,
+              admin: {
+                description: 'Izberite meni, ki vsebuje povezave do družabnih omrežij (neobvezno). Ustvarite nov meni v sekciji "Meniji", če ga še nimate.',
+              }
+            },
+          ],
+        },
+      ],
     },
   ],
 };

@@ -10,8 +10,16 @@ export const Media: CollectionConfig = {
         plural: 'Slike',
     },
     admin: {
+        defaultColumns:["alt","updatedAt"],
         useAsTitle: 'alt',
         description: 'Naložite in upravljajte slike ter druge medijske datoteke.',
+        // components:{
+        //   views:{
+        //     list: {
+        //       Component: "/components/admin/collections/media/media-list.tsx",
+        //     }
+        //   }
+        // },
         group: 'Vsebina',
     },
     access: {
@@ -21,7 +29,6 @@ export const Media: CollectionConfig = {
       delete: superAdminOrTenantAdminAccess
     },
     upload: {
-
       imageSizes: [
         {
           name: 'thumbnail',
@@ -45,6 +52,7 @@ export const Media: CollectionConfig = {
       mimeTypes: ['image/png', 'image/jpeg', 'image/webp'],
     },
     fields: [
+      
         {
             name: 'alt',
             type: 'text',

@@ -267,8 +267,6 @@ export const seed = async (payload: Payload): Promise<void> => {
       await payload.updateGlobal({
         slug: 'navbar',
         data: {
-          title: 'A1 Navigacija',
-          // REMOVED: navItems array
           // mainCta relationship might need checking if ctaKontakt is null
           ...(mainMenu ? { mainMenu: mainMenu.id } : {}), // Link the created menu
           ...(ctaKontakt ? { mainCta: ctaKontakt.id } : {}),

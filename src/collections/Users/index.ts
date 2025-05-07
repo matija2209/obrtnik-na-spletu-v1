@@ -38,7 +38,7 @@ const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'email',
-    group: 'Uporabniki',
+    group: 'Konfiguracija',
   },
   labels: {
     singular: 'Uporabnik',

@@ -2425,10 +2425,6 @@ export interface BusinessInfo {
 export interface Navbar {
   id: number;
   /**
-   * Interni naslov za identifikacijo te globalne nastavitve navigacije (neobvezno).
-   */
-  title?: string | null;
-  /**
    * Ali naj se v navigaciji prikaže slika logotipa?
    */
   showLogoImage?: boolean | null;
@@ -2471,6 +2467,7 @@ export interface Footer {
    * Ali naj se v nogi prikaže besedilni naslov?
    */
   showLogoText?: boolean | null;
+  showContactInFooter?: boolean | null;
   /**
    * Dodajte eno ali več sekcij menijev, ki bodo prikazane v nogi.
    */
@@ -2479,7 +2476,6 @@ export interface Footer {
    * Izberite meni, ki vsebuje povezave do družabnih omrežij (neobvezno). Ustvarite nov meni v sekciji "Meniji", če ga še nimate.
    */
   socialMenu?: (number | null) | Menu;
-  showContactInFooter?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2536,7 +2532,6 @@ export interface BusinessInfoSelect<T extends boolean = true> {
  * via the `definition` "navbar_select".
  */
 export interface NavbarSelect<T extends boolean = true> {
-  title?: T;
   showLogoImage?: T;
   showLogoText?: T;
   isTransparent?: T;
@@ -2554,13 +2549,13 @@ export interface NavbarSelect<T extends boolean = true> {
 export interface FooterSelect<T extends boolean = true> {
   copyrightText?: T;
   showLogoText?: T;
+  showContactInFooter?: T;
   menuSections?:
     | T
     | {
         menuSection?: T | MenuSectionItemSelect<T>;
       };
   socialMenu?: T;
-  showContactInFooter?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

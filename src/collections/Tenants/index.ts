@@ -14,11 +14,13 @@ export const Tenants: CollectionConfig = {
     update: updateAccess,
   },
   labels:{
-    singular:"Naročnik",
-    plural:"Naročniki"
+    singular:"Spletno mesto",
+    plural:"Spletna mesta"
   },
   admin: {
     useAsTitle: 'name',
+    group: 'Struktura',
+    defaultColumns:["name","domain","updatedAt"]
   },
   hooks: {
     afterChange: [afterChangeHook],
@@ -26,11 +28,13 @@ export const Tenants: CollectionConfig = {
   fields: [
     {
       name: 'name',
+      label: 'Ime',
       type: 'text',
       required: true,
     },
     {
       name: 'domain',
+      label: 'Domena',
       type: 'text',
       admin: {
         description: 'Used for domain-based tenant handling',
@@ -38,6 +42,7 @@ export const Tenants: CollectionConfig = {
     },
     {
       name: 'slug',
+      label: 'Pot',
       type: 'text',
       admin: {
         description: 'Used for url paths, example: /tenant-slug/page-slug',
@@ -48,7 +53,7 @@ export const Tenants: CollectionConfig = {
     },
     {
       name: 'colors',
-      label: 'Theme Colors',
+      label: 'Barve teme',
       type: 'group',
       admin: {
         description: 'Define the color palette for this tenant.',
@@ -57,7 +62,7 @@ export const Tenants: CollectionConfig = {
       fields: [
         {
           name: 'primary',
-          label: 'Primary Color',
+          label: 'Primarna barva',
           type: 'text',
           defaultValue: 'oklch(0.82 0.1663 83.77)',
           // https://payloadcms.com/docs/fields/overview#admin-options
@@ -72,7 +77,7 @@ export const Tenants: CollectionConfig = {
         },
         {
           name: 'primaryForeground',
-          label: 'Primary Foreground Color',
+          label: 'Primarna barva besedila',
           type: 'text',
           defaultValue: 'oklch(0.985 0 0)',
           admin:{
@@ -85,7 +90,7 @@ export const Tenants: CollectionConfig = {
         },
         {
           name: 'secondary',
-          label: 'Secondary Color',
+          label: 'Sekundarna barva',
           type: 'text',
           defaultValue: 'oklch(0.32 0.1025 253.89)',
           admin:{
@@ -98,7 +103,7 @@ export const Tenants: CollectionConfig = {
         },
         {
           name: 'secondaryForeground',
-          label: 'Secondary Foreground Color',
+          label: 'Sekundarna barva besedila',
           type: 'text',
           defaultValue: 'oklch(0.98 0.005 0)',
           admin:{
@@ -111,7 +116,7 @@ export const Tenants: CollectionConfig = {
         },
         {
           name: 'accent', 
-          label: 'Accent Color',
+          label: 'Barva poudarka',
           type: 'text',
           defaultValue: 'oklch(0.77 0.1687 67.36)',
           admin:{
@@ -124,7 +129,7 @@ export const Tenants: CollectionConfig = {
         },
         {
           name: 'accentForeground',
-          label: 'Accent Foreground Color',
+          label: 'Barva besedila poudarka',
           type: 'text',
           defaultValue: 'oklch(0.205 0 0)',
           admin:{
@@ -137,7 +142,7 @@ export const Tenants: CollectionConfig = {
         },
         {
           name: 'background', 
-          label: 'Background Color',
+          label: 'Barva ozadja',
           type: 'text',
           defaultValue: 'oklch(1 0 0)',
           admin:{
@@ -150,7 +155,7 @@ export const Tenants: CollectionConfig = {
         },
         {
           name: 'foreground',
-          label: 'Foreground Color (Text)',
+          label: 'Barva besedila',
           type: 'text',
           defaultValue: 'oklch(0.145 0 0)',
           admin:{
@@ -165,6 +170,7 @@ export const Tenants: CollectionConfig = {
     },
     {
       name: 'typography',
+      label: 'Tipografija',
       type: 'group',
       admin: {
         description: 'Define fonts, weights, and subsets for this tenant. These will be used with next/font/google.',
@@ -173,11 +179,11 @@ export const Tenants: CollectionConfig = {
         {
           name: 'headingFont',
           type: 'group',
-          label: 'Heading Font',
+          label: 'Pisava naslovov',
           fields: [
             {
               name: 'name', // e.g., "Roboto", "Open_Sans"
-              label: 'Font Name',
+              label: 'Ime pisave',
               type: 'select',
               required: true,
               defaultValue: 'Inter',
@@ -193,7 +199,7 @@ export const Tenants: CollectionConfig = {
             },
             {
               name: 'weights', // e.g., ["400", "700"]
-              label: 'Font Weights',
+              label: 'Teže pisave',
               type: 'array',
               minRows: 1,
               fields: [{ name: 'weight', type: 'text', required: true, admin: { description: "e.g., '400', '700', 'variable' if it's a variable font."} }],
@@ -201,7 +207,7 @@ export const Tenants: CollectionConfig = {
             },
             {
                 name: 'subsets',
-                label: 'Subsets (Optional)',
+                label: 'Podmnožice (neobvezno)',
                 type: 'array',
                 fields: [{ name: 'subset', type: 'text', required: true, admin: { description: "e.g., 'latin', 'latin-ext'. Defaults to 'latin'."}}],
                 defaultValue: [{ subset: 'latin' }]
@@ -211,11 +217,11 @@ export const Tenants: CollectionConfig = {
         {
           name: 'bodyFont',
           type: 'group',
-          label: 'Body Font (Paragraphs)',
+          label: 'Pisava besedila',
           fields: [
             {
               name: 'name',
-              label: 'Font Name',
+              label: 'Ime pisave',
               type: 'select',
               required: true,
               defaultValue: 'Inter',
@@ -230,7 +236,7 @@ export const Tenants: CollectionConfig = {
             },
             {
               name: 'weights',
-              label: 'Font Weights',
+              label: 'Teže pisave',
               type: 'array',
               minRows: 1,
               fields: [{ name: 'weight', type: 'text', required: true }],
@@ -238,7 +244,7 @@ export const Tenants: CollectionConfig = {
             },
             {
                 name: 'subsets',
-                label: 'Subsets (Optional)',
+                label: 'Podmnožice (neobvezno)',
                 type: 'array',
                 fields: [{ name: 'subset', type: 'text', required: true }],
                 defaultValue: [{ subset: 'latin' }]
@@ -249,7 +255,7 @@ export const Tenants: CollectionConfig = {
     },
     {
       name: 'radius',
-      label: 'Border Radius',
+      label: 'Radij okvirja',
       type: 'text',
       defaultValue: '0.625rem',
       admin: {

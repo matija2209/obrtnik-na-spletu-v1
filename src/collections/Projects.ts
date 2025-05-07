@@ -24,12 +24,14 @@ export const Projects: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
+      label: 'Naslov',
       required: true,
     },
     slugField(),
     {
       name: 'description',
       type: 'richText',
+      label: 'Opis',
       admin: {
         description: 'Detailed description of the project',
       },
@@ -37,10 +39,11 @@ export const Projects: CollectionConfig = {
     {
       name: 'projectStatus',
       type: 'select',
+      label: 'Status projekta',
       options: [
-        { label: 'Planned', value: 'planned' },
-        { label: 'In Progress', value: 'in-progress' },
-        { label: 'Completed', value: 'completed' },
+        { label: 'Načrtovano', value: 'planned' },
+        { label: 'V izvajanju', value: 'in-progress' },
+        { label: 'Zaključeno', value: 'completed' },
       ],
       defaultValue: 'completed',
       required: true,
@@ -48,16 +51,17 @@ export const Projects: CollectionConfig = {
     {
       name: 'location',
       type: 'text',
+      label: 'Lokacija',
     },
     {
       name: 'metadata',
       type: 'group',
-      label: 'Project Metadata',
+      label: 'Metapodatki projekta',
       fields: [
         {
           name: 'startDate',
           type: 'date',
-          label: 'Start Date',
+          label: 'Datum začetka',
           admin: {
             date: {
               pickerAppearance: 'dayOnly',
@@ -67,7 +71,7 @@ export const Projects: CollectionConfig = {
         {
           name: 'completionDate',
           type: 'date',
-          label: 'Completion Date',
+          label: 'Datum zaključka',
           admin: {
             date: {
               pickerAppearance: 'dayOnly',
@@ -78,12 +82,12 @@ export const Projects: CollectionConfig = {
         {
           name: 'client',
           type: 'text',
-          label: 'Client Name',
+          label: 'Ime naročnika',
         },
         {
           name: 'budget',
           type: 'text',
-          label: 'Project Budget',
+          label: 'Proračun projekta',
           admin: {
             description: 'Optional budget information',
           },
@@ -93,12 +97,12 @@ export const Projects: CollectionConfig = {
     {
       name: 'projectImages',
       type: 'array',
-      label: 'Project Images / Pairs',
+      label: 'Slike projekta / Pari',
       minRows: 1,
       fields: [
         {
           name: 'image1',
-          label: 'Image 1 (or Before Image)',
+          label: 'Slika 1 (ali pred posegom)',
           type: 'upload',
           relationTo: 'media',
           required: true,
@@ -106,11 +110,11 @@ export const Projects: CollectionConfig = {
         {
           name: 'altText1',
           type: 'text',
-          label: 'Image 1 Alt Text',
+          label: 'Nadomestno besedilo za sliko 1',
         },
         {
           name: 'image2',
-          label: 'Image 2 (or After Image) (Optional)',
+          label: 'Slika 2 (ali po posegu) (Izbirno)',
           type: 'upload',
           relationTo: 'media',
           required: false,
@@ -118,7 +122,7 @@ export const Projects: CollectionConfig = {
         {
           name: 'altText2',
           type: 'text',
-          label: 'Image 2 Alt Text',
+          label: 'Nadomestno besedilo za sliko 2',
           admin: {
             condition: (_, siblingData) => !!siblingData.image2,
           },
@@ -126,7 +130,7 @@ export const Projects: CollectionConfig = {
         {
           name: 'pairDescription',
           type: 'richText',
-          label: 'Image/Pair Description (Optional)',
+          label: 'Opis slike/para (Izbirno)',
           admin: {
             description: 'Describe this image or the before/after comparison.',
           }
@@ -136,7 +140,7 @@ export const Projects: CollectionConfig = {
     {
       name: 'tags',
       type: 'array',
-      label: 'Project Tags',
+      label: 'Oznake projekta',
       labels: {
         singular: 'Tag',
         plural: 'Tags',
@@ -145,6 +149,7 @@ export const Projects: CollectionConfig = {
         {
           name: 'tag',
           type: 'text',
+          label: 'Oznaka',
         },
       ],
       admin: {
@@ -153,7 +158,7 @@ export const Projects: CollectionConfig = {
     },
     {
       name: 'servicesPerformed',
-      label: 'Services Performed (Optional)',
+      label: 'Izvedene storitve (Izbirno)',
       type: 'relationship',
       relationTo: 'services',
       hasMany: true,
@@ -163,7 +168,7 @@ export const Projects: CollectionConfig = {
     },
     {
       name: 'relatedTestimonials',
-      label: 'Related Testimonials (Optional)',
+      label: 'Povezane ocene (Izbirno)',
       type: 'relationship',
       relationTo: 'testimonials',
       hasMany: true,
@@ -173,7 +178,7 @@ export const Projects: CollectionConfig = {
     },
     {
       name: 'dedicatedPage',
-      label: 'Dedicated Case Study Page (Optional)',
+      label: 'Namenska stran študije primera (Izbirno)',
       type: 'relationship',
       relationTo: 'pages',
       hasMany: false,

@@ -181,12 +181,18 @@ export default buildConfig({
     components: {
       graphics: {
         Logo: '/graphics/Logo/index.tsx#Logo',
+        // Icon: '/graphics/Icon/index.tsx#Icon',
       },
-      beforeDashboard:["/components/admin/test-dashboard.tsx"],
-      beforeLogin:["/components/admin/login-pomoc.tsx"],
+
+      
+      // header:["/components/admin/headers/test-header.tsx"],
+      actions:["/components/admin/actions/preview-site.tsx"],
+      // beforeDashboard:["/components/admin/test-dashboard.tsx"],
+      // beforeLogin:["/components/admin/login-pomoc.tsx"],
+      Nav:"/components/admin/admin-navigation/index.tsx",
       views:{
         dashboard:{
-          Component:"/components/admin/test-dashboard.tsx"
+          Component:"/components/admin/dashboard/index.tsx"
         }
       }
     },

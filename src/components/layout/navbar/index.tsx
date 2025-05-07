@@ -82,7 +82,6 @@ const Navbar = ({
       <div className="container mx-auto max-w-7xl px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Logo title={navbarData?.title ?? ''} logoSrc={currentLogoSrc} isScrolled={effectiveScrolled} location="navbar" />
 
           {/* Desktop Navigation */}
           <DesktopNav mainCta={navbarData?.mainCta as Cta} forceBackground={true} isScrolled={isScrolled} navItems={dynamicNavItems} />

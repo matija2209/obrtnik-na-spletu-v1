@@ -33,14 +33,14 @@ const anyone: Access = () => true;
 export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: {
-    singular: 'Stran',
-    plural: 'Strani',
+    singular: 'Podstran',
+    plural: 'Podstrani',
   },
   
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
-    group: 'Vsebina',
+    group: 'Struktura',
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
@@ -84,7 +84,7 @@ export const Pages: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
-      label: 'Title',
+      label: 'Naslov',
       required: true,
       localized: true,
     },
@@ -98,7 +98,7 @@ export const Pages: CollectionConfig = {
           pickerAppearance: 'dayAndTime',
         },
       },
-      label: 'Published At',
+      label: 'Datum objave',
     },
     slugField(),
 
@@ -106,11 +106,11 @@ export const Pages: CollectionConfig = {
       type: 'tabs',
       tabs: [
         {
-          label: 'Content',
+          label: 'Vsebina',
           fields: [
             {
               name: 'layout',
-              label: 'Page Layout',
+              label: 'Postavitev strani',
               type: 'blocks',
               admin:{
                 initCollapsed: true,

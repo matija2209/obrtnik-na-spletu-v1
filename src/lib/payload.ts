@@ -5,6 +5,7 @@ import type {
   Service, 
   Page,
   FormSubmission,
+  Form
 } from '../../payload-types'
 
 import configPromise from '@payload-config'
@@ -13,6 +14,14 @@ import { draftMode } from 'next/headers'
 import type { Where } from 'payload'
 
 const PAYLOAD_API_URL = process.env.NEXT_PUBLIC_SERVER_URL
+
+// Define a type for the dashboard updates
+export type DashboardFormSubmission = {
+  id: number;
+  formTitle: string; // Title of the related form
+  submissionTime: string; // Formatted time of submission
+  formId: number; // ID of the form for linking
+};
 
 // Initialize Payload instance
 export const getPayloadClient = async (): Promise<Payload> => {
@@ -318,4 +327,27 @@ export const createFormSubmission = async (
     },
   });
   return submission as FormSubmission; // Cast to FormSubmission type
+};
+
+// Add new function to get the latest form submissions
+export const getLatestFormSubmissions = async (limit: number = 5): Promise<DashboardFormSubmission[]> => {
+  const payload = await getPayloadClient();
+  try {
+    const { docs } = await payload.find({
+      collection: 'form-submissions',
+      limit: limit,
+      sort: '-createdAt', // Assuming 'createdAt' field exists and is indexed
+      depth: 1, // Fetch related form document
+    });
+    // Map the results to the new DashboardFormSubmission type
+    return docs.map(submission => ({
+      id: submission.id,
+      formTitle: (submission.form as Form).title, // Access title from the related Form document
+      submissionTime: new Date(submission.createdAt).toLocaleString(), // Format time
+      formId: (submission.form as Form).id, // Use form ID for link
+    }));
+  } catch (error) {
+    console.error('Error fetching latest form submissions:', error);
+    return [];
+  }
 };
