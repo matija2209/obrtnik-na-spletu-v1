@@ -1,5 +1,7 @@
 import { default as default_b5a3d270bd0bf3678a07c5db9bf8ab12 } from '../../../collections/Tenants/fields/tenant-fields'
+import { default as default_1dcc47e650f144da32bcdab990e3d6df } from '../../../components/admin/collections/tenants/tenants-list.tsx'
 import { TenantField as TenantField_1d0591e3cf4f332c83a86da13a0de59a } from '@payloadcms/plugin-multi-tenant/client'
+import { default as default_ed64dd4cf01ef3351f0e395bba4d240a } from '../../../components/admin/collections/media/media-list.tsx'
 import { RscEntryLexicalCell as RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { RscEntryLexicalField as RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
 import { LexicalDiffComponent as LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e } from '@payloadcms/richtext-lexical/rsc'
@@ -28,6 +30,9 @@ import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c08
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
+import { default as default_a73edc44b9c250a2497b5b40bf4bdb1e } from '../../../components/admin/collections/projects/projects-list.tsx'
+import { default as default_45420331a54ff5ed80a9b355023fc1ad } from '../../../components/admin/collections/services/services-list.tsx'
+import { default as default_5da03afb61d739a4f43df0cea66b511d } from '../../../components/admin/collections/testimonials/testimonials-list.tsx'
 import { default as default_9bdd503f7e488f3d440d6ef57e459cb4 } from '../../../components/admin/admin-navigation/index.tsx'
 import { Logo as Logo_217937c36742cdefe571d11857c968fa } from '../../../graphics/Logo/index.tsx'
 import { default as default_ffebe25c765b3853677d7ef0c6d64308 } from '../../../components/admin/actions/preview-site.tsx'
@@ -38,7 +43,9 @@ import { default as default_44a9a97d9ed4c4829454d8f95e16b5a3 } from '../../../co
 
 export const importMap = {
   "/collections/Tenants/fields/tenant-fields#default": default_b5a3d270bd0bf3678a07c5db9bf8ab12,
+  "/components/admin/collections/tenants/tenants-list.tsx#default": default_1dcc47e650f144da32bcdab990e3d6df,
   "@payloadcms/plugin-multi-tenant/client#TenantField": TenantField_1d0591e3cf4f332c83a86da13a0de59a,
+  "/components/admin/collections/media/media-list.tsx#default": default_ed64dd4cf01ef3351f0e395bba4d240a,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#LexicalDiffComponent": LexicalDiffComponent_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -67,6 +74,9 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaImageComponent": MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
+  "/components/admin/collections/projects/projects-list.tsx#default": default_a73edc44b9c250a2497b5b40bf4bdb1e,
+  "/components/admin/collections/services/services-list.tsx#default": default_45420331a54ff5ed80a9b355023fc1ad,
+  "/components/admin/collections/testimonials/testimonials-list.tsx#default": default_5da03afb61d739a4f43df0cea66b511d,
   "/components/admin/admin-navigation/index.tsx#default": default_9bdd503f7e488f3d440d6ef57e459cb4,
   "/graphics/Logo/index.tsx#Logo": Logo_217937c36742cdefe571d11857c968fa,
   "/components/admin/actions/preview-site.tsx#default": default_ffebe25c765b3853677d7ef0c6d64308,

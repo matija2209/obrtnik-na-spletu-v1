@@ -1,10 +1,8 @@
 "use client"
-
 import type { ListViewClientProps } from 'payload'
-import { useListQuery, useTranslation } from '@payloadcms/ui'
+import { useListQuery, useConfig, useTranslation } from '@payloadcms/ui' // Adjusted for plausible Payload hook paths
+import { getTranslation } from '@payloadcms/translations'
 import React from 'react'
-import Image from 'next/image'
-import { Media, Media as MediaType } from '@payload-types'
 
 // ShadCN UI components
 import {
@@ -25,77 +23,78 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination'
 
-function formatFileSize(bytes: number | null | undefined): string {
-  if (bytes == null) return 'N/A';
-  if (bytes < 1024) return bytes + ' B'
-  else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
-  else return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
-}
-
-function formatDate(dateString: string | null | undefined): string {
-  if (!dateString) return 'N/A';
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
-
+// Helper to generate pagination items (numbers, ellipsis)
+// This is a simplified version; you might want a more robust one for edge cases.
 const generatePagination = (currentPage: number, totalPages: number, siblingCount: number = 1): (string | number)[] => {
-  const totalPageNumbers = siblingCount * 2 + 5;
+  const totalPageNumbers = siblingCount * 2 + 5; // firstPage + lastPage + currentPage + 2*siblings + 2*ellipsis
+
   if (totalPages <= totalPageNumbers) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
+
   const leftSiblingIndex = Math.max(currentPage - siblingCount, 1);
   const rightSiblingIndex = Math.min(currentPage + siblingCount, totalPages);
+
   const shouldShowLeftDots = leftSiblingIndex > 2;
   const shouldShowRightDots = rightSiblingIndex < totalPages - 2;
+
   const firstPageIndex = 1;
   const lastPageIndex = totalPages;
+
   if (!shouldShowLeftDots && shouldShowRightDots) {
     let leftItemCount = 3 + 2 * siblingCount;
-    if (currentPage <= siblingCount + 1) { 
+    if (currentPage <= siblingCount + 1) { // Adjust if current page is near the beginning
         leftItemCount = Math.max(5, currentPage + siblingCount +1)
     }
     const leftRange = Array.from({ length: leftItemCount }, (_, i) => i + 1);
     return [...leftRange, '...', totalPages];
   }
+
   if (shouldShowLeftDots && !shouldShowRightDots) {
      let rightItemCount = 3 + 2 * siblingCount;
-     if (totalPages - currentPage <= siblingCount) { 
+     if (totalPages - currentPage <= siblingCount) { // Adjust if current page is near the end
         rightItemCount = Math.max(5, totalPages - currentPage + siblingCount + 2)
      }
     const rightRange = Array.from({ length: rightItemCount }, (_, i) => totalPages - rightItemCount + 1 + i);
     return [firstPageIndex, '...', ...rightRange];
   }
+
   if (shouldShowLeftDots && shouldShowRightDots) {
     const middleRange = Array.from({ length: rightSiblingIndex - leftSiblingIndex + 1 }, (_, i) => leftSiblingIndex + i);
     return [firstPageIndex, '...', ...middleRange, '...', lastPageIndex];
   }
+  // Fallback or when totalPages is small enough that no dots are needed (handled by first check)
   return Array.from({ length: totalPages }, (_, i) => i + 1);
 };
 
-function MediaList(props: ListViewClientProps) {
+
+function ServicesList(props: ListViewClientProps) {
+  // const { collectionSlug } = props; // collectionSlug is available if needed for config
+
   const {
     data,
     handlePageChange,
   } = useListQuery();
 
-  const { t } = useTranslation();
+  const { i18n } = useTranslation();
+  // const { getEntityConfig } = useConfig();
+  // const collectionConfig = getEntityConfig({ collectionSlug }); // For dynamic labels, fields etc.
 
   if (!data) {
-    return <div className="p-4 md:p-6">Nalagam...</div>;
+    return <div className="p-4">Loading...</div>;
   }
 
   if (!data.docs || data.docs.length === 0) {
-    return <div className="p-4 md:p-6">Ni slik.</div>;
+    // const singularLabel = collectionConfig ? getTranslation(collectionConfig.labels.singular, i18n) : 'item';
+    // You could add a "Create New" button here if newDocumentURL is available from props
+    return <div className="p-4">No tenants found.</div>;
   }
 
   const {
     docs,
     hasNextPage,
     hasPrevPage,
+    limit, // eslint-disable-line @typescript-eslint/no-unused-vars
     nextPage,
     page,
     prevPage,
@@ -103,54 +102,42 @@ function MediaList(props: ListViewClientProps) {
     totalPages,
   } = data;
 
+  // Define columns - these should ideally come from collectionConfig or be more dynamic
   const columns = [
-    { key: 'thumbnail', label: 'Thumbnail', width: 'w-20' },
-    { key: 'filename', label: 'Filename' },
-    { key: 'mimeType', label: 'Type' },
-    { key: 'filesize', label: 'Size' },
-    { key: 'dimensions', label: 'Dimensions' },
-    { key: 'createdAt', label: 'Uploaded At' },
+    { key: 'id', label: 'ID' },
+    { key: 'name', label: 'Name' },
+    { key: 'slug', label: 'Slug' },
+    { key: 'createdAt', label: 'Created At' },
   ];
 
   const paginationItems = generatePagination(page || 1, totalPages || 0);
 
   return (
     <div className="p-4 md:p-6">
-      <h1 className="text-2xl font-semibold mb-4">Slike</h1>
-      
+      {/* <h1 className="text-2xl font-semibold mb-4">
+        {collectionConfig ? getTranslation(collectionConfig.labels.plural, i18n) : 'Items'}
+      </h1> */}
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
             <TableRow>
               {columns.map((col) => (
-                <TableHead key={col.key} className={col.width || ''}>{col.label}</TableHead>
+                <TableHead key={col.key}>{col.label}</TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {docs.map((mediaItem) => (
-              <TableRow key={mediaItem.id}>
-                <TableCell className="py-2 px-2">
-                  {(mediaItem.thumbnailURL || mediaItem.url) && (
-                    <div className="relative h-12 w-16 bg-gray-100 rounded overflow-hidden">
-                      <Image
-                        src={mediaItem.thumbnailURL || mediaItem.url || ''} 
-                        alt={mediaItem.alt || mediaItem.filename || ''}
-                        fill
-                        sizes="64px"
-                        className="object-contain"
-                        priority={false}
-                      />
-                    </div>
-                  )}
-                </TableCell>
-                <TableCell className="py-2 px-2 whitespace-nowrap">{mediaItem.filename}</TableCell>
-                <TableCell className="py-2 px-2 whitespace-nowrap">{mediaItem.mimeType}</TableCell>
-                <TableCell className="py-2 px-2 whitespace-nowrap">{formatFileSize(mediaItem.filesize)}</TableCell>
-                <TableCell className="py-2 px-2 whitespace-nowrap">
-                  {mediaItem.width && mediaItem.height ? `${mediaItem.width} × ${mediaItem.height}` : 'N/A'}
-                </TableCell>
-                <TableCell className="py-2 px-2 whitespace-nowrap">{formatDate(mediaItem.createdAt)}</TableCell>
+            {docs.map((doc: any) => ( // Use 'any' for doc type for simplicity; ideally, use your Tenant type
+              <TableRow key={doc.id || JSON.stringify(doc)}>
+                {columns.map((col) => (
+                  <TableCell key={col.key}>
+                    {typeof doc[col.key] === 'object'
+                      ? col.key === 'createdAt' || col.key === 'updatedAt' // Basic date formatting
+                        ? new Date(doc[col.key]).toLocaleDateString()
+                        : JSON.stringify(doc[col.key])
+                      : String(doc[col.key] ?? '')}
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>
@@ -161,7 +148,9 @@ function MediaList(props: ListViewClientProps) {
         <div className="mt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <p className="text-sm text-muted-foreground">
-              {`Stran ${page} od ${totalPages}. Prikazujem ${docs.length} od ${totalDocs} slik.`}
+              Page {page} of {totalPages}. Showing {docs.length} of {totalDocs}{' '}
+              {/* {collectionConfig ? getTranslation(collectionConfig.labels.plural, i18n).toLowerCase() : 'items'}. */}
+              tenants.
             </p>
           </div>
           <Pagination>
@@ -217,4 +206,4 @@ function MediaList(props: ListViewClientProps) {
   );
 }
 
-export default MediaList;
+export default ServicesList

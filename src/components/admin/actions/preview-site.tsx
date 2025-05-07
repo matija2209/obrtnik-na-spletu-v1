@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import { Tenant } from '@payload-types';
 import Link from 'next/link'
 import { AdminViewServerProps } from 'payload'
@@ -12,8 +13,11 @@ function PreviewSite(props:AdminViewServerProps) {
     : '#';
 
   return (
-    <Link href={url} target="_blank" rel="noopener noreferrer" className='bg-blue-500 text-white px-4 py-2 rounded-md'>
-      Ogled spletne strani
+    
+    <Link href={url} target="_blank" rel="noopener noreferrer">
+      <Button variant="default">
+        Ogled spletne strani
+      </Button>
     </Link>
   )
 }

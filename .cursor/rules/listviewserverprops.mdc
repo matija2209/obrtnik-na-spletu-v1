@@ -1,0 +1,62 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# ListViewServerProps Type Definition
+
+This rule describes the shape of the `ListViewServerProps` object passed to server-side list view components in PayloadCMS.
+
+Based on console output, the structure includes:
+
+-   `collectionSlug`: `string` - The slug of the current collection.
+-   `columnState`: `Array<{ accessor: string, active?: boolean, ... }>` - Configuration for the columns displayed in the list table.
+-   `enableRowSelections`: `boolean` - Indicates if row selections are enabled.
+-   `listPreferences`: `{ limit: number, preset: any }` - User preferences for the list view.
+-   `newDocumentURL`: `string` - URL for creating a new document in this collection.
+-   `renderedFilters`: `Map` - Map of applied filters.
+-   `resolvedFilterOptions`: `Map` - Map of resolved filter options.
+-   `Table`: `React.ComponentType<any>` - The React component for the table.
+-   `collectionConfig`: `object` - The configuration object for the current collection, including `slug`, `access`, `labels`, `admin` settings, `hooks`, `fields`, etc.
+-   `data`: `{ docs: Array<any>, hasNextPage: boolean, hasPrevPage: boolean, limit: number, nextPage: number | null, page: number, pagingCounter: number, prevPage: number | null, totalDocs: number, totalPages: number }` - The paginated data for the list view.
+-   `i18n`: `object` - Localization information and translation function.
+-   `limit`: `number` - The data limit per page.
+-   `params`: `{ segments: string[] }` - Route parameters.
+-   `payload`: `BasePayload` - The Payload instance.
+-   `permissions`: `object` - User permissions for collections and globals.
+-   `searchParams`: `object` - Search parameters from the URL.
+-   `user`: `object` - The authenticated user object.
+
+## Implementing Pagination
+
+Pagination can be implemented by using the `data` property of the `ListViewServerProps`. This property contains all the necessary information about the current page, total documents, page limits, etc.
+
+To navigate to different pages, update the `page` search parameter in the URL. This will trigger a re-fetch of the data by the server and re-render the component with the new page's data.
+
+Example using `next/navigation` (App Router) to update URL:
+
+```typescript
+import { useRouter, useSearchParams } from 'next/navigation';
+
+// ... inside your component ...
+const router = useRouter();
+const searchParams = useSearchParams();
+
+const currentPage = Number(searchParams.get('page')) || 1;
+
+const goToPage = (pageNumber: number) => {
+  const params = new URLSearchParams(searchParams);
+  params.set('page', pageNumber.toString());
+  router.push(`?${params.toString()}`);
+};
+
+// Use props.data.hasNextPage, props.data.hasPrevPage, props.data.page, props.data.totalPages to render pagination controls and call goToPage on button clicks.
+```
+
+Note: The exact method for updating URL parameters might vary slightly depending on whether you are using the App Router or Pages Router in Next.js, but the principle of using URL search parameters to control pagination remains the same.
+
+## Reusing `params`, `searchParams`, and `payload`
+
+-   **`params`**: This property contains the route segments. It's useful for understanding the current route context (e.g., which collection you are viewing) and can be reused when building links or conditional logic based on the route.
+-   **`searchParams`**: This property contains the URL search parameters. It is crucial for implementing features like pagination, filtering, and sorting, as these are typically controlled by updating the URL search parameters. You would reuse `searchParams` to read the current state (like the current page number) and to construct new URLs when the state changes.
+-   **`payload`**: This property provides access to the server-side Payload instance. While it gives access to various Payload functionalities (like `find`, `create`, etc.), in the context of a server-rendered list view component, it is generally **not** used directly on the client side to fetch data for pagination. The standard pattern is to rely on the server-rendering mechanism triggered by URL search parameter changes. You might reuse `payload` for other purposes that require direct interaction with the Payload API, but be mindful of whether your code is running on the server or the client.
