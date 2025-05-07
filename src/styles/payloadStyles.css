@@ -1,16 +1,16 @@
 /* src/styles/payloadStyles.css */
 
 /* Define the Tailwind layers in the correct order */
-/* @layer theme, base, components, utilities; */
+@layer theme, base, components, utilities;
 
 /* Import the Tailwind theme styles */
-/* @import 'tailwindcss/theme.css' layer(theme); */
+@import 'tailwindcss/theme.css' layer(theme);
 
 
 /* @import 'tailwindcss/preflight.css' layer(base); */
 
-/* @import 'tailwindcss/utilities.css' layer(utilities); */
-@import "tailwindcss";
+@import 'tailwindcss/utilities.css' layer(utilities);
+/* @import "tailwindcss"; */
 
 :root {
     --background: oklch(1 0 0) !important;

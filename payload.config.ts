@@ -181,7 +181,7 @@ export default buildConfig({
     components: {
       graphics: {
         Logo: '/graphics/Logo/index.tsx#Logo',
-        // Icon: '/graphics/Icon/index.tsx#Icon',
+        Icon: '/graphics/Icon/index.tsx#Icon',
       },
 
       
@@ -189,12 +189,12 @@ export default buildConfig({
       actions:["/components/admin/actions/preview-site.tsx"],
       // beforeDashboard:["/components/admin/test-dashboard.tsx"],
       // beforeLogin:["/components/admin/login-pomoc.tsx"],
-      Nav:"/components/admin/admin-navigation/index.tsx",
-      views:{
-        dashboard:{
-          Component:"/components/admin/dashboard/index.tsx"
-        }
-      }
+      // Nav:"/components/admin/admin-navigation/index.tsx",
+      // views:{
+      //   dashboard:{
+      //     Component:"/components/admin/dashboard/index.tsx"
+      //   }
+      // }
     },
     livePreview: {
       breakpoints: [

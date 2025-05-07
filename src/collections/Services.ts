@@ -18,13 +18,13 @@ export const Services: CollectionConfig = {
     description: 'Upravljajte seznam storitev, ki jih ponujate.',
     group: 'Vsebina',
     defaultColumns: ['title', 'serviceId', 'updatedAt'],
-    components:{
-      views:{
-        list: {
-          Component: "/components/admin/collections/services/services-list.tsx",
-        }
-      }
-    }
+    // components:{
+    //   views:{
+    //     list: {
+    //       Component: "/components/admin/collections/services/services-list.tsx",
+    //     }
+    //   }
+    // }
   },
   access: {
     read: anyone,

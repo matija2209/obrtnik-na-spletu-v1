@@ -13,13 +13,13 @@ export const Media: CollectionConfig = {
         defaultColumns:["alt","updatedAt"],
         useAsTitle: 'alt',
         description: 'Naložite in upravljajte slike ter druge medijske datoteke.',
-        components:{
-          views:{
-            list: {
-              Component: "/components/admin/collections/media/media-list.tsx",
-            }
-          }
-        },
+        // components:{
+        //   views:{
+        //     list: {
+        //       Component: "/components/admin/collections/media/media-list.tsx",
+        //     }
+        //   }
+        // },
         group: 'Vsebina',
     },
     access: {

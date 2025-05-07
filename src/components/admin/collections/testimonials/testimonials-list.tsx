@@ -68,7 +68,7 @@ const generatePagination = (currentPage: number, totalPages: number, siblingCoun
 };
 
 
-function ServicesList(props: ListViewClientProps) {
+function TestimonialsList(props: ListViewClientProps) {
   // const { collectionSlug } = props; // collectionSlug is available if needed for config
 
   const {
@@ -206,4 +206,4 @@ function ServicesList(props: ListViewClientProps) {
   );
 }
 
-export default ServicesList
+export default TestimonialsList

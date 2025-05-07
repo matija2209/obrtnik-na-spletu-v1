@@ -19,13 +19,13 @@ export const Projects: CollectionConfig = {
     description: 'Predstavite zaključene projekte ali reference.',
     group: 'Vsebina',
     defaultColumns: ['title', 'projectStatus', 'location', 'updatedAt'],
-    components:{
-      views:{
-        list: {
-          Component: "/components/admin/collections/projects/projects-list.tsx",
-        }
-      }
-    }
+    // components:{
+    //   views:{
+    //     list: {
+    //       Component: "/components/admin/collections/projects/projects-list.tsx",
+    //     }
+    //   }
+    // }
   },
   fields: [
     {

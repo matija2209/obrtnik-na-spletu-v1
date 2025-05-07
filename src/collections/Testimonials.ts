@@ -15,13 +15,13 @@ export const Testimonials: CollectionConfig = {
     defaultColumns: ['name', 'service', 'rating', 'createdAt'],
     description: 'Mnenja strank o naših storitvah.',
     group: 'Vsebina',
-    components:{
-      views:{
-        list: {
-          Component: "/components/admin/collections/testimonials/testimonials-list.tsx",
-        }
-      }
-    }
+    // components:{
+    //   views:{
+    //     list: {
+    //       Component: "/components/admin/collections/testimonials/testimonials-list.tsx",
+    //     }
+    //   }
+    // }
   },
   access: {
     read: anyone, // Anyone can read testimonials

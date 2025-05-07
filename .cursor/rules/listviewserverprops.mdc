@@ -60,3 +60,8 @@ Note: The exact method for updating URL parameters might vary slightly depending
 -   **`params`**: This property contains the route segments. It's useful for understanding the current route context (e.g., which collection you are viewing) and can be reused when building links or conditional logic based on the route.
 -   **`searchParams`**: This property contains the URL search parameters. It is crucial for implementing features like pagination, filtering, and sorting, as these are typically controlled by updating the URL search parameters. You would reuse `searchParams` to read the current state (like the current page number) and to construct new URLs when the state changes.
 -   **`payload`**: This property provides access to the server-side Payload instance. While it gives access to various Payload functionalities (like `find`, `create`, etc.), in the context of a server-rendered list view component, it is generally **not** used directly on the client side to fetch data for pagination. The standard pattern is to rely on the server-rendering mechanism triggered by URL search parameter changes. You might reuse `payload` for other purposes that require direct interaction with the Payload API, but be mindful of whether your code is running on the server or the client.
+
+
+https://www.youtube.com/watch?v=6avHMMyM8Eg
+
+https://mail.google.com/mail/u/0/#inbox/FMfcgzQbfBsdJnFCnZXQDfcnLnBJVKsx
