@@ -1,244 +1,176 @@
 "use client"
-import { AdminViewServerProps } from 'payload'
-import Link from 'next/link'
-import * as React from 'react'
-import { usePathname } from 'next/navigation'
-import { Icon } from '@/graphics/Icon'
-import { 
-  LayoutGrid, 
-  Settings, 
-  FileText, 
-  DollarSign, 
-  Image, 
+import { useState } from "react";
+import {
   LayoutDashboard,
+  Users,
+  Image,
+  FolderOpen,
+  Wrench,
+  MessageCircle,
+  HelpCircle,
+  Lightbulb,
+  Truck,
+  Clock,
+  FileText,
+  ArrowRight,
+  MenuSquare,
+  List,
+  Layers,
+  Receipt,
+  Flag,
   Menu,
-  ChevronDown
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
+  FileInput,
+  Send,
+  Building,
+  Navigation,
+  Footprints,
+  PlusCircle
+} from "lucide-react";
 
-// Define icon components for different categories
-const StructureIcon = () => <LayoutGrid className="h-4 w-4" />
-const ConfigIcon = () => <Settings className="h-4 w-4" />
-const ContentIcon = () => <FileText className="h-4 w-4" />
-const SalesIcon = () => <DollarSign className="h-4 w-4" />
-const MediaIcon = () => <Image className="h-4 w-4" />
-const DashboardIcon = () => <LayoutDashboard className="h-4 w-4" />
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarProvider
+} from "@/components/ui/sidebar";
 
-// Interface for navigation categories
-interface NavCategory {
-  key: string;
-  label: string;
-  icon: () => React.ReactNode;
-  entities: {
-    collections?: string[];
-    globals?: string[];
-  };
-}
+import Link from "next/link";
 
-function AdminNavigation(props: AdminViewServerProps) {
-  const { visibleEntities } = props;
-  const [activeGroup, setActiveGroup] = React.useState<string | null>(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const pathname = usePathname();
+// Icon mapping for collections and globals
+const iconMapping = {
+  'tenants': Building,
+  'users': Users,
+  'media': Image,
+  'projects': FolderOpen,
+  'services': Wrench,
+  'testimonials': MessageCircle,
+  'faq-items': HelpCircle,
+  'ctas': Lightbulb,
+  'machinery': Truck,
+  'opening-hours': Clock,
+  'pages': FileText,
+  'redirects': ArrowRight,
+  'pricelists': Receipt,
+  'banners': Flag,
+  'menus': Menu,
+  'forms': FileInput,
+  'form-submissions': Send,
+  'business-info': Building,
+  'navbar': Navigation,
+  'footer': Footprints
+};
 
-  // Define collection categories
-  const navCategories: NavCategory[] = [
-    {
-      key: 'dashboard',
-      label: 'Nadzorna plošča',
-      icon: DashboardIcon,
-      entities: {}
-    },
-    {
-      key: 'structure',
-      label: 'Struktura',
-      icon: StructureIcon,
-      entities: {
-        collections: ['pages', 'redirects', 'menus'],
-        globals: ['navbar', 'footer']
-      }
-    },
-    {
-      key: 'config',
-      label: 'Konfiguracija',
-      icon: ConfigIcon,
-      entities: {
-        collections: ['tenants', 'users'],
-        globals: ['business-info']
-      }
-    },
-    {
-      key: 'content',
-      label: 'Vsebina',
-      icon: ContentIcon,
-      entities: {
-        collections: ['projects', 'services', 'testimonials', 'faq-items', 'ctas', 'machinery', 'opening-hours', 'banners', 'forms'],
-      }
-    },
-    {
-      key: 'media',
-      label: 'Medijska knjižnica',
-      icon: MediaIcon,
-      entities: {
-        collections: ['media']
-      }
-    },
-    {
-      key: 'sales',
-      label: 'Prodaja',
-      icon: SalesIcon,
-      entities: {
-        collections: ['pricelists', 'form-submissions']
-      }
-    }
-  ];
-
-  // Filter visible collections and globals for each category
-  const filterVisibleEntities = (category: NavCategory) => {
-    const filtered: { collections: string[]; globals: string[] } = {
-      collections: [],
-      globals: []
-    };
-
-    if (visibleEntities && visibleEntities.collections && category.entities.collections) {
-      filtered.collections = category.entities.collections.filter(col => 
-        visibleEntities.collections.includes(col as any)
-      );
-    }
-
-    if (visibleEntities && visibleEntities.globals && category.entities.globals) {
-      filtered.globals = category.entities.globals.filter(glob => 
-        visibleEntities.globals.includes(glob as any)
-      );
-    }
-
-    return filtered;
-  };
-
-  return (
-    <div className="relative admin-navigation-container">
-      <div className="md:hidden flex items-center p-3 bg-white shadow fixed top-0 left-0 right-0 z-40 mobile-menu-toggle">
-        <Menu className="w-6 h-6 mr-2" />
-        <span className="font-medium">Menu</span>
-      </div>
-      
-      <nav className="w-70 bg-white h-screen fixed top-0 left-0 shadow flex flex-col z-50 admin-navigation transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
-        <div className="p-5 border-b border-gray-200 admin-logo">
-          <Link href="/admin" className="no-underline flex items-center">
-            <span className="text-lg font-semibold text-gray-800 logo-text flex gap-2"><Icon></Icon> Obrtnik na spletu</span>
-          </Link>
-        </div>
-        
-        <div className="flex-1 overflow-y-auto py-4 nav-groups">
-          <div className="px-4 mb-4">
-            <Button
-              variant="outline"
-              className="w-full justify-start gap-3"
-              asChild
-            >
-              <Link href="/admin">
-                <LayoutDashboard className="shrink-0" />
-                <span>Nadzorna plošča</span>
-              </Link>
-            </Button>
-          </div>
-
-          {navCategories.filter(category => category.key !== 'dashboard').map((category) => {
-            const visibleItems = filterVisibleEntities(category);
-            const hasItems = visibleItems.collections.length > 0 || visibleItems.globals.length > 0;
-            
-            const isActiveCategory = [...(category.entities.collections || []), ...(category.entities.globals || [])].some(slug => 
-              pathname.startsWith(`/admin/collections/${slug}`) || pathname.startsWith(`/admin/globals/${slug}`)
-            );
-
-            React.useEffect(() => {
-              if (isActiveCategory && activeGroup === null) {
-                setActiveGroup(category.key);
-              }
-            }, [isActiveCategory, category.key, activeGroup]);
-
-            if (!hasItems) return null;
-            
-            return (
-              <div key={category.key} className={`mb-2 nav-group ${activeGroup === category.key ? 'active' : ''}`}>
-                <div 
-                  className={`flex items-center py-2.5 px-4 cursor-pointer rounded-md mx-2 transition-colors duration-200 hover:bg-accent hover:text-accent-foreground group-header ${activeGroup === category.key ? 'bg-accent/50' : ''}`} 
-                  onClick={() => setActiveGroup(activeGroup === category.key ? null : category.key)}
-                >
-                  <div className="flex items-center gap-3">
-                    <category.icon />
-                    <span className="flex-1 font-medium text-sm group-label">{category.label}</span>
-                  </div>
-                  <div className={`transition-transform duration-300 ${activeGroup === category.key ? 'rotate-180' : ''}`}>
-                    <ChevronDown className="h-4 w-4" />
-                  </div>
-                </div>
-                
-                <div className={`overflow-hidden transition-all duration-300 ease-in group-items ${activeGroup === category.key ? 'max-h-screen' : 'max-h-0'}`}>
-                  {visibleItems.collections.map((slug) => (
-                    <Link 
-                      href={`/admin/collections/${slug}`} 
-                      key={`collections-${slug}`}
-                      className={`block py-2 px-4 pl-12 text-sm transition-colors duration-200 hover:bg-accent hover:text-accent-foreground no-underline ${pathname === `/admin/collections/${slug}` ? 'bg-accent/50 font-medium' : 'text-foreground'}`}
-                    >
-                      <span className="item-label">{formatLabel(slug)}</span>
-                    </Link>
-                  ))}
-                  
-                  {visibleItems.globals.map((slug) => (
-                    <Link 
-                      href={`/admin/globals/${slug}`} 
-                      key={`globals-${slug}`}
-                      className={`block py-2 px-4 pl-12 text-sm transition-colors duration-200 hover:bg-accent hover:text-accent-foreground no-underline ${pathname === `/admin/globals/${slug}` ? 'bg-accent/50 font-medium' : 'text-foreground'}`}
-                    >
-                      <span className="item-label">{formatLabel(slug)}</span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        
-        <div className="p-4 border-t border-gray-200 admin-nav-footer">
-          <div className="flex items-center tenant-info">
-            <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm mr-3 tenant-avatar">A1</div>
-            <div className="text-sm text-foreground whitespace-nowrap overflow-hidden text-overflow-ellipsis max-w-xs tenant-name">A1 INŠTALACIJE d.o.o.</div>
-          </div>
-        </div>
-      </nav>
-      
-      <div className={`fixed inset-0 bg-black bg-opacity-50 z-40 ${isMobileMenuOpen ? 'block' : 'hidden'} mobile-overlay`} onClick={() => setIsMobileMenuOpen(false)}></div>
-    </div>
-  );
-}
-
-// Helper function to format slugs as labels
-function formatLabel(slug: string): string {
-  const labels: { [key: string]: string } = {
-    'tenants': 'Stranke',
-    'users': 'Uporabniki',
-    'media': 'Slike',
-    'projects': 'Projekti',
-    'services': 'Storitve',
-    'testimonials': 'Mnenja strank',
-    'faq-items': 'Pogosta vprašanja',
-    'ctas': 'CTA elementi',
-    'machinery': 'Stroji',
-    'opening-hours': 'Odpiralni časi',
-    'pages': 'Strani',
-    'redirects': 'Preusmeritve',
-    'pricelists': 'Ceniki',
-    'banners': 'Oglasne pasice',
-    'menus': 'Meniji',
-    'forms': 'Obrazci',
-    'form-submissions': 'Oddaje obrazcev',
-    'business-info': 'Podatki o podjetju',
-    'navbar': 'Navigacija',
-    'footer': 'Noga'
-  };
+function AdminNavigation(props:any) {
+  const collections = props?.visibleEntities?.collections || {};
+  const globals = props?.visibleEntities?.globals || {};
   
-  return labels[slug] || slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  return (
+    <SidebarProvider>
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <a href="/admin">
+                <Layers className="size-5" />
+                <span className="text-base font-semibold">Admin Panel</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent className="flex flex-col gap-2">
+            <SidebarMenu>
+              <SidebarMenuItem className="flex items-center gap-2">
+                <SidebarMenuButton
+                  tooltip="Quick Create"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear"
+                >
+                  <PlusCircle />
+                  <span>Quick Create</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+            
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Dashboard">
+                  <LayoutDashboard />
+                  <Link href="/admin">
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+
+            {/* Collections Menu */}
+            {Object.keys(collections).length > 0 && (
+              <div className="mt-2">
+                <div className="px-4 mb-2 text-sm font-medium text-muted-foreground">Collections</div>
+                <SidebarMenu>
+                  {collections.map((key: string) => {
+                    const Icon = iconMapping[key as keyof typeof iconMapping] || FolderOpen;
+                    // Derive label from slug (e.g., "opening-hours" -> "Opening Hours")
+                    const label = key.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                    return (
+                      <SidebarMenuItem key={key}>
+                        <SidebarMenuButton tooltip={label}>
+                          <Icon size={18} />
+                          <Link href={`/admin/collections/${key}`}>
+                            <span>{label}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </div>
+            )}
+
+            {/* Globals Menu */}
+            {Object.keys(globals).length > 0 && (
+              <div className="mt-4">
+                <div className="px-4 mb-2 text-sm font-medium text-muted-foreground">Globals</div>
+                <SidebarMenu>
+                  {globals.map((key: string) => {
+                    const Icon = iconMapping[key as keyof typeof iconMapping] || FolderOpen;
+                    // Derive label from slug (e.g., "business-info" -> "Business Info")
+                    const label = key.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                    return (
+                      <SidebarMenuItem key={key}>
+                        <SidebarMenuButton tooltip={label}>
+                          <Icon size={18} />
+                          <Link href={`/admin/globals/${key}`}>
+                            <span>{label}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </div>
+            )}
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+      </SidebarContent>
+      <SidebarFooter>
+  
+      </SidebarFooter>
+    </Sidebar>
+    </SidebarProvider>
+  );
 }
 
 export default AdminNavigation
