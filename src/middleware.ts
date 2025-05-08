@@ -26,34 +26,40 @@ export function middleware(req: NextRequest) {
     return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
-  // Case 2: Specific Tenant Hostnames (e.g., a1-instalacije.vercel.app)
-  if (
-    hostname === 'a1-instalacije.vercel.app' ||
-    hostname === 'a1-instalacije.local:3000'
-  ) {
-    const currentTenantSlug = 'a1-instalacije';
+  // Case 2: Specific Tenant Hostnames
+  const tenantHostMappings: { [key: string]: string } = {
+    'a1-instalacije.vercel.app': 'a1-instalacije',
+    'a1-instalacije.local:3000': 'a1-instalacije',
+    'moj-mojster-gradnja.vercel.app': 'moj-mojster-gradnja',
+    // Add future tenant-specific domains and their slugs here
+  };
+
+  if (hostname in tenantHostMappings) {
+    const currentTenantSlug = tenantHostMappings[hostname];
     requestHeaders.set('X-Tenant-Slug', currentTenantSlug);
 
-    // Handle /admin path specifically for this tenant's domain
-    if (pathname === '/admin') {
-      url.pathname = '/admin'; // Rewrite to the common /admin application path
-      console.log(`Rewriting tenant host '${hostname}${pathname}' to '${url.pathname}' (tenant: ${currentTenantSlug}) for admin access`);
-      return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+    // If accessing /admin or /admin/* on a tenant specific domain,
+    // redirect to the main admin domain
+    if (pathname.startsWith('/admin')) {
+      const adminDomain = 'admin.obrtniknaspletu.si'; // Consider making this an environment variable
+      const redirectUrl = new URL(pathname, `https://${adminDomain}`);
+      console.log(`Redirecting tenant host admin path '${hostname}${pathname}' to '${redirectUrl.toString()}' (tenant: ${currentTenantSlug})`);
+      return NextResponse.redirect(redirectUrl);
     }
-    
+
     // For other paths on this tenant's domain, rewrite to /tenant-slugs/TENANT_SLUG/...
     // Avoid rewrite if path already starts with /tenant-slugs (which is the target structure)
-    if (!pathname.startsWith('/tenant-slugs')) { 
+    if (!pathname.startsWith('/tenant-slugs')) {
       const tenantPathBase = `/tenant-slugs/${currentTenantSlug}`;
       let adjustedPathname = pathname.replace(/^\/|\/$/g, ''); // remove leading/trailing slashes, '/' becomes ''
-      
+
       url.pathname = adjustedPathname === '' ? tenantPathBase : `${tenantPathBase}/${adjustedPathname}`;
       console.log(`Rewriting tenant host '${hostname}${pathname}' to '${url.pathname}'`);
       return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
     }
-    // If path was /admin (handled above) or already correctly prefixed (e.g. /tenant-slugs/a1-instalacije/foo),
+    // If path was already correctly prefixed (e.g. /tenant-slugs/a1-instalacije/foo),
     // it will fall through to NextResponse.next() at the end, with X-Tenant-Slug header correctly set.
-    console.log(`Passing through tenant host '${hostname}${pathname}' with tenant slug '${currentTenantSlug}' (no rewrite as path is already /tenant-slugs/... or was /admin)`);
+    console.log(`Passing through tenant host '${hostname}${pathname}' with tenant slug '${currentTenantSlug}' (no rewrite as path is already /tenant-slugs/...)`);
   }
 
   // Case 3: Path-based tenant identification for generic hosts (e.g., localhost, .vercel.app previews)
