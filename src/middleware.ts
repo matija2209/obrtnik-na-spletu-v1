@@ -12,19 +12,30 @@ export function middleware(req: NextRequest) {
   const requestHeaders = new Headers(req.headers);
 
   let tenantSlug: string | null = null;
-  let isRewrite = false;
 
-  // Specific rewrite for admin subdomain root
+
+  // Handle admin.obrtniknaspletu.si specifically
   if (hostname === 'admin.obrtniknaspletu.si') {
+    const pathSegments = pathname.split('/').filter(Boolean);
+
     if (pathname === '/') {
-       url.pathname = '/admin';
-       requestHeaders.set('X-Tenant-Slug', 'admin'); 
-       return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+      // Root of admin subdomain, rewrite to /admin and set slug to 'admin'
+      url.pathname = '/admin';
+      requestHeaders.set('X-Tenant-Slug', 'admin');
+      console.log(`Rewriting admin host root to /admin, slug: admin`);
+      return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+    } else if (pathSegments.length > 1 && pathSegments[0] === 'tenant-slugs') {
+      // Path like /tenant-slugs/[slug]/... on admin subdomain
+      const specificTenantSlug = pathSegments[1];
+      requestHeaders.set('X-Tenant-Slug', specificTenantSlug);
+      console.log(`Admin host: Path /tenant-slugs/... detected. Slug: ${specificTenantSlug} for path: ${pathname}`);
+      return NextResponse.next({ request: { headers: requestHeaders } });
     } else {
-        // Allow other paths under admin subdomain, maybe set header too?
-        requestHeaders.set('X-Tenant-Slug', 'admin');
-        // No rewrite needed, just pass through with header
-        return NextResponse.next({ request: { headers: requestHeaders } });
+      // Other paths on admin subdomain (e.g., /admin, /admin/foo), set slug to 'admin'
+      // This is for direct access to Payload admin UI paths.
+      requestHeaders.set('X-Tenant-Slug', 'admin');
+      console.log(`Admin host: Defaulting to slug 'admin' for path: ${pathname}`);
+      return NextResponse.next({ request: { headers: requestHeaders } });
     }
   }
 
@@ -36,14 +47,14 @@ export function middleware(req: NextRequest) {
     tenantSlug = 'a1-instalacije';
   }
 
-  // 2. If no specific hostname match, check if path indicates tenant (for internal requests)
-  if (!tenantSlug && (hostname === 'localhost:3000' || hostname.includes('.vercel.app'))) { // Add other generic hosts if needed
-      const pathSegments = pathname.split('/').filter(Boolean); // Remove empty segments
-      if (pathSegments[0] === 'tenant-slugs' && pathSegments[1]) {
-          tenantSlug = pathSegments[1];
-          console.log(`Extracted tenant '${tenantSlug}' from path for host '${hostname}'`);
-          // Don't rewrite URL here, path is already correct
-      }
+  // 2. If no specific hostname match, check for direct tenant-slugs path access
+  if (!tenantSlug) {
+    const pathSegments = pathname.split('/').filter(Boolean); // Remove empty segments
+    if (pathSegments[0] === 'tenant-slugs' && pathSegments[1]) {
+      tenantSlug = pathSegments[1];
+      console.log(`Extracted tenant '${tenantSlug}' from path for host '${hostname}'`);
+      // No need to rewrite URL here, path is already correct
+    }
   }
 
   // 3. Set header based on determined slug (or default)
@@ -53,12 +64,12 @@ export function middleware(req: NextRequest) {
     requestHeaders.set('X-Tenant-Slug', 'default');
   }
 
-  // 4. Rewrite ONLY if it was based on HOSTNAME (initial request)
+  // 4. Rewrite ONLY if it was based on specific HOSTNAME (initial request)
   if ((
       hostname === 'a1-instalacije.vercel.app' ||
       hostname === 'a1-instalacije.local:3000'
     ) && !pathname.startsWith('/tenant-slugs')) { // Avoid rewrite loop
-      
+
       const tenantPath = `/tenant-slugs/${tenantSlug}`; // Use the identified slug
       let adjustedPathname = pathname.replace(/^\/|\/$/g, '');
 

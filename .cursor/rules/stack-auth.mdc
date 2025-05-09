@@ -1,0 +1,133 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+\
+---
+name: get-stack-user
+---
+# Fetching the User Object with Stack Auth
+
+This guide explains how to retrieve the current user's information using Stack Auth in your Next.js application, covering both Server and Client Components. The core logic for interacting with Stack Auth is often centralized in [src/stack.tsx](mdc:src/stack.tsx).
+
+For more details, refer to the [Stack Auth SDK Documentation](mdc:https:/docs.stack-auth.com/next/sdk/objects/stack-app#stackserverapp).
+
+## Server Components (Default in App Router)
+
+In Server Components or Route Handlers, you use the `stackServerApp` instance, typically exported from `src/stack.tsx`.
+
+1.  **Import `stackServerApp`**:
+    ```typescript
+    import { stackServerApp } from '@/stack'; // Adjust path if necessary
+    ```
+
+2.  **Fetch the User**: Use the `getUser()` method.
+    ```typescript
+    // In an async Server Component or function
+    async function MyServerComponent() {
+      // Get user or null if not signed in (default behavior)
+      const user = await stackServerApp.getUser();
+
+      // Or redirect to sign-in if not authenticated
+      // const user = await stackServerApp.getUser({ or: "redirect" });
+
+      // Or throw an error if not authenticated
+      // const user = await stackServerApp.getUser({ or: "throw" });
+
+      if (!user) {
+        // Handle unauthenticated state
+        return <p>Please sign in.</p>;
+      }
+
+      // User is available (type: ServerUser)
+      return (
+        <div>
+          <p>Welcome, {user.displayName || 'User'}!</p>
+          <p>Email: {user.primaryEmail}</p>
+          <p>ID: {user.id}</p>
+          {/* Access server-specific properties like user.lastActiveAt */}
+        </div>
+      );
+    }
+    ```
+
+*   **Return Type**: `Promise<ServerUser | null>` (unless `or` is set to `"redirect"` or `"throw"`).
+*   **`ServerUser`**: Includes properties like `id`, `displayName`, `primaryEmail`, `profileImageUrl`, `signedUpAt`, `lastActiveAt`, `serverMetadata`, and methods like `update()`, `grantPermission()`, etc.
+
+## Client Components (`'use client'`)
+
+In Client Components, you interact with Stack Auth via the `useStackApp` hook to get the `StackClientApp` instance, and then use `getUser()` or the `useUser` hook.
+
+1.  **Import Hooks**:
+    ```typescript
+    'use client';
+
+    import { useStackApp, useUser } from '@stackframe/stack'; // Assuming this is where the hook comes from
+    import { useEffect, useState } from 'react';
+    ```
+
+2.  **Fetch the User using `useUser` Hook (Recommended)**:
+    ```typescript
+    function UserProfile() {
+      // Get user or null if not signed in (default behavior)
+      const user = useUser();
+
+      // Or redirect if not signed in (hook handles this)
+      // const user = useUser({ or: 'redirect' });
+
+      // Or throw if not signed in (hook handles this)
+      // const user = useUser({ or: 'throw' });
+
+
+      if (!user) {
+         // Can show loading state or message
+        return <p>Loading user or user not signed in...</p>;
+      }
+
+      // User is available (type: User or CurrentUser)
+      return (
+        <div>
+          <p>Welcome, {user.displayName || 'User'}!</p>
+          <p>Email: {user.primaryEmail}</p>
+          <p>ID: {user.id}</p>
+        </div>
+      );
+    }
+    ```
+
+3.  **Fetch the User using `useStackApp` and `getUser` (Alternative)**:
+    ```typescript
+    function UserGreeting() {
+      const stackApp = useStackApp(); // Get the StackClientApp instance
+      const [userName, setUserName] = useState<string | null>(null);
+      const [isLoading, setIsLoading] = useState(true);
+
+      useEffect(() => {
+        const fetchUser = async () => {
+          setIsLoading(true);
+          try {
+            // Default: returns null if not signed in
+            const user = await stackApp.getUser();
+            setUserName(user?.displayName || null);
+          } catch (error) {
+            console.error("Error fetching user:", error);
+            setUserName(null);
+          } finally {
+            setIsLoading(false);
+          }
+        };
+        fetchUser();
+      }, [stackApp]);
+
+      if (isLoading) {
+        return <p>Loading...</p>;
+      }
+
+      return <p>{userName ? `Hello, ${userName}` : 'Hello, Guest!'}</p>;
+    }
+    ```
+
+*   **Return Type**: `useUser` returns `User | null` (or `User` if `or` is set). `stackApp.getUser()` returns `Promise<CurrentUser | null>` (or `CurrentUser` if `or` is set).
+*   **`CurrentUser` / `User`**: Includes properties like `id`, `displayName`, `primaryEmail`, `profileImageUrl`, `signedUpAt`, `clientMetadata`, and methods like `update()`, `signOut()`, `hasPermission()`. Note that server-specific fields (`lastActiveAt`, `serverMetadata`) are not available on the client user object.
+*   **Options**: The `or` option (`"return-null"`, `"redirect"`, `"throw"`) works similarly for both `useUser` and `stackApp.getUser()`.

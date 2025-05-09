@@ -56,16 +56,19 @@ export async function getTenantThemeConfig(tenantSlug: string, isDraftMode: bool
   try {
     // Corrected URL to fetch tenant-specific theme config JSON
     const configUrl = `${S3_CSS_DOMAIN}/tenant-configs/${tenantSlug}.json?v=${Date.now()}`; // Cache bust for dev
-    const res = await fetch(configUrl);
+    const res = await fetch(configUrl, {
+      next: isDraftMode ? { revalidate: 0 } : { revalidate: 3600,tags: [TENANT_THEME_CONFIG_TAG(tenantSlug)] },
+      cache: isDraftMode ? 'no-store' : "force-cache",
+    });
 
     if (!res.ok) {
       console.warn(`Failed to fetch theme config for ${tenantSlug} from ${configUrl} (${res.status}). Trying default config.`);
       // Try fetching 'default' tenant config as a broader fallback
       if (tenantSlug !== 'default') {
         const defaultConfigUrl = `${S3_CSS_DOMAIN}/tenant-configs/default.json?v=${Date.now()}`; // Cache bust for dev
-        const defaultRes = await fetch(defaultConfigUrl, { 
-          next: isDraftMode ? { revalidate: 0 } : { revalidate: 300 },
-          cache: isDraftMode ? 'no-store' : undefined
+        const defaultRes = await fetch(defaultConfigUrl, {
+          next: isDraftMode ? { revalidate: 0 } : { revalidate: 3600,tags: [TENANT_THEME_CONFIG_TAG(tenantSlug)] },
+          cache: isDraftMode ? 'no-store' : "force-cache",
         });
         if (defaultRes.ok) {
           console.log(`Successfully fetched default theme config from ${defaultConfigUrl}`);
@@ -107,8 +110,8 @@ export async function fetchTenantStyles(
   try {
     const versionsUrl = `${S3_CSS_DOMAIN}/tenant-styles/versions.json?v=${isDraftMode ? Date.now() : cssVersion}`;
     const versionRes = await fetch(versionsUrl, {
-      next: isDraftMode ? { revalidate: 0 } : { revalidate: 60 },
-      cache: isDraftMode ? 'no-store' : undefined,
+      next: isDraftMode ? { revalidate: 0 } : { revalidate: 3600,tags: [TENANT_CSS_TAG(tenantSlug)] },
+      cache: isDraftMode ? 'no-store' : "force-cache",
     });
 
     if (versionRes.ok) {
@@ -125,8 +128,8 @@ export async function fetchTenantStyles(
   try {
     const cssUrl = `${S3_CSS_DOMAIN}/tenant-styles/${tenantSlug}.css?v=${isDraftMode ? Date.now() : cssVersion}`;
     const cssRes = await fetch(cssUrl, {
-      next: isDraftMode ? { revalidate: 0 } : { revalidate: 300 },
-      cache: isDraftMode ? 'no-store' : undefined,
+      next: isDraftMode ? { revalidate: 0 } : { revalidate: 3600,tags: [TENANT_CSS_TAG(tenantSlug)] },
+      cache: isDraftMode ? 'no-store' : "force-cache",
     });
 
     if (cssRes.ok) {
@@ -139,8 +142,8 @@ export async function fetchTenantStyles(
         try {
           const defaultVersionsUrl = `${S3_CSS_DOMAIN}/tenant-styles/versions.json?v=${isDraftMode ? Date.now() : ''}`;
           const defaultVersionRes = await fetch(defaultVersionsUrl, {
-            next: isDraftMode ? { revalidate: 0 } : { revalidate: 60 },
-            cache: isDraftMode ? 'no-store' : undefined,
+            next: isDraftMode ? { revalidate: 0 } : { revalidate: 3600,tags: [TENANT_CSS_TAG(tenantSlug)] },
+            cache: isDraftMode ? 'no-store' : "force-cache",
           });
           let defaultCssVersion = Date.now();
           if (defaultVersionRes.ok) {
@@ -150,8 +153,8 @@ export async function fetchTenantStyles(
 
           const defaultCssUrl = `${S3_CSS_DOMAIN}/tenant-styles/default.css?v=${isDraftMode ? Date.now() : defaultCssVersion}`;
           const defaultCssRes = await fetch(defaultCssUrl, {
-            next: isDraftMode ? { revalidate: 0 } : { revalidate: 300 },
-            cache: isDraftMode ? 'no-store' : undefined,
+            next: isDraftMode ? { revalidate: 0 } : { revalidate: 3600,tags: [TENANT_CSS_TAG(tenantSlug)] },
+            cache: isDraftMode ? 'no-store' : "force-cache",
           });
 
           if (defaultCssRes.ok) {

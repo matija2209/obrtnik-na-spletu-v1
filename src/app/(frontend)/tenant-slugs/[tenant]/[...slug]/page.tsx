@@ -1,6 +1,6 @@
 import configPromise from '@payload-config'
 import { headers as getHeaders, draftMode } from 'next/headers'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import React from 'react'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
@@ -37,14 +37,14 @@ export default async function TenantSlugPage({
   ])
   // Query for the page, passing draft status
   const safeSlug = slug === undefined || slug.length === 0 ? ['home'] : slug;
-  console.log('safeSlug', safeSlug)
+
   const page = await queryPageBySlug({
     slug: safeSlug,
     tenant,
     overrideAccess: draft,
     draft,
   })
-  console.log('page', "we got the page");
+
   
   // If no page is found, return a 404
   if (!page) {

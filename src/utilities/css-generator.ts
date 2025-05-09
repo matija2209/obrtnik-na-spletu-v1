@@ -61,77 +61,21 @@ export function generateTenantCSS(tenant: Tenant): string {
   let cssLines: string[] = [];
 
   // Color variables
-  cssLines.push(`  --background: ${backgroundColor};`);
-  cssLines.push(`  --foreground: ${foregroundColor};`);
-  cssLines.push(`  --primary: ${primaryColor};`);
-  cssLines.push(`  --primary-foreground: ${primaryForeground};`);
-  cssLines.push(`  --secondary: ${secondaryColor};`);
-  cssLines.push(`  --secondary-foreground: ${secondaryForeground};`);
-  cssLines.push(`  --accent: ${accentColor};`);
-  cssLines.push(`  --accent-foreground: ${accentForeground};`);
-  cssLines.push(`  --radius: ${tenantRadius};`);
+  cssLines.push(`  --background: ${backgroundColor} !important;`);
+  cssLines.push(`  --foreground: ${foregroundColor} !important;`);
+  cssLines.push(`  --primary: ${primaryColor} !important;`);
+  cssLines.push(`  --primary-foreground: ${primaryForeground} !important;`);
+  cssLines.push(`  --secondary: ${secondaryColor} !important;`);
+  cssLines.push(`  --secondary-foreground: ${secondaryForeground} !important;`);
+  cssLines.push(`  --accent: ${accentColor} !important;`);
+  cssLines.push(`  --accent-foreground: ${accentForeground} !important;`);
+  cssLines.push(`  --radius: ${tenantRadius} !important;`);
 
 
   const headingFont = actualFontInstanceVariables[typography.headingFont.name]
   const bodyFont = actualFontInstanceVariables[typography.bodyFont.name]
-  cssLines.push(`  --font-heading: var(${headingFont});`);
-  cssLines.push(`  --font-body: var(${bodyFont});`);
-
-  // Note: Other shadcn variables like --card, --popover, --muted, --destructive, --border, --input, --ring 
-  // will use their default values from globals.css unless explicitly overridden here.
-
-  // Determine chosen font names, defaulting to 'Inter'
-  // const headingFontName = typography?.headingFont?.name;
-  // const bodyFontName = typography?.bodyFont?.name;
-
-  // Get the actual next/font instance variable names
-  // const headingFontActualVariable = actualFontInstanceVariables[headingFontName] || actualFontInstanceVariables['Inter'];
-  // const bodyFontActualVariable = actualFontInstanceVariables[bodyFontName] || actualFontInstanceVariables['Inter'];
-// 
-  // Get the tenant's desired abstract variable names (e.g., --font-heading)
-  // const headingFontTenantVariable = typography?.headingFont?.variableName; // This is e.g. --font-heading
-  // const bodyFontTenantVariable = typography?.bodyFont?.variableName;     // This is e.g. --font-body
-
-  // Make the tenant's abstract font variables point to the actual next/font CSS variables
-  // if (headingFontTenantVariable && headingFontActualVariable) {
-  //   cssLines.push(`  ${headingFontTenantVariable}: var(${headingFontActualVariable});`);
-  // }
-  // if (bodyFontTenantVariable && bodyFontActualVariable) {
-  //   cssLines.push(`  ${bodyFontTenantVariable}: var(${bodyFontActualVariable});`);
-  // }
-  
-  // Note: Tenant-chosen weights and subsets from tenant.typography.displayFont.weights etc.
-  // are not directly used here to alter the preloaded next/font behavior.
-  // The preloaded fonts in layout.tsx have fixed weights/subsets.
-
-  // Font variables
-  // Uses `variableName` from tenant config (e.g., '--font-heading') as the CSS property.
-  // Uses `name` from tenant config (e.g., 'Lato') to find the `next/font` instance variable.
-  // if (typography?.headingFont?.name && typography.headingFont.variableName) {
-  //   const fontName = typography.headingFont.name;
-  //   const logicalVarName = typography.headingFont.variableName; // This should be --font-heading (from updated tenant data)
-  //   const instanceVar = actualFontInstanceVariables[fontName];
-
-  //   if (instanceVar) {
-  //     cssLines.push(`  ${logicalVarName}: var(${instanceVar});`);
-  //   } else {
-  //     console.warn(`CSS Generator: Instance variable for heading font '${fontName}' not found. Check actualFontInstanceVariables map.`);
-
-  //   }
-  // }
-
-  // if (typography?.bodyFont?.name && typography.bodyFont.variableName) {
-  //   const fontName = typography.bodyFont.name;
-  //   const logicalVarName = typography.bodyFont.variableName; // This should be --font-body (from updated tenant data)
-  //   const instanceVar = actualFontInstanceVariables[fontName];
-
-  //   if (instanceVar) {
-  //     cssLines.push(`  ${logicalVarName}: var(${instanceVar});`);
-  //   } else {
-  //     console.warn(`CSS Generator: Instance variable for body font '${fontName}' not found. Check actualFontInstanceVariables map.`);
-
-  //   }
-  // }
+  cssLines.push(`  --font-heading: var(${headingFont}) !important;`);
+  cssLines.push(`  --font-body: var(${bodyFont}) !important;`);
 
   if (cssLines.every(line => line.includes(': undefined;') || line.includes(': null;') || line.trim() === '' || line.includes('var(undefined)') )) {
     // A more robust check to see if any meaningful CSS was generated
