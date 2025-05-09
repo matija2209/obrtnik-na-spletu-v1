@@ -17,7 +17,7 @@ import { Page, ServicePage } from '@payload-types'
 const blockComponents = {
 
   servicesHero: ServicesHeroBlock,
-  servicesPresentation: ServicesPresentationBlock,
+  sPresentation: ServicesPresentationBlock,
   servicesCta: ServicesCtaBlock,
 }
 
