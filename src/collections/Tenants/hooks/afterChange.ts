@@ -3,6 +3,9 @@ import { CollectionAfterChangeHook, Payload } from 'payload';
 import { r2 } from '@/lib/r2-client';
 import { generateTenantCSS } from '@/utilities/css-generator';
 import type { Tenant } from '@payload-types';
+import { revalidateTag } from 'next/cache';
+import { TENANT_CSS_TAG, TENANT_THEME_CONFIG_TAG } from '@/utilities/themeUtils';
+
 
 // Debounce function to prevent multiple rapid generations
 const pendingTenants = new Map();
@@ -28,7 +31,8 @@ const afterChangeHook: CollectionAfterChangeHook<Tenant> = async ({ doc, req }) 
   if (!global.assetProcessingTimeout) {
     global.assetProcessingTimeout = setTimeout(processAllPendingTenants, DEBOUNCE_TIME);
   }
-  
+  revalidateTag(TENANT_THEME_CONFIG_TAG(doc.slug))
+  revalidateTag(TENANT_CSS_TAG(doc.slug))
   return;
 };
 

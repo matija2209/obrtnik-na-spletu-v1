@@ -1,4 +1,3 @@
-"use cache"
 import configPromise from '@payload-config'
 import { headers as getHeaders, draftMode } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
@@ -20,7 +19,6 @@ export default async function TenantSlugPage({
   // Await parameters
   const params = await paramsPromise
   const { slug, tenant } = params
-  console.log('TenantSlugPage', params);
 
   // Get authenticated user
   const headers = await getHeaders()

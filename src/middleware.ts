@@ -5,9 +5,6 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   const pathname = url.pathname; // Original pathname
 
-  // Log the hostname and pathname for every request the middleware handles
-  console.log(`Middleware processing: Host=${hostname}, Path=${pathname}`);
-
   // Clone the request headers so we can modify them
   const requestHeaders = new Headers(req.headers);
   // let tenantSlug: string | null = null; // We'll primarily use headers directly
@@ -17,12 +14,10 @@ export function middleware(req: NextRequest) {
     requestHeaders.set('X-Tenant-Slug', 'admin'); // This host always implies the 'admin' tenant context
     if (pathname === '/') {
        url.pathname = '/admin'; // Rewrite root to /admin
-       console.log(`Rewriting admin host root '${hostname}${pathname}' to '${url.pathname}'`);
        return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
     }
     // For any other path on admin.obrtniknaspletu.si (e.g., /admin/users, or if /admin is explicitly typed),
     // just pass through with the 'admin' slug header. No rewrite needed.
-    console.log(`Passing through admin host '${hostname}${pathname}' with tenant slug 'admin'`);
     return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
@@ -43,7 +38,6 @@ export function middleware(req: NextRequest) {
     if (pathname.startsWith('/admin')) {
       const adminDomain = 'admin.obrtniknaspletu.si'; // Consider making this an environment variable
       const redirectUrl = new URL(pathname, `https://${adminDomain}`);
-      console.log(`Redirecting tenant host admin path '${hostname}${pathname}' to '${redirectUrl.toString()}' (tenant: ${currentTenantSlug})`);
       return NextResponse.redirect(redirectUrl);
     }
 
@@ -54,12 +48,10 @@ export function middleware(req: NextRequest) {
       let adjustedPathname = pathname.replace(/^\/|\/$/g, ''); // remove leading/trailing slashes, '/' becomes ''
 
       url.pathname = adjustedPathname === '' ? tenantPathBase : `${tenantPathBase}/${adjustedPathname}`;
-      console.log(`Rewriting tenant host '${hostname}${pathname}' to '${url.pathname}'`);
       return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
     }
     // If path was already correctly prefixed (e.g. /tenant-slugs/a1-instalacije/foo),
     // it will fall through to NextResponse.next() at the end, with X-Tenant-Slug header correctly set.
-    console.log(`Passing through tenant host '${hostname}${pathname}' with tenant slug '${currentTenantSlug}' (no rewrite as path is already /tenant-slugs/...)`);
   }
 
   // Case 3: Path-based tenant identification for generic hosts (e.g., localhost, .vercel.app previews)
@@ -70,7 +62,6 @@ export function middleware(req: NextRequest) {
     if (pathSegments[0] === 'tenant-slugs' && pathSegments[1]) {
       const pathTenantSlug = pathSegments[1];
       requestHeaders.set('X-Tenant-Slug', pathTenantSlug);
-      console.log(`Extracted tenant '${pathTenantSlug}' from path '${pathname}' for host '${hostname}' and set header.`);
       // No rewrite needed; path is already the internal representation. Just ensure header is set.
     }
   }
@@ -78,11 +69,9 @@ export function middleware(req: NextRequest) {
   // Case 4: Set default tenant slug if no specific tenant context was determined by preceding rules
   if (!requestHeaders.has('X-Tenant-Slug')) {
     requestHeaders.set('X-Tenant-Slug', 'default');
-    console.log(`Setting tenant slug to 'default' for host '${hostname}${pathname}' as no other rules applied.`);
   }
 
   // If no rewrite rule above returned a response, proceed with the request (with potentially modified headers)
-  console.log(`Final pass-through for '${hostname}${pathname}' with tenant slug '${requestHeaders.get('X-Tenant-Slug')}'`);
   return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
