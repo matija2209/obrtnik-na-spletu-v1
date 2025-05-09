@@ -25,12 +25,12 @@ interface NavItem {
 // Define the props for the Navbar component
 interface NavbarProps {
   navbarData: NavbarType;
-  logoLightUrl: string;
-  logoDarkUrl: string;
-  companyName: string;
-  phoneNumber: string;
-  email: string;
-  location: string;
+  logoLightUrl?: string;
+  logoDarkUrl?: string;
+  companyName?: string;
+  phoneNumber?: string;
+  email?: string;
+  location?: string;
 }
 
 // Main Navbar Component

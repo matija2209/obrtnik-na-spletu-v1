@@ -10,7 +10,7 @@ import Link from 'next/link';
 interface LogoProps {
   isScrolled?: boolean;
   location?: 'navbar' | 'footer' | 'mobile-menu';
-  logoSrc: string; // Add this prop
+  logoSrc?: string; // Add this prop
   title?: string;
   // businessData?: BusinessInfo; // Remove this prop
 }
@@ -37,13 +37,13 @@ const Logo = ({ title,isScrolled = false, location, logoSrc }: LogoProps) => {
 
   return (
     <Link href="/" className="flex items-center">
-      <Image
+      {logoSrc && <Image
         src={logoSrc} // Use the passed prop directly
         alt="Rezanje in vrtanje betona Logo"
         width={55}
         height={20}
         className="h-auto w-auto mr-2"
-      />
+      />}
       {title && <span className={`hidden md:block text-2xl font-bold ${getTextColor()}`}>{title}</span>}
     </Link>
   );

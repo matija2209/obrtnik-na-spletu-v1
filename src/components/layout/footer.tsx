@@ -32,7 +32,7 @@ const socialIconMap: { [key: string]: React.ElementType } = {
 
 async function Footer({ footerData, businessInfoData, navbarData }: FooterProps) {
   // Calculate logo URLs using businessInfoData prop
-  const logoDarkUrl = getLogoUrl(businessInfoData, 'dark');
+  const logoDarkUrl = await  getLogoUrl(businessInfoData, 'dark');
   // Removed footerData.logo logic, using only businessInfoData logo
   const footerLogoUrl = logoDarkUrl; // Use the dark logo by default for footer
 
@@ -48,7 +48,7 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Logo & Basic Info */}
           <div className="flex flex-col items-start space-y-4">
-            <Logo logoSrc={footerLogoUrl} location="footer" title={businessInfoData.companyName} />
+            {footerLogoUrl && <Logo logoSrc={footerLogoUrl} location="footer" title={businessInfoData.companyName} />}
             <div className="text-sm space-y-1">
               <p className="font-semibold">{businessInfoData.companyName}</p>
               {businessInfoData.vatId && <p>Davčna št.: {businessInfoData.vatId}</p>}

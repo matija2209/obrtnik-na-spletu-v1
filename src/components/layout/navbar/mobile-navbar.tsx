@@ -42,13 +42,13 @@ const MobileNav = ({
 }: { 
   isScrolled: boolean, 
   navItems: NavItem[],
-  currentLogoSrc: string,
+  currentLogoSrc?: string,
   mainCta?: Cta,
   // Define types for new props
-  companyName: string,
-  phoneNumber: string,
-  email: string,
-  location: string
+  companyName?: string,
+  phoneNumber?: string,
+  email?: string,
+  location?: string
 }) => {
     // State for managing expanded submenus
     const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
@@ -80,7 +80,7 @@ const MobileNav = ({
             <div className="flex flex-col h-full">
               <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
                 <div className="flex items-center">
-                  <Logo logoSrc={currentLogoSrc} location="mobile-menu" />
+                  {currentLogoSrc && <Logo logoSrc={currentLogoSrc} location="mobile-menu" />}
                 </div>
               </div>
   
@@ -160,11 +160,11 @@ const MobileNav = ({
                   {/* Use dynamic companyName */}
                   <p className="font-semibold text-gray-700">{companyName}</p>
                   {/* Use dynamic phoneNumber */}
-                  <a href={`tel:${phoneNumber.replace(/\s+/g, '')}`} className="block hover:text-primary">{phoneNumber}</a>
+                  {phoneNumber && <a href={`tel:${phoneNumber.replace(/\s+/g, '')}`} className="block hover:text-primary">{phoneNumber}</a>}
                   {/* Use dynamic email */}
-                  <a href={`mailto:${email}`} className="block hover:text-primary">{email}</a>
+                  {email && <a href={`mailto:${email}`} className="block hover:text-primary">{email}</a>}
                   {/* Use dynamic location */}
-                  <p>{location}</p>
+                  {location && <p>{location}</p>}
                 </div>
               </div>
             </div>

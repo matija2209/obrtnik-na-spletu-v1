@@ -1,3 +1,4 @@
+"use server"
 import { getPayload } from 'payload'
 import type { Payload } from 'payload'
 import type { 
@@ -24,18 +25,17 @@ export type DashboardFormSubmission = {
 
 // Initialize Payload instance
 export const getPayloadClient = async (): Promise<Payload> => {
-  "use cache"
   return getPayload({
     config: configPromise,
   })
 }
 
-export const TENANT_ID_BY_SLUG_TAG = (slug: string) => `tenant-id-by-slug-${slug}`;
+export const TENANT_ID_BY_SLUG_TAG = async (slug: string) => `tenant-id-by-slug-${slug}`;
 // Function to get Tenant ID by slug
 export const getTenantIdBySlug = async (slug: string): Promise<number | null> => {
   "use cache"
   unstable_cacheLife('max')
-  cacheTag(TENANT_ID_BY_SLUG_TAG(slug));
+  cacheTag(await TENANT_ID_BY_SLUG_TAG(slug));
   const payload = await getPayloadClient();
   try {
     const tenantQuery = await payload.find({
@@ -60,12 +60,12 @@ export const getTenantIdBySlug = async (slug: string): Promise<number | null> =>
   }
 };
 
-export const PROJECTS_TAG = "projects";
+export const PROJECTS_TAG = async () => "projects";
 // Collection utility functions
 export const getProjects = async (query = {}) => {
   "use cache"
   unstable_cacheLife('max')
-  cacheTag(PROJECTS_TAG);
+  cacheTag(await PROJECTS_TAG());
   const payload = await getPayloadClient()
   return payload.find({
     collection: 'projects',
@@ -73,10 +73,10 @@ export const getProjects = async (query = {}) => {
   })
 }
 
-export const PROJECT_BY_SLUG_TAG = (slug: string) => `project-by-slug-${slug}`;
+export const PROJECT_BY_SLUG_TAG = async (slug: string) => `project-by-slug-${slug}`;
 export const getProject = async (slug: string, query = {}) => {
   "use cache"
-  cacheTag(PROJECT_BY_SLUG_TAG(slug));
+  cacheTag(await PROJECT_BY_SLUG_TAG(slug));
    unstable_cacheLife('max')
   const payload = await getPayloadClient()
   const { docs } = await payload.find({
@@ -87,11 +87,11 @@ export const getProject = async (slug: string, query = {}) => {
   return docs[0] as Project | undefined
 }
 
-export const SERVICES_TAG = "services";
+export const SERVICES_TAG = async () => "services";
 export const getServices = async (query = {}) => {
   "use cache"
   unstable_cacheLife('max')
-  cacheTag(SERVICES_TAG);
+  cacheTag(await SERVICES_TAG());
   const payload = await getPayloadClient()
   return payload.find({
     collection: 'services',
@@ -99,10 +99,10 @@ export const getServices = async (query = {}) => {
   })
 }
 
-export const SERVICE_BY_SLUG_TAG = (slug: string) => `service-by-slug-${slug}`;
+export const SERVICE_BY_SLUG_TAG = async (slug: string) => `service-by-slug-${slug}`;
 export const getService = async (slug: string, query = {}) => {
   "use cache"
-  cacheTag(SERVICE_BY_SLUG_TAG(slug));
+  cacheTag(await SERVICE_BY_SLUG_TAG(slug));
    unstable_cacheLife('max')
   const payload = await getPayloadClient()
   const { docs } = await payload.find({
@@ -113,11 +113,11 @@ export const getService = async (slug: string, query = {}) => {
   return docs[0] as Service | undefined
 }
 
-export const TESTIMONIALS_TAG = "testimonials";
+export const TESTIMONIALS_TAG = async () => "testimonials";
 export const getTestimonials = async (query = {}) => {
   "use cache"
   unstable_cacheLife('max')
-  cacheTag(TESTIMONIALS_TAG);
+  cacheTag(await TESTIMONIALS_TAG());
   const payload = await getPayloadClient()
   return payload.find({
     collection: 'testimonials',
@@ -125,10 +125,10 @@ export const getTestimonials = async (query = {}) => {
   })
 }
 
-export const FAQ_ITEMS_TAG = "faq-items";
+export const FAQ_ITEMS_TAG = async () => "faq-items";
 export const getFaqItems = async (query = {}) => {
   "use cache"
-  cacheTag(FAQ_ITEMS_TAG);
+  cacheTag(await FAQ_ITEMS_TAG());
   unstable_cacheLife('max')
   const payload = await getPayloadClient()
   return payload.find({
@@ -137,10 +137,10 @@ export const getFaqItems = async (query = {}) => {
   })
 }
 
-export const MACHINERY_TAG = "machinery";
+export const MACHINERY_TAG = async () => "machinery";
 export const getMachinery = async (query = {}) => {
   "use cache"
-  cacheTag(MACHINERY_TAG);
+  cacheTag(await MACHINERY_TAG());
   const payload = await getPayloadClient()
   return payload.find({
     collection: 'machinery',
@@ -148,11 +148,11 @@ export const getMachinery = async (query = {}) => {
   })
 }
 
-export const CTAS_TAG = "ctas";
+export const CTAS_TAG = async () => "ctas";
 export const getCtas = async (query = {}) => {
   "use cache"
   unstable_cacheLife('max')
-  cacheTag(CTAS_TAG);
+  cacheTag(await CTAS_TAG());
   const payload = await getPayloadClient()
   return payload.find({
     collection: 'ctas',
@@ -160,11 +160,11 @@ export const getCtas = async (query = {}) => {
   })
 }
 
-export const MEDIA_TAG = "media";
+export const MEDIA_TAG = async () => "media";
 export const getMedia = async (query = {}) => {
   "use cache"
   unstable_cacheLife('max')
-  cacheTag(MEDIA_TAG);
+  cacheTag(await MEDIA_TAG());
   const payload = await getPayloadClient()
   return payload.find({
     collection: 'media',
@@ -172,45 +172,58 @@ export const getMedia = async (query = {}) => {
   })
 }
 
-export const BUSINESS_INFO_TAG = "business-info";
+export const BUSINESS_INFO_TAG = async (tenantId: string) => `business-info-${tenantId}`;
 // Global utility functions
-export const getBusinessInfo = async (query = {}) => {
+export const getBusinessInfo = async (tenantId: string) => {
   "use cache"
   unstable_cacheLife('max')
-  cacheTag(BUSINESS_INFO_TAG);
+  cacheTag(await BUSINESS_INFO_TAG(tenantId));
   const payload = await getPayloadClient()
   return payload.findGlobal({
     slug: 'business-info',
-    ...query,
+    user: {
+      tenant: {
+        equals: tenantId
+      }
+    }
   })
 }
 
-export const NAVBAR_TAG = "navbar";
-export const getNavbar = async (query = {}) => {
+export const NAVBAR_TAG = async (tenantId: string) => `navbar-${tenantId}`;
+
+export const getNavbar = async (tenantId:string ) => {
   "use cache"
   unstable_cacheLife('max')
-  cacheTag(NAVBAR_TAG);
+  cacheTag(await NAVBAR_TAG(tenantId));
   const payload = await getPayloadClient()
   return payload.findGlobal({
     slug: 'navbar',
-    ...query,
+    user: {
+      tenant: {
+        equals: tenantId
+      }
+    }
   })
 }
 
-export const FOOTER_TAG = "footer";
-export const getFooter = async (query = {}) => {
+export const FOOTER_TAG = async (tenantId: string) => `footer-${tenantId}`;
+export const getFooter = async (tenantId: string) => {
   "use cache"
   unstable_cacheLife('max')
-  cacheTag(FOOTER_TAG);
+  cacheTag(await FOOTER_TAG(tenantId));
   const payload = await getPayloadClient()
   return payload.findGlobal({
     slug: 'footer',
-    ...query,
+    user: {
+      tenant: {
+        equals: tenantId
+      }
+    }
   })
 }
 
 // Logo utilities
-export function getLogoUrl(businessData?: any, variant: 'light' | 'dark' = 'dark'): string {
+export async function getLogoUrl(businessData?: any, variant: 'light' | 'dark' = 'dark'): Promise<string> {
 
   if (variant === 'light') {
     // First try to get light logo if available
@@ -236,13 +249,13 @@ export function getLogoUrl(businessData?: any, variant: 'light' | 'dark' = 'dark
   }
 }
 
-export const PAGE_BY_SLUG_TAG = (tenant?: string, slug?: string[]) => {
+export const PAGE_BY_SLUG_TAG = async (tenant?: string, slug?: string[]) => {
   const slugStr = slug && slug.length > 0 ? slug.join('-') : 'home'; 
   return `page-${tenant ? tenant + '-' : ''}${slugStr}`;
 };
 // Page utility functions
 export const queryPageBySlug = async ({
-  slug,
+  slug = ['home'],
   tenant,
   overrideAccess = false,
   draft: draftParam,
@@ -254,7 +267,7 @@ export const queryPageBySlug = async ({
 }) => {
   "use cache"
   unstable_cacheLife('max')
-  cacheTag(PAGE_BY_SLUG_TAG(tenant, slug));
+  cacheTag(await PAGE_BY_SLUG_TAG(tenant, slug));
   // console.log('====== QUERY PAGE BY SLUG - START ======');
   // console.log('Input parameters:', { slug, tenant, overrideAccess, draftParam });
   
@@ -265,6 +278,7 @@ export const queryPageBySlug = async ({
   // Determine the slug value to search for
   const slugValue = !slug || slug.length === 0 ? 'home' : slug.join('/');
   // console.log('Computed slug value:', slugValue);
+  console.log('slugValue', slugValue);
   
   try {
     // First, look up the tenant ID from the tenant slug

@@ -1,4 +1,3 @@
-
 import configPromise from '@payload-config'
 import { headers as getHeaders, draftMode } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
@@ -26,53 +25,35 @@ export default async function TenantSlugPage({
   const payload = await getPayload({ config: configPromise })
   const { user } = await payload.auth({ headers })
 
-  // Check tenant access
-  try {
-    const tenantId = await getTenantIdBySlug(tenant)
-    
-    // If no tenant is found, redirect to login
-    if (!tenantId) {
-      redirect(
-        `/tenant-slugs/${tenant}/login?redirect=${encodeURIComponent(
-          `/tenant-slugs/${tenant}${slug ? `/${slug.join('/')}` : ''}`,
-        )}`,
-      )
-    }
-  } catch (e) {
-    // If the query fails, redirect to login
-    redirect(
-      `/tenant-slugs/${tenant}/login?redirect=${encodeURIComponent(
-        `/tenant-slugs/${tenant}${slug ? `/${slug.join('/')}` : ''}`,
-      )}`,
-    )
-  }
-
   // Get draft mode status
   const { isEnabled: draft } = await draftMode()
 
   // Fetch global data in parallel
-  const [navbarData, businessInfoData, footerData] = await Promise.all([
-    getNavbar(),
-    getBusinessInfo(),
-    getFooter(),
-  ])
 
+  const [navbarData, businessInfoData, footerData] = await Promise.all([
+    getNavbar(tenant),
+    getBusinessInfo(tenant),
+    getFooter(tenant),
+  ])
   // Query for the page, passing draft status
+  const safeSlug = slug === undefined || slug.length === 0 ? ['home'] : slug;
+  console.log('safeSlug', safeSlug)
   const page = await queryPageBySlug({
-    slug,
+    slug: safeSlug,
     tenant,
     overrideAccess: draft,
     draft,
   })
-
+  console.log('page', "we got the page");
+  
   // If no page is found, return a 404
   if (!page) {
     return notFound()
   }
 
   // Prepare Navbar props
-  const logoLightUrl = getLogoUrl(businessInfoData, 'light')
-  const logoDarkUrl = getLogoUrl(businessInfoData, 'dark')
+  const logoLightUrl = await getLogoUrl(businessInfoData, 'light')
+  const logoDarkUrl = await getLogoUrl(businessInfoData, 'dark')
   const companyName = businessInfoData?.companyName ?? 'Podjetje'
   const phoneNumber = businessInfoData?.phoneNumber ?? ''
   const email = businessInfoData?.email ?? ''
@@ -96,7 +77,7 @@ export default async function TenantSlugPage({
         footerData={footerData} 
         businessInfoData={businessInfoData} 
         navbarData={navbarData}
-      />
+      /> 
     </>
   )
 }
