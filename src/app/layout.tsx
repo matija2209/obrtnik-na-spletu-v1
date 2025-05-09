@@ -10,11 +10,13 @@ export default function RootLayout({
 }>) {
   return (
     <>
+      <Suspense>
         {children}
-        <AnalyticsLoader />
+      </Suspense>
+      <AnalyticsLoader />
         <Suspense fallback={null}>
             <CookieConsent />
-          </Suspense>
-        </>
+        </Suspense>
+    </>
   );
 }

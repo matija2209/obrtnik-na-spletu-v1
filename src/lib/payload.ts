@@ -11,7 +11,7 @@ import type {
 import configPromise from '@payload-config'
 import { getImageUrl } from '@/utilities/getImageUrl'
 import { draftMode } from 'next/headers'
-import { unstable_cacheTag as cacheTag } from 'next/cache'
+import { unstable_cacheTag as cacheTag, unstable_cacheLife } from 'next/cache'
 
 
 // Define a type for the dashboard updates
@@ -34,6 +34,7 @@ export const TENANT_ID_BY_SLUG_TAG = (slug: string) => `tenant-id-by-slug-${slug
 // Function to get Tenant ID by slug
 export const getTenantIdBySlug = async (slug: string): Promise<number | null> => {
   "use cache"
+  unstable_cacheLife('max')
   cacheTag(TENANT_ID_BY_SLUG_TAG(slug));
   const payload = await getPayloadClient();
   try {
@@ -63,6 +64,7 @@ export const PROJECTS_TAG = "projects";
 // Collection utility functions
 export const getProjects = async (query = {}) => {
   "use cache"
+  unstable_cacheLife('max')
   cacheTag(PROJECTS_TAG);
   const payload = await getPayloadClient()
   return payload.find({
@@ -75,6 +77,7 @@ export const PROJECT_BY_SLUG_TAG = (slug: string) => `project-by-slug-${slug}`;
 export const getProject = async (slug: string, query = {}) => {
   "use cache"
   cacheTag(PROJECT_BY_SLUG_TAG(slug));
+   unstable_cacheLife('max')
   const payload = await getPayloadClient()
   const { docs } = await payload.find({
     collection: 'projects',
@@ -87,6 +90,7 @@ export const getProject = async (slug: string, query = {}) => {
 export const SERVICES_TAG = "services";
 export const getServices = async (query = {}) => {
   "use cache"
+  unstable_cacheLife('max')
   cacheTag(SERVICES_TAG);
   const payload = await getPayloadClient()
   return payload.find({
@@ -99,6 +103,7 @@ export const SERVICE_BY_SLUG_TAG = (slug: string) => `service-by-slug-${slug}`;
 export const getService = async (slug: string, query = {}) => {
   "use cache"
   cacheTag(SERVICE_BY_SLUG_TAG(slug));
+   unstable_cacheLife('max')
   const payload = await getPayloadClient()
   const { docs } = await payload.find({
     collection: 'services',
@@ -111,6 +116,7 @@ export const getService = async (slug: string, query = {}) => {
 export const TESTIMONIALS_TAG = "testimonials";
 export const getTestimonials = async (query = {}) => {
   "use cache"
+  unstable_cacheLife('max')
   cacheTag(TESTIMONIALS_TAG);
   const payload = await getPayloadClient()
   return payload.find({
@@ -123,6 +129,7 @@ export const FAQ_ITEMS_TAG = "faq-items";
 export const getFaqItems = async (query = {}) => {
   "use cache"
   cacheTag(FAQ_ITEMS_TAG);
+  unstable_cacheLife('max')
   const payload = await getPayloadClient()
   return payload.find({
     collection: 'faq-items',
@@ -144,6 +151,7 @@ export const getMachinery = async (query = {}) => {
 export const CTAS_TAG = "ctas";
 export const getCtas = async (query = {}) => {
   "use cache"
+  unstable_cacheLife('max')
   cacheTag(CTAS_TAG);
   const payload = await getPayloadClient()
   return payload.find({
@@ -155,6 +163,7 @@ export const getCtas = async (query = {}) => {
 export const MEDIA_TAG = "media";
 export const getMedia = async (query = {}) => {
   "use cache"
+  unstable_cacheLife('max')
   cacheTag(MEDIA_TAG);
   const payload = await getPayloadClient()
   return payload.find({
@@ -167,6 +176,7 @@ export const BUSINESS_INFO_TAG = "business-info";
 // Global utility functions
 export const getBusinessInfo = async (query = {}) => {
   "use cache"
+  unstable_cacheLife('max')
   cacheTag(BUSINESS_INFO_TAG);
   const payload = await getPayloadClient()
   return payload.findGlobal({
@@ -178,6 +188,7 @@ export const getBusinessInfo = async (query = {}) => {
 export const NAVBAR_TAG = "navbar";
 export const getNavbar = async (query = {}) => {
   "use cache"
+  unstable_cacheLife('max')
   cacheTag(NAVBAR_TAG);
   const payload = await getPayloadClient()
   return payload.findGlobal({
@@ -189,6 +200,7 @@ export const getNavbar = async (query = {}) => {
 export const FOOTER_TAG = "footer";
 export const getFooter = async (query = {}) => {
   "use cache"
+  unstable_cacheLife('max')
   cacheTag(FOOTER_TAG);
   const payload = await getPayloadClient()
   return payload.findGlobal({
@@ -241,6 +253,7 @@ export const queryPageBySlug = async ({
   draft?: boolean
 }) => {
   "use cache"
+  unstable_cacheLife('max')
   cacheTag(PAGE_BY_SLUG_TAG(tenant, slug));
   // console.log('====== QUERY PAGE BY SLUG - START ======');
   // console.log('Input parameters:', { slug, tenant, overrideAccess, draftParam });

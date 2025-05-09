@@ -1,3 +1,4 @@
+
 import configPromise from '@payload-config'
 import { headers as getHeaders, draftMode } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'

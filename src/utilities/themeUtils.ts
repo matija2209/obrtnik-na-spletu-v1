@@ -45,9 +45,9 @@ export const defaultConfig: Required<TenantThemeConfig> = { // Make it Required 
 export const TENANT_THEME_CONFIG_TAG = (tenantSlug: string) => `tenant-theme-config-${tenantSlug}`;
 
 export async function getTenantThemeConfig(tenantSlug: string, isDraftMode: boolean = false): Promise<TenantThemeConfig> {
-  "use server";
-  unstable_cacheLife("max")
-  unstable_cacheTag(TENANT_THEME_CONFIG_TAG(tenantSlug))
+  "use cache";
+  // unstable_cacheLife("max")
+  // unstable_cacheTag(TENANT_THEME_CONFIG_TAG(tenantSlug))
   if (!S3_CSS_DOMAIN) {
     console.warn("S3_CSS_DOMAIN not set. Using default theme config for fonts.");
     return defaultConfig;
@@ -89,7 +89,7 @@ export async function fetchTenantStyles(
   tenantSlug: string, 
   isDraftMode: boolean,
 ): Promise<{ tenantCSS: string; useFallbackStyles: boolean }> {
-  "use server";
+  "use cache";
   unstable_cacheLife("max")
   unstable_cacheTag(TENANT_CSS_TAG(tenantSlug))
 
