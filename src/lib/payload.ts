@@ -32,6 +32,7 @@ export const getPayloadClient = async (): Promise<Payload> => {
 
 // Function to get Tenant ID by slug
 export const getTenantIdBySlug = async (slug: string): Promise<number | null> => {
+  "use cache"
   const payload = await getPayloadClient();
   try {
     const tenantQuery = await payload.find({
@@ -136,6 +137,7 @@ export const getMedia = async (query = {}) => {
 
 // Global utility functions
 export const getBusinessInfo = async (query = {}) => {
+  "use cache"
   const payload = await getPayloadClient()
   return payload.findGlobal({
     slug: 'business-info',
@@ -144,6 +146,7 @@ export const getBusinessInfo = async (query = {}) => {
 }
 
 export const getNavbar = async (query = {}) => {
+  "use cache"
   const payload = await getPayloadClient()
   return payload.findGlobal({
     slug: 'navbar',
@@ -152,6 +155,7 @@ export const getNavbar = async (query = {}) => {
 }
 
 export const getFooter = async (query = {}) => {
+  "use cache"
   const payload = await getPayloadClient()
   return payload.findGlobal({
     slug: 'footer',
@@ -161,6 +165,7 @@ export const getFooter = async (query = {}) => {
 
 // Logo utilities
 export function getLogoUrl(businessData?: any, variant: 'light' | 'dark' = 'dark'): string {
+  "use cache"
   if (variant === 'light') {
     // First try to get light logo if available
     if (businessData?.logoLight) {
@@ -197,6 +202,7 @@ export const queryPageBySlug = async ({
   overrideAccess?: boolean
   draft?: boolean
 }) => {
+  "use cache"
   console.log('====== QUERY PAGE BY SLUG - START ======');
   console.log('Input parameters:', { slug, tenant, overrideAccess, draftParam });
   

@@ -1,12 +1,11 @@
-import type { Where } from 'payload'
-
+"use cache"
 import configPromise from '@payload-config'
 import { headers as getHeaders, draftMode } from 'next/headers'
 import { notFound, redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import React from 'react'
 import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { queryPageBySlug, getNavbar, getBusinessInfo, getLogoUrl, getFooter } from '@/lib/payload'
+import { queryPageBySlug, getNavbar, getBusinessInfo, getLogoUrl, getFooter, getTenantIdBySlug } from '@/lib/payload'
 import { LivePreviewListener } from '@/components/admin/live-preview-listener'
 import Footer from '@/components/layout/footer'
 import Navbar from '@/components/layout/navbar'
@@ -17,6 +16,7 @@ export default async function TenantSlugPage({
 }: {
   params: Promise<{ slug?: string[]; tenant: string }>
 }) {
+
   // Await parameters
   const params = await paramsPromise
   const { slug, tenant } = params
@@ -29,19 +29,10 @@ export default async function TenantSlugPage({
 
   // Check tenant access
   try {
-    const tenantsQuery = await payload.find({
-      collection: 'tenants',
-      overrideAccess: true,
-      user,
-      where: {
-        slug: {
-          equals: tenant,
-        },
-      },
-    })
+    const tenantId = await getTenantIdBySlug(tenant)
     
     // If no tenant is found, redirect to login
-    if (tenantsQuery.docs.length === 0) {
+    if (!tenantId) {
       redirect(
         `/tenant-slugs/${tenant}/login?redirect=${encodeURIComponent(
           `/tenant-slugs/${tenant}${slug ? `/${slug.join('/')}` : ''}`,
