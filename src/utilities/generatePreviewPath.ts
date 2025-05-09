@@ -1,12 +1,9 @@
 import { PayloadRequest, CollectionSlug } from 'payload'
 import type { Tenant } from '../../payload-types'
 
-const collectionPrefixMap: Partial<Record<CollectionSlug, string>> = {
-  pages: '',
-}
-
 type Props = {
-  collection: keyof typeof collectionPrefixMap
+  // collection: keyof typeof collectionPrefixMap // No longer using collectionPrefixMap directly for path construction
+  collection: CollectionSlug // Use CollectionSlug for broader compatibility
   slug: string
   req: PayloadRequest
 }
@@ -27,11 +24,16 @@ export const generatePreviewPath = async ({ collection, slug, req }: Props): Pro
   } else {
     tenantSlug = 'a1-instalacije';
   }
+
+  // Construct the preview path ensuring it starts with a single '/'
+  // and uses the slug, which should represent the page's path segment.
+  const previewUrlPath = `/${slug.replace(/^\/+/, '')}`;
+
   const encodedParams = new URLSearchParams({
-    slug,
+    slug, // The document's slug
     tenantSlug: tenantSlug, // Use the fetched/determined slug
     collection,
-    path: `${collectionPrefixMap[collection]}/${slug}`,
+    path: previewUrlPath, // The URL path for preview, e.g., /about-us or /storitve/my-service
     previewSecret: process.env.PREVIEW_SECRET || '',
   })
   

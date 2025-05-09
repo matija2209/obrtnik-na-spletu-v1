@@ -7,7 +7,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import React from 'react'
 import { queryPageBySlug } from '@/lib/payload'
-import { RenderBlocks } from '@/blocks/RenderBlocks'
+import { RenderBlocks } from '@/blocks/RenderGeneralBlocks'
 import { LivePreviewListener } from '@/components/admin/live-preview-listener'
 
 

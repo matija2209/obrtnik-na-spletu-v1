@@ -1,5 +1,5 @@
-When creating or modifying components within `src/components/sections/`:
-
-- Do not hardcode content (text, image URLs, lists, etc.) directly within the component.
-- All content should be passed down via a single `data` prop object.
-- Define the structure of this `data` object using a TypeScript interface or type, preferably imported from `types/global.d.ts` or a section-specific type file. 
+---
+description: 
+globs: 
+alwaysApply: false
+---

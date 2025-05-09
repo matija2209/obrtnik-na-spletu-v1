@@ -31,8 +31,19 @@ const afterChangeHook: CollectionAfterChangeHook<Tenant> = async ({ doc, req }) 
   if (!global.assetProcessingTimeout) {
     global.assetProcessingTimeout = setTimeout(processAllPendingTenants, DEBOUNCE_TIME);
   }
-  revalidateTag(TENANT_THEME_CONFIG_TAG(doc.slug))
-  revalidateTag(TENANT_CSS_TAG(doc.slug))
+
+  // Revalidate tags asynchronously to avoid issues with Next.js render cycle
+  (async () => {
+    try {
+      req.payload.logger.info(`Attempting to revalidate tags for tenant: ${doc.slug}`);
+      revalidateTag(TENANT_THEME_CONFIG_TAG(doc.slug));
+      revalidateTag(TENANT_CSS_TAG(doc.slug));
+      req.payload.logger.info(`Successfully revalidated tags for tenant: ${doc.slug}`);
+    } catch (error) {
+      req.payload.logger.error(`Error revalidating tags for tenant ${doc.slug} in afterChange hook:`, error);
+    }
+  })();
+
   return;
 };
 

@@ -1,26 +1,17 @@
-import { CollectionConfig, Access } from 'payload';
+import { CollectionConfig, Access, Block } from 'payload';
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
-import Hero from '../../blocks/Hero/config';
-import Services from '../../blocks/Services/config';
-import ProjectHighlights from '../../blocks/ProjectHighlights/config';
-import About from '../../blocks/About/config';
-import Testimonials from '../../blocks/Testimonials/config';
-import Gallery from '../../blocks/Gallery/config';
-import ServiceArea from '../../blocks/ServiceArea/config';
-import Contact from '../../blocks/Contact/config';
-import FAQ from '../../blocks/FAQ/config';
-import Machinery from '../../blocks/Machinery/config';
+import Hero from '../../blocks/general/Hero/config';
+import Services from '../../blocks/general/Services/config';
+import ProjectHighlights from '../../blocks/general/ProjectHighlights/config';
+import About from '../../blocks/general/About/config';
+import Testimonials from '../../blocks/general/Testimonials/config';
+import Gallery from '../../blocks/general/Gallery/config';
+import ServiceArea from '../../blocks/general/ServiceArea/config';
+import Contact from '../../blocks/general/Contact/config';
+import FAQ from '../../blocks/general/FAQ/config';
+import Machinery from '../../blocks/general/Machinery/config';
+
 import { slugField } from '@/fields/slug';
-
-
-import {
-  MetaDescriptionField,
-  MetaImageField,
-  MetaTitleField,
-  OverviewField,
-  PreviewField,
-} from '@payloadcms/plugin-seo/fields'
-
 // Import hooks
 import { populatePublishedAt } from './hooks/populatePublishedAt';
 import { revalidatePage, revalidateDelete } from './hooks/revalidatePage';
@@ -101,6 +92,23 @@ export const Pages: CollectionConfig = {
       label: 'Datum objave',
     },
     slugField(),
+    {
+      name: 'pageType',
+      type: 'select',
+      label: 'Tip strani',
+      required: true,
+      options: [
+        { label: 'Privzeta pristajalna stran', value: 'landing' },
+        { label: 'Kontaktna stran', value: 'contact' },
+        { label: 'O nas', value: 'about' },
+        { label: 'Politika zasebnosti', value: 'privacyPolicy' },
+        // { label: 'Storitve', value: 'services' }, // Removed as services have their own collection
+      ],
+      defaultValue: 'landing',
+      admin: {
+        position: 'sidebar',
+      },
+    },
 
     {
       type: 'tabs',
@@ -114,43 +122,27 @@ export const Pages: CollectionConfig = {
               type: 'blocks',
               admin:{
                 initCollapsed: true,
+                condition: (data, siblingData) => {
+                  return data.pageType === 'landing';
+                },
               },
               minRows: 1,
               blocks: [
                 Hero,
                 Services,
+                Machinery,
+                FAQ,
+                Contact,
                 ProjectHighlights,
                 About,
                 Testimonials,
                 Gallery,
                 ServiceArea,
-                Contact,
-                FAQ,
-                Machinery,
               ]
             },
           ],
         },
-        {
-          name: 'meta',
-          label: 'SEO',
-          fields: [
-            OverviewField({
-              titlePath: 'meta.title',
-              descriptionPath: 'meta.description',
-              imagePath: 'meta.image',
-            }),
-            MetaTitleField({
-              hasGenerateFn: true,
-            }),
-            MetaImageField({
-              relationTo: 'media',
-            }),
-
-            MetaDescriptionField({}),
-           
-          ],
-        },
+        
       ],
     },
   ],

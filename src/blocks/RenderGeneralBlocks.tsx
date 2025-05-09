@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react'
-import AboutBlock from '@/blocks/About/components'
-import ContactBlock from '@/blocks/Contact/components'
-import FAQBlock from '@/blocks/FAQ/components'
-import GalleryBlock from '@/blocks/Gallery/components'
-import HeroBlock from '@/blocks/Hero/components'
-import MachineryBlock from '@/blocks/Machinery/components'
-import ProjectHighlightsBlock from '@/blocks/ProjectHighlights/components'
-import ServiceAreaBlock from '@/blocks/ServiceArea/components'
-import ServicesBlock from '@/blocks/Services/components'
-import TestimonialsBlock from '@/blocks/Testimonials/components'
+import AboutBlock from '@/blocks/general/About/components'
+import ContactBlock from '@/blocks/general/Contact/components'
+import FAQBlock from '@/blocks/general/FAQ/components'
+import GalleryBlock from '@/blocks/general/Gallery/components'
+import HeroBlock from '@/blocks/general/Hero/components'
+import MachineryBlock from '@/blocks/general/Machinery/components'
+import ProjectHighlightsBlock from '@/blocks/general/ProjectHighlights/components'
+import ServiceAreaBlock from '@/blocks/general/ServiceArea/components'
+import ServicesBlock from '@/blocks/general/Services/components'
+import TestimonialsBlock from '@/blocks/general/Testimonials/components'
 import { Page } from '@payload-types'
 
 const blockComponents = {
@@ -22,13 +22,14 @@ const blockComponents = {
   serviceArea: ServiceAreaBlock,
   services: ServicesBlock,
   testimonials: TestimonialsBlock,
+
 }
 
-export const RenderBlocks: React.FC<{
-  blocks: Page["layout"]
+export const RenderGeneralBlocks: React.FC<{
+  pageType: Page["pageType"],
+  blocks: Page["layout"] 
 }> = (props) => {
-  const { blocks } = props
-
+  const { blocks, pageType } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 

@@ -334,6 +334,171 @@ export const seed = async (payload: Payload): Promise<void> => {
       payload.logger.warn('One or more Services failed to seed.');
     }
 
+    // --- Seed Sub-Services ---
+    payload.logger.info('Attempting to seed Sub-Services...');
+    payload.logger.info(`Seeding Sub-Services for tenant ${tenantId}...`);
+    let subServiceOdtok, subServicePipe, subServiceWC, subServiceShower;
+
+    if (serviceVodoinstalacije?.id) {
+      try {
+        payload.logger.info('Attempting to create Sub-Service: Odmaševanje odtokov');
+        subServiceOdtok = await payload.create({
+          collection: 'sub_services',
+          data: {
+            tenant: tenantA1.id,
+            title: 'Odmaševanje odtokov',
+            parentService: serviceVodoinstalacije.id,
+            description: {
+              root: {
+                type: 'root',
+                children: [{ type: 'paragraph', children: [{ text: 'Hitro in učinkovito odmaševanje vseh vrst odtokov.', version: 1 }], version: 1 }],
+                direction: null, format: '', indent: 0, version: 1
+              }
+            },
+            bulletPoints: [{ point: 'Kuhinjski odtoki' }, { point: 'Kopalniški odtoki' }],
+            price: 'Od 80 EUR',
+            publishedAt: new Date().toISOString(),
+          },
+        });
+        payload.logger.info(`Created Sub-Service: ${subServiceOdtok.id} for Service: ${serviceVodoinstalacije.title}`);
+      } catch (err) {
+        payload.logger.error('Error creating Sub-Service (Odmaševanje odtokov):', err);
+      }
+
+      try {
+        payload.logger.info('Attempting to create Sub-Service: Menjava pip in ventilov');
+        subServicePipe = await payload.create({
+          collection: 'sub_services',
+          data: {
+            tenant: tenantA1.id,
+            title: 'Menjava pip in ventilov',
+            parentService: serviceVodoinstalacije.id,
+            description: {
+              root: {
+                type: 'root',
+                children: [{ type: 'paragraph', children: [{ text: 'Strokovna menjava vseh vrst pip in ventilov.', version: 1 }], version: 1 }],
+                direction: null, format: '', indent: 0, version: 1
+              }
+            },
+            bulletPoints: [{ point: 'Kuhinjske pipe' }, { point: 'Kopalniške pipe' }, { point: 'Ventili' }],
+            price: 'Po dogovoru',
+            publishedAt: new Date().toISOString(),
+          },
+        });
+        payload.logger.info(`Created Sub-Service: ${subServicePipe.id} for Service: ${serviceVodoinstalacije.title}`);
+      } catch (err) {
+        payload.logger.error('Error creating Sub-Service (Menjava pip in ventilov):', err);
+      }
+    } else {
+      payload.logger.warn('Skipping sub-service creation for Vodoinštalacije as parent service was not created.');
+    }
+
+    if (serviceMontaza?.id) {
+      try {
+        payload.logger.info('Attempting to create Sub-Service: Montaža WC školjke');
+        subServiceWC = await payload.create({
+          collection: 'sub_services',
+          data: {
+            tenant: tenantA1.id,
+            title: 'Montaža WC školjke',
+            parentService: serviceMontaza.id,
+            description: {
+              root: {
+                type: 'root',
+                children: [{ type: 'paragraph', children: [{ text: 'Profesionalna montaža talnih in stenskih WC školjk.', version: 1 }], version: 1 }],
+                direction: null, format: '', indent: 0, version: 1
+              }
+            },
+            bulletPoints: [{ point: 'Talne školjke' }, { point: 'Viseče školjke' }],
+            price: 'Od 120 EUR',
+            publishedAt: new Date().toISOString(),
+          },
+        });
+        payload.logger.info(`Created Sub-Service: ${subServiceWC.id} for Service: ${serviceMontaza.title}`);
+      } catch (err) {
+        payload.logger.error('Error creating Sub-Service (Montaža WC školjke):', err);
+      }
+
+      try {
+        payload.logger.info('Attempting to create Sub-Service: Montaža tuš kabine');
+        subServiceShower = await payload.create({
+          collection: 'sub_services',
+          data: {
+            tenant: tenantA1.id,
+            title: 'Montaža tuš kabine',
+            parentService: serviceMontaza.id,
+            description: {
+              root: {
+                type: 'root',
+                children: [{ type: 'paragraph', children: [{ text: 'Montaža vseh tipov tuš kabin.', version: 1 }], version: 1 }],
+                direction: null, format: '', indent: 0, version: 1
+              }
+            },
+            bulletPoints: [{ point: 'Klasične tuš kabine' }, { point: 'Walk-in tuši' }],
+            price: 'Od 200 EUR',
+            publishedAt: new Date().toISOString(),
+          },
+        });
+        payload.logger.info(`Created Sub-Service: ${subServiceShower.id} for Service: ${serviceMontaza.title}`);
+      } catch (err) {
+        payload.logger.error('Error creating Sub-Service (Montaža tuš kabine):', err);
+      }
+    } else {
+      payload.logger.warn('Skipping sub-service creation for Montaža sanitarne opreme as parent service was not created.');
+    }
+
+    if (subServiceOdtok || subServicePipe || subServiceWC || subServiceShower) {
+      payload.logger.info('Sub-Services seeded successfully.');
+    } else {
+      payload.logger.warn('One or more Sub-Services failed to seed or no parent services were available.');
+    }
+
+    // --- Seed Service Page ---
+    payload.logger.info('Attempting to seed Service Page...');
+    payload.logger.info(`Seeding a Service Page for tenant ${tenantId}...`);
+
+    if (serviceVodoinstalacije?.id) {
+      const relatedSubServices = [subServiceOdtok?.id, subServicePipe?.id].filter(Boolean) as number[]; // Corrected to number[]
+
+      try {
+        payload.logger.info('Attempting to create Service Page: Stran za Vodoinštalacije');
+        await payload.create({
+          collection: 'service-pages',
+          data: {
+            tenant: tenantA1.id,
+            title: 'Stran za Vodoinštalacije',
+            pageType: 'service',
+            slug: 'vodoinstalacije-podrobno', // Example slug
+            publishedAt: new Date().toISOString(),
+            services: serviceVodoinstalacije.id, // Link to the main service
+            sub_services: relatedSubServices, // Link to related sub-services (now number[])
+            layout: [
+              {
+                blockType: 'servicesHero', // Corrected blockType slug
+                template: 'default', // Assuming a 'default' template exists
+                title: 'Podrobno o Vodoinštalacijah',
+                // Add other fields for ServicesHero as needed by its config
+                // e.g., subtitle, image, features, ctas
+                // For simplicity, keeping it minimal for now
+              },
+              // Potentially add other blocks like ServicesPresentation, ServicesFaq, etc.
+            ],
+            // Meta fields can be added here if desired
+            // meta: {
+            //   title: 'Vodoinštalacije Podrobno | A1 INŠTALACIJE',
+            //   description: 'Vse o naših vodoinštalaterskih storitvah in podstoritvah.'
+            // }
+          },
+          req: simulatedReq, // For tenant context and potential hooks
+        });
+        payload.logger.info(`Created Service Page: Stran za Vodoinštalacije`);
+      } catch (err) {
+        payload.logger.error('Error creating Service Page (Stran za Vodoinštalacije):', err);
+      }
+    } else {
+      payload.logger.warn('Skipping Service Page creation for Vodoinštalacije as parent service was not created.');
+    }
+
     // --- Seed Testimonials ---
     payload.logger.info('Attempting to seed Testimonials...');
     payload.logger.info(`Seeding Testimonials for tenant ${tenantId}...`);
@@ -1026,6 +1191,7 @@ export const seed = async (payload: Payload): Promise<void> => {
           tenant: tenantA1.id, // Explicitly set the tenant ID
           title: 'Domov',
           slug: 'home',
+          pageType: 'landing',
           layout: [
             // Hero Block
             {
@@ -1234,6 +1400,17 @@ export const seed = async (payload: Payload): Promise<void> => {
 
   } catch (error) {
     payload.logger.error('Caught error during seeding process:');
-    payload.logger.error('Error seeding database:', error);
+    payload.logger.error('Error seeding database (Payload Logger):', error); // Keep original for comparison
+    console.error('------------------------------------------------------');
+    console.error('Detailed error object from main catch block in seed.ts:');
+    console.error(error); // Log the raw error object
+    if (error && typeof error === 'object' && 'stack' in error) {
+      console.error('Stack trace:');
+      console.error(error.stack);
+    }
+    if (error && typeof error === 'object' && 'message' in error) {
+        console.error('Error message property:', (error as Error).message);
+    }
+    console.error('------------------------------------------------------');
   }
 };

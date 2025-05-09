@@ -6,7 +6,10 @@ import type {
   Service, 
   Page,
   FormSubmission,
-  Form
+  Form,
+  ServicePage,
+  SubService,
+
 } from '../../payload-types'
 
 import configPromise from '@payload-config'
@@ -421,5 +424,196 @@ export const getLatestFormSubmissions = async (limit: number = 5): Promise<Dashb
   } catch (error) {
     // console.error('Error fetching latest form submissions:', error);
     return [];
+  }
+};
+
+
+
+export const SERVICE_PAGE_BY_SLUG_TAG = async (tenant?: string, slug?: string[]) => {
+  const slugStr = slug && slug.length > 0 ? slug.join('-') : 'home'; 
+  return `service-page-${tenant ? tenant + '-' : ''}${slugStr}`;
+};
+// Page utility functions
+export const queryServicePageBySlug = async ({
+  slug,
+  tenant,
+  overrideAccess = false,
+  draft: draftParam,
+}: {
+  slug?: string[]
+  tenant?: string
+  overrideAccess?: boolean
+  draft?: boolean
+}) => {
+  "use cache"
+  unstable_cacheLife('max')
+  cacheTag(await SERVICE_PAGE_BY_SLUG_TAG(tenant, slug));
+  // console.log('====== QUERY PAGE BY SLUG - START ======');
+  // console.log('Input parameters:', { slug, tenant, overrideAccess, draftParam });
+  
+  const payload = await getPayload({ config: configPromise })
+  const { isEnabled: draft } = draftParam === undefined ? await draftMode() : { isEnabled: draftParam }
+  // console.log('Draft mode:', draft);
+
+  // Determine the slug value to search for
+  const slugValue = !slug || slug.length === 0 ? 'home' : slug.join('/');
+  // console.log('Computed slug value:', slugValue);
+  console.log('slugValue', slugValue);
+  
+  try {
+    // First, look up the tenant ID from the tenant slug
+    // console.log(`Looking up tenant ID for slug: ${tenant}`);
+    let tenantId = null;
+    
+    if (tenant) {
+      const tenantQuery = await payload.find({
+        collection: 'tenants',
+        where: {
+          slug: {
+            equals: tenant
+          }
+        },
+        limit: 1
+      });
+      
+      if (tenantQuery.docs.length > 0) {
+        tenantId = tenantQuery.docs[0].id;
+        // console.log(`Found tenant with ID: ${tenantId}`);
+      } else {
+        // console.log(`No tenant found with slug: ${tenant}`);
+      }
+    }
+    
+    // Fetch pages with tenant ID if we found one
+    // console.log('Fetching pages...');
+    let whereCondition = {};
+    
+    if (tenantId) {
+      whereCondition = {
+        tenant: {
+          equals: tenantId
+        }
+      };
+      // console.log(`Using where condition:`, JSON.stringify(whereCondition, null, 2));
+    }
+    
+    const pagesQuery = await payload.find({
+      collection: 'service-pages',
+      overrideAccess: overrideAccess || draft,
+      draft,
+      where: whereCondition,
+      depth: 2,
+      limit: 100,
+    });
+    
+    // console.log(`Found ${pagesQuery.totalDocs} pages for tenant ID: ${tenantId}`);
+    // console.log('Page IDs:', pagesQuery.docs.map(doc => doc.id));
+    
+    if (pagesQuery.docs.length > 0) {
+      // Log the structure of all pages
+      // pagesQuery.docs.forEach((page, index) => {
+        // console.log(`Page ${index + 1} - ID: ${page.id}, Title: ${page.title}, Tenant: ${page.tenant}, Slug: ${page.slug}`);
+      // });
+      
+      // Filter by slug
+      // console.log(`Filtering for slug: ${slugValue}`);
+      const matchingPages = pagesQuery.docs.filter(page => {
+        if (!page.slug) {
+          // console.log(`Page ${page.id} has no slug field`);
+          return false;
+        }
+        
+        // console.log(`Comparing page slug "${page.slug}" with "${slugValue}"`);
+        return page.slug === slugValue;
+      });
+      
+      if (matchingPages.length > 0) {
+        // console.log(`Found ${matchingPages.length} matching pages!`);
+        return matchingPages[0] as ServicePage;
+      } else {
+        console.log(`No page found with slug "${slugValue}"`);
+      }
+    } else {
+      console.log('No service pages found for tenant');
+    }
+    
+    return null;
+  } catch (error: any) {
+    console.error('Error querying pages:', error);
+    console.log('Error details:', {
+      message: error?.message,
+      code: error?.code,
+      status: error?.status,
+      data: error?.data,
+      stack: error?.stack
+    });
+    return null;
+  } finally {
+    // console.log('====== QUERY PAGE BY SLUG - END ======');
+  }
+};
+
+// ADD FUNCTIONS FOR SUB-SERVICES:
+
+export const SUB_SERVICES_BY_PARENT_TAG = async (parentId: string | number) => `sub-services-by-parent-${parentId}`;
+/**
+ * Fetches sub-services related to a specific parent service ID.
+ */
+export const getSubServicesByParent = async (
+  parentId: string | number, 
+  query: Record<string, any> = {} // Allow additional query params like locale, depth etc.
+) => {
+  "use cache" // If you are using this in React Server Components
+  unstable_cacheLife('max') // Adjust cache lifetime as needed
+  cacheTag(await SUB_SERVICES_BY_PARENT_TAG(parentId));
+
+  const payload = await getPayloadClient();
+  try {
+    const result = await payload.find({
+      collection: 'sub_services',
+      where: {
+        ...query.where, // Spread any existing where clauses from query
+        parentService: {
+          equals: parentId,
+        },
+      },
+      depth: query.depth !== undefined ? query.depth : 1, // Default depth or from query
+      limit: query.limit !== undefined ? query.limit : 0, // Default to all or from query
+      sort: query.sort !== undefined ? query.sort : 'title', // Default sort or from query
+      locale: query.locale, // Pass locale if provided
+      draft: query.draft, // Pass draft status if provided
+      overrideAccess: query.overrideAccess, // Pass overrideAccess if provided
+    });
+    return result.docs as SubService[]; // Ensure correct typing
+  } catch (error) {
+    console.error(`Error fetching sub-services for parent ID ${parentId}:`, error);
+    return [];
+  }
+};
+
+// Optional: A function to get a single sub-service by its ID if needed
+export const SUB_SERVICE_BY_ID_TAG = async (id: string | number) => `sub-service-${id}`;
+export const getSubServiceById = async (
+  id: string | number, 
+  query: Record<string, any> = {}
+) => {
+  "use cache"
+  unstable_cacheLife('max')
+  cacheTag(await SUB_SERVICE_BY_ID_TAG(id));
+
+  const payload = await getPayloadClient();
+  try {
+    const result = await payload.findByID({
+      collection: 'sub_services',
+      id: id,
+      depth: query.depth !== undefined ? query.depth : 1,
+      locale: query.locale,
+      draft: query.draft,
+      overrideAccess: query.overrideAccess,
+    });
+    return result as SubService | null;
+  } catch (error) {
+    console.error(`Error fetching sub-service with ID ${id}:`, error);
+    return null;
   }
 };

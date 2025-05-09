@@ -78,12 +78,14 @@ export interface Config {
     machinery: Machinery;
     'opening-hours': OpeningHour;
     pages: Page;
+    'service-pages': ServicePage;
     redirects: Redirect;
     pricelists: Pricelist;
     'price-list-sections': PriceListSection;
     'price-list-items': PriceListItem;
     banners: Banner;
     menus: Menu;
+    sub_services: SubService;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-jobs': PayloadJob;
@@ -104,12 +106,14 @@ export interface Config {
     machinery: MachinerySelect<false> | MachinerySelect<true>;
     'opening-hours': OpeningHoursSelect<false> | OpeningHoursSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    'service-pages': ServicePagesSelect<false> | ServicePagesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     pricelists: PricelistsSelect<false> | PricelistsSelect<true>;
     'price-list-sections': PriceListSectionsSelect<false> | PriceListSectionsSelect<true>;
     'price-list-items': PriceListItemsSelect<false> | PriceListItemsSelect<true>;
     banners: BannersSelect<false> | BannersSelect<true>;
     menus: MenusSelect<false> | MenusSelect<true>;
+    sub_services: SubServicesSelect<false> | SubServicesSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -535,18 +539,19 @@ export interface Page {
   title: string;
   publishedAt?: string | null;
   slug?: string | null;
+  pageType: 'landing' | 'contact' | 'about' | 'privacyPolicy';
   layout?:
     | (
         | HeroBlock
         | ServicesBlock
+        | MachineryBlock
+        | FAQBlock
+        | ContactBlock
         | ProjectHighlightsBlock
         | AboutBlock
         | TestimonialsBlock
         | GalleryBlock
         | ServiceAreaBlock
-        | ContactBlock
-        | FAQBlock
-        | MachineryBlock
       )[]
     | null;
   meta?: {
@@ -643,94 +648,106 @@ export interface ServicesBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProjectHighlightsBlock".
+ * via the `definition` "MachineryBlock".
  */
-export interface ProjectHighlightsBlock {
-  template: 'default';
+export interface MachineryBlock {
   title?: string | null;
   description?: string | null;
-  buttonText?: string | null;
-  buttonHref?: string | null;
-  highlightedProjects?: (number | Project)[] | null;
+  selectedMachinery?: (number | Machinery)[] | null;
+  template: 'default';
+  /**
+   * Dodajte gumb 'call to action' pod seznam strojev.
+   */
+  callToAction?: (number | null) | Cta;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'projectHighlights';
+  blockType: 'machinery';
 }
 /**
+ * Podatki o gradbeni mehanizaciji.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "AboutBlock".
+ * via the `definition` "machinery".
  */
-export interface AboutBlock {
-  template: 'default';
-  title?: string | null;
+export interface Machinery {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  tabName: string;
+  /**
+   * Npr. Volvo EL70, Komatsu PC210
+   */
+  name: string;
   description?: string | null;
-  benefits?:
+  image?: (number | null) | Media;
+  /**
+   * Dodajte ključne specifikacije.
+   */
+  specifications?:
     | {
-        title?: string | null;
-        description?: string | null;
-        /**
-         * Ime ikone (npr. Star, Trophy, Clock)
-         */
-        icon?: string | null;
+        specName: string;
+        specDetails: {
+          detail: string;
+          id?: string | null;
+        }[];
         id?: string | null;
       }[]
     | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'about';
+  /**
+   * Npr. Premik stroja na kolesih za krajše razdalje (do 40km)
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TestimonialsBlock".
+ * via the `definition` "FAQBlock".
  */
-export interface TestimonialsBlock {
-  template: 'default' | 'single-testimonial' | 'side-carousel' | 'three-carousel' | 'three-column-carousel-recycled';
-  title?: string | null;
-  description?: string | null;
-  selectedTestimonials?: (number | Testimonial)[] | null;
-  googleReviewCta?: (number | null) | Cta;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'testimonials';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "GalleryBlock".
- */
-export interface GalleryBlock {
+export interface FAQBlock {
   template: 'default';
   title?: string | null;
   description?: string | null;
-  galleryImages?:
-    | {
-        image: number | Media;
-        caption?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  galleryCta?: (number | null) | Cta;
+  selectedFaqs?: (number | FaqItem)[] | null;
+  faqCta?: (number | null) | Cta;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'gallery';
+  blockType: 'faq';
 }
 /**
+ * Pogosta vprašanja in odgovori.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ServiceAreaBlock".
+ * via the `definition` "faq-items".
  */
-export interface ServiceAreaBlock {
-  template: 'default';
-  title?: string | null;
-  description?: string | null;
-  showMap?: boolean | null;
-  locations?:
-    | {
-        name: string;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'serviceArea';
+export interface FaqItem {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * Izberite kategorijo za lažje filtriranje.
+   */
+  category?: ('general' | 'installation' | 'maintenance' | 'billing') | null;
+  question: string;
+  answer: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Povežite to vprašanje s specifično storitvijo, če je relevantno.
+   */
+  relatedService?: (number | null) | Service;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -930,10 +947,15 @@ export interface Form {
   } | null;
   redirect?: {
     type?: ('reference' | 'custom') | null;
-    reference?: {
-      relationTo: 'pages';
-      value: number | Page;
-    } | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'service-pages';
+          value: number | ServicePage;
+        } | null);
     url?: string | null;
   };
   /**
@@ -973,33 +995,99 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FAQBlock".
+ * via the `definition` "service-pages".
  */
-export interface FAQBlock {
-  template: 'default';
-  title?: string | null;
-  description?: string | null;
-  selectedFaqs?: (number | FaqItem)[] | null;
-  faqCta?: (number | null) | Cta;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'faq';
-}
-/**
- * Pogosta vprašanja in odgovori.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faq-items".
- */
-export interface FaqItem {
+export interface ServicePage {
   id: number;
   tenant?: (number | null) | Tenant;
+  title: string;
+  pageType?: 'service' | null;
+  publishedAt?: string | null;
+  slug: string;
+  layout?: (ServicesHeroBlock | ServicesPresentationBlock | ServicesCtaBlock)[] | null;
   /**
-   * Izberite kategorijo za lažje filtriranje.
+   * Izberite specifične podstoritve, ki jih želite prikazati na tej strani storitve.
    */
-  category?: ('general' | 'installation' | 'maintenance' | 'billing') | null;
-  question: string;
-  answer: {
+  sub_services?: (number | SubService)[] | null;
+  services?: (number | null) | Service;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesHeroBlock".
+ */
+export interface ServicesHeroBlock {
+  template: 'default';
+  title?: string | null;
+  subtitle?: string | null;
+  ctas?: (number | Cta)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'servicesHero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesPresentationBlock".
+ */
+export interface ServicesPresentationBlock {
+  template: 'default';
+  services?:
+    | {
+        title: string;
+        description: string;
+        order: 'normal' | 'inverse';
+        points?:
+          | {
+              point: string;
+              id?: string | null;
+            }[]
+          | null;
+        images?:
+          | {
+              image: number | Media;
+              alt: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'sPresentation';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesCtaBlock".
+ */
+export interface ServicesCtaBlock {
+  template: 'default';
+  title: string;
+  cta: number | Cta;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'servicesCta';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sub_services".
+ */
+export interface SubService {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  parentService: number | Service;
+  description?: {
     root: {
       type: string;
       children: {
@@ -1013,66 +1101,115 @@ export interface FaqItem {
       version: number;
     };
     [k: string]: unknown;
-  };
-  /**
-   * Povežite to vprašanje s specifično storitvijo, če je relevantno.
-   */
-  relatedService?: (number | null) | Service;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MachineryBlock".
- */
-export interface MachineryBlock {
-  title?: string | null;
-  description?: string | null;
-  selectedMachinery?: (number | Machinery)[] | null;
-  template: 'default';
-  /**
-   * Dodajte gumb 'call to action' pod seznam strojev.
-   */
-  callToAction?: (number | null) | Cta;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'machinery';
-}
-/**
- * Podatki o gradbeni mehanizaciji.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "machinery".
- */
-export interface Machinery {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  tabName: string;
-  /**
-   * Npr. Volvo EL70, Komatsu PC210
-   */
-  name: string;
-  description?: string | null;
-  image?: (number | null) | Media;
-  /**
-   * Dodajte ključne specifikacije.
-   */
-  specifications?:
+  } | null;
+  bulletPoints?:
     | {
-        specName: string;
-        specDetails: {
-          detail: string;
-          id?: string | null;
-        }[];
+        point: string;
         id?: string | null;
       }[]
     | null;
-  /**
-   * Npr. Premik stroja na kolesih za krajše razdalje (do 40km)
-   */
-  notes?: string | null;
+  images?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  price?: string | null;
+  publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectHighlightsBlock".
+ */
+export interface ProjectHighlightsBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  buttonText?: string | null;
+  buttonHref?: string | null;
+  highlightedProjects?: (number | Project)[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'projectHighlights';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutBlock".
+ */
+export interface AboutBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  benefits?:
+    | {
+        title?: string | null;
+        description?: string | null;
+        /**
+         * Ime ikone (npr. Star, Trophy, Clock)
+         */
+        icon?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'about';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialsBlock".
+ */
+export interface TestimonialsBlock {
+  template: 'default' | 'single-testimonial' | 'side-carousel' | 'three-carousel' | 'three-column-carousel-recycled';
+  title?: string | null;
+  description?: string | null;
+  selectedTestimonials?: (number | Testimonial)[] | null;
+  googleReviewCta?: (number | null) | Cta;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonials';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock".
+ */
+export interface GalleryBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  galleryImages?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  galleryCta?: (number | null) | Cta;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gallery';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServiceAreaBlock".
+ */
+export interface ServiceAreaBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  showMap?: boolean | null;
+  locations?:
+    | {
+        name: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'serviceArea';
 }
 /**
  * Upravljajte preusmeritve URL naslovov.
@@ -1435,6 +1572,10 @@ export interface PayloadLockedDocument {
         value: number | Page;
       } | null)
     | ({
+        relationTo: 'service-pages';
+        value: number | ServicePage;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1457,6 +1598,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'menus';
         value: number | Menu;
+      } | null)
+    | ({
+        relationTo: 'sub_services';
+        value: number | SubService;
       } | null)
     | ({
         relationTo: 'forms';
@@ -1857,19 +2002,20 @@ export interface PagesSelect<T extends boolean = true> {
   title?: T;
   publishedAt?: T;
   slug?: T;
+  pageType?: T;
   layout?:
     | T
     | {
         hero?: T | HeroBlockSelect<T>;
         services?: T | ServicesBlockSelect<T>;
+        machinery?: T | MachineryBlockSelect<T>;
+        faq?: T | FAQBlockSelect<T>;
+        contact?: T | ContactBlockSelect<T>;
         projectHighlights?: T | ProjectHighlightsBlockSelect<T>;
         about?: T | AboutBlockSelect<T>;
         testimonials?: T | TestimonialsBlockSelect<T>;
         gallery?: T | GalleryBlockSelect<T>;
         serviceArea?: T | ServiceAreaBlockSelect<T>;
-        contact?: T | ContactBlockSelect<T>;
-        faq?: T | FAQBlockSelect<T>;
-        machinery?: T | MachineryBlockSelect<T>;
       };
   meta?:
     | T
@@ -1913,6 +2059,47 @@ export interface ServicesBlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   selectedServices?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineryBlock_select".
+ */
+export interface MachineryBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  selectedMachinery?: T;
+  template?: T;
+  callToAction?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock_select".
+ */
+export interface FAQBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  selectedFaqs?: T;
+  faqCta?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContactBlock_select".
+ */
+export interface ContactBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  openingHoursSchedules?: T;
+  form?: T;
+  phoneNumber?: T;
+  address?: T;
   id?: T;
   blockName?: T;
 }
@@ -2001,42 +2188,84 @@ export interface ServiceAreaBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContactBlock_select".
+ * via the `definition` "service-pages_select".
  */
-export interface ContactBlockSelect<T extends boolean = true> {
+export interface ServicePagesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  pageType?: T;
+  publishedAt?: T;
+  slug?: T;
+  layout?:
+    | T
+    | {
+        servicesHero?: T | ServicesHeroBlockSelect<T>;
+        sPresentation?: T | ServicesPresentationBlockSelect<T>;
+        servicesCta?: T | ServicesCtaBlockSelect<T>;
+      };
+  sub_services?: T;
+  services?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesHeroBlock_select".
+ */
+export interface ServicesHeroBlockSelect<T extends boolean = true> {
   template?: T;
   title?: T;
-  description?: T;
-  openingHoursSchedules?: T;
-  form?: T;
-  phoneNumber?: T;
-  address?: T;
+  subtitle?: T;
+  ctas?: T;
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FAQBlock_select".
+ * via the `definition` "ServicesPresentationBlock_select".
  */
-export interface FAQBlockSelect<T extends boolean = true> {
+export interface ServicesPresentationBlockSelect<T extends boolean = true> {
   template?: T;
-  title?: T;
-  description?: T;
-  selectedFaqs?: T;
-  faqCta?: T;
+  services?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        order?: T;
+        points?:
+          | T
+          | {
+              point?: T;
+              id?: T;
+            };
+        images?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MachineryBlock_select".
+ * via the `definition` "ServicesCtaBlock_select".
  */
-export interface MachineryBlockSelect<T extends boolean = true> {
-  title?: T;
-  description?: T;
-  selectedMachinery?: T;
+export interface ServicesCtaBlockSelect<T extends boolean = true> {
   template?: T;
-  callToAction?: T;
+  title?: T;
+  cta?: T;
   id?: T;
   blockName?: T;
 }
@@ -2132,6 +2361,33 @@ export interface MenusSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sub_services_select".
+ */
+export interface SubServicesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  parentService?: T;
+  description?: T;
+  bulletPoints?:
+    | T
+    | {
+        point?: T;
+        id?: T;
+      };
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  price?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2578,10 +2834,15 @@ export interface TaskSchedulePublish {
   input: {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
-    doc?: {
-      relationTo: 'pages';
-      value: number | Page;
-    } | null;
+    doc?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'service-pages';
+          value: number | ServicePage;
+        } | null);
     global?: string | null;
     user?: (number | null) | User;
   };

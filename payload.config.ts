@@ -40,6 +40,8 @@ import { Banners } from '@/collections/Banners'; // Import the new Banners colle
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder' // Import form builder plugin
 import { seoPlugin } from '@payloadcms/plugin-seo'; // Import SEO plugin
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'; // Import nodemailer adapter
+import { ServicePages } from '@/collections/ServicePages'; // Import the new ServicePages collection
+import SubServices from '@/collections/SubServices'
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -116,12 +118,14 @@ const allCollections: CollectionConfig[] = [
   Machinery,
   OpeningHours,
   Pages,
+  ServicePages, // Add ServicePages to the collections array
   Redirects, // Add the Redirects collection here
   Pricelists, // Add the Pricelists collection here
   PriceListSections, // Add new
   PriceListItems, // Add new
   Banners, // Add the Banners collection here
   Menus, // Add the Menus collection here
+  SubServices, // Add SubServices to the collections array
 ];
 
 const allGlobals: GlobalConfig[] = [
@@ -263,7 +267,7 @@ export default buildConfig({
   }),
   plugins: [
     formBuilderPlugin({
-      redirectRelationships: [Pages.slug], // Use Pages collection slug for redirects
+      redirectRelationships: [Pages.slug, ServicePages.slug], // Add ServicePages.slug
       // Override default fields or add custom ones if needed
       defaultToEmail: process.env.DEFAULT_TO_EMAIL || 'matija@obrtniknaspletu.si',
       // fields: { ... }, 
@@ -320,6 +324,7 @@ export default buildConfig({
         Pages.slug,
         Projects.slug,
         Services.slug,
+        ServicePages.slug, // Add ServicePages.slug
       ],
       uploadsCollection: Media.slug,
       tabbedUI: true, // Enable tabbed UI
@@ -395,6 +400,8 @@ export default buildConfig({
         [Machinery.slug]: {},
         [Media.slug]: {},
         [Pages.slug]: {},
+        [SubServices.slug]: {},
+        [ServicePages.slug]: {}, // Add ServicePages.slug to multi-tenant config
         [OpeningHours.slug]: {},
         [Redirects.slug]: {},
         'forms': {}, // Add default form builder collection slug

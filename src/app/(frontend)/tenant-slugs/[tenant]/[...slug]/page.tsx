@@ -3,11 +3,16 @@ import { headers as getHeaders, draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import React from 'react'
-import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { queryPageBySlug, getNavbar, getBusinessInfo, getLogoUrl, getFooter, getTenantIdBySlug } from '@/lib/payload'
+
+import { queryPageBySlug, getNavbar, getBusinessInfo, getLogoUrl, getFooter, getTenantIdBySlug, queryServicePageBySlug } from '@/lib/payload'
 import { LivePreviewListener } from '@/components/admin/live-preview-listener'
 import Footer from '@/components/layout/footer'
 import Navbar from '@/components/layout/navbar'
+
+import { Page } from '@payload-types'
+import { ServicePage } from '@payload-types'
+import { RenderServicesPageBlocks } from '@/blocks/RenderServicesPageBlocks'
+import { RenderGeneralBlocks } from '@/blocks/RenderGeneralBlocks'
 
 // eslint-disable-next-line no-restricted-exports
 export default async function TenantSlugPage({
@@ -28,7 +33,6 @@ export default async function TenantSlugPage({
   // Get draft mode status
   const { isEnabled: draft } = await draftMode()
 
-  // Fetch global data in parallel
 
   const [navbarData, businessInfoData, footerData] = await Promise.all([
     getNavbar(tenant),
@@ -38,14 +42,22 @@ export default async function TenantSlugPage({
   // Query for the page, passing draft status
   const safeSlug = slug === undefined || slug.length === 0 ? ['home'] : slug;
 
-  const page = await queryPageBySlug({
-    slug: safeSlug,
-    tenant,
-    overrideAccess: draft,
-    draft,
+  let page = null
+  if (safeSlug.includes('storitve') || safeSlug.includes('storitve/') || safeSlug.includes('tretmaji')) {
+    page = await queryServicePageBySlug({
+      slug: safeSlug,
+      tenant,
+      overrideAccess: draft,
+      draft,
+    })
+  } else {
+    page = await queryPageBySlug({
+      slug: safeSlug,
+      tenant,
+      overrideAccess: draft,
+      draft,
   })
-
-  
+}
   // If no page is found, return a 404
   if (!page) {
     return notFound()
@@ -72,7 +84,11 @@ export default async function TenantSlugPage({
         location={location}
       />
       {draft && <LivePreviewListener />}
-      <RenderBlocks blocks={page.layout} />
+      {page.pageType === 'service' ? (
+        <RenderServicesPageBlocks pageType={page.pageType as ServicePage['pageType']} blocks={page.layout as ServicePage['layout']} />
+      ) : (
+        <RenderGeneralBlocks pageType={page.pageType as Page['pageType']} blocks={page.layout as Page['layout']} />
+      )}
       <Footer 
         footerData={footerData} 
         businessInfoData={businessInfoData} 

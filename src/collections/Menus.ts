@@ -1,6 +1,6 @@
 import { superAdminOrTenantAdminAccess } from '../access/superAdminOrTenantAdmin';
 
-import { User, Tenant } from '../../payload-types';
+
 import { Access, CollectionConfig, FieldHook } from 'payload';
 
 // Define access control - allowing anyone to read, admin to create/update/delete
@@ -34,7 +34,7 @@ export const Menus: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     description: 'Upravljajte navigacijske menije za uporabo v glavi, nogi ali drugje.',
-    group: 'Konfiguracija', // Grouping in admin UI
+    group: 'Struktura', // Grouping in admin UI
   },
   access: {
     read: anyone, // Anyone can read menus (needed for frontend)
