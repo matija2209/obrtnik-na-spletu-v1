@@ -1,5 +1,8 @@
-import type { Block } from 'payload';
 
+
+// Removed local CtaField definition
+
+import { Block } from "payload";
 
 const About: Block = {
   slug: 'about',
@@ -20,30 +23,61 @@ const About: Block = {
           label: 'Default Layout',
           value: 'default',
         },
-        // Add more template options here
+
+        {
+          label: 'Variant 2',
+          value: 'variant-2',
+        },
       ],
     },
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov',
+      label: 'Naslov (Title)',
       required: false,
       localized: true,
       defaultValue: '',
     },
     {
+      name: 'subtitle',
+      type: 'text',
+      label: 'Podnaslov (Subtitle)',
+      localized: true,
+      required: false,
+    },
+    {
       name: 'description',
       type: 'textarea',
-      label: 'Opis',
+      label: 'Opis (Description/Text)',
       localized: true,
       defaultValue: '',
+    },
+    {
+      name: 'image',
+      label: 'Slika (Image)',
+      type: 'upload',
+      relationTo: 'media', 
+      required: false,
+    },
+    {
+      name: 'isInverted',
+      label: 'Obrni postavitev (Invert Layout)',
+      type: 'checkbox',
+      defaultValue: false,
+    },
+    {
+      name: 'ctas',
+      label: 'Gumbi (CTAs)',
+      type: 'relationship',       // Changed type to relationship
+      relationTo: 'ctas',       // Relates to the 'ctas' collection
+      hasMany: true,             // Indicates it can have multiple CTAs
+      required: false,
     },
     {
       name: 'benefits',
       type: 'array',
       required: false,
-      label: 'Prednosti',
-     
+      label: 'Prednosti (Benefits)',
       fields: [
         {
           name: 'title',
@@ -67,9 +101,9 @@ const About: Block = {
             description: 'Ime ikone (npr. Star, Trophy, Clock)',
           },
         },
-      ]
+      ],
     },
-  ]
+  ],
 };
 
 export default About; 

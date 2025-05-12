@@ -1140,9 +1140,13 @@ export interface ProjectHighlightsBlock {
  * via the `definition` "AboutBlock".
  */
 export interface AboutBlock {
-  template: 'default';
+  template: 'default' | 'variant-2';
   title?: string | null;
+  subtitle?: string | null;
   description?: string | null;
+  image?: (number | null) | Media;
+  isInverted?: boolean | null;
+  ctas?: (number | Cta)[] | null;
   benefits?:
     | {
         title?: string | null;
@@ -2124,7 +2128,11 @@ export interface ProjectHighlightsBlockSelect<T extends boolean = true> {
 export interface AboutBlockSelect<T extends boolean = true> {
   template?: T;
   title?: T;
+  subtitle?: T;
   description?: T;
+  image?: T;
+  isInverted?: T;
+  ctas?: T;
   benefits?:
     | T
     | {

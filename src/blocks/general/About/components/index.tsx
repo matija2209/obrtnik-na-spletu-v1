@@ -1,5 +1,6 @@
 import DefaultAboutMeSection from "./default-about-section"
-import type { AboutBlock as AboutBlockType } from "@payload-types"
+import Variant2AboutSection from "./variant-2-about-section"
+import type { AboutBlock as AboutBlockType, Cta, Media } from "@payload-types"
 
 const AboutBlock = ({ ...block }: AboutBlockType) => {
   
@@ -9,6 +10,17 @@ const AboutBlock = ({ ...block }: AboutBlockType) => {
         <DefaultAboutMeSection 
           title={block.title ?? undefined}
           subtitle={block.description ?? undefined}
+        />
+      )
+    case "variant-2":
+      return (
+        <Variant2AboutSection
+          title={block.title ?? undefined}
+          subtitle={block.description ?? undefined}
+          description={block.description ?? undefined}
+          image={block.image as Media ?? undefined}
+          isInverted={block.isInverted ?? undefined}
+          ctas={block.ctas as Cta[] ?? undefined}
         />
       )
     default:

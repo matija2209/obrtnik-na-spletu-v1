@@ -45,6 +45,12 @@ export function middleware(req: NextRequest) {
     hostname === 'a1-instalacije.local:3000'
   ) {
     tenantSlug = 'a1-instalacije';
+  } 
+
+  if (
+    hostname === 'moj-mojster-gradnje.vercel.app'
+  ) {
+    tenantSlug = 'moj-mojster-gradnje';
   }
 
   // 2. If no specific hostname match, check for direct tenant-slugs path access
@@ -67,9 +73,9 @@ export function middleware(req: NextRequest) {
   // 4. Rewrite ONLY if it was based on specific HOSTNAME (initial request)
   if ((
       hostname === 'a1-instalacije.vercel.app' ||
-      hostname === 'a1-instalacije.local:3000'
+      hostname === 'a1-instalacije.local:3000' ||
+      hostname === 'moj-mojster-gradnje.vercel.app'
     ) && !pathname.startsWith('/tenant-slugs')) { // Avoid rewrite loop
-
       const tenantPath = `/tenant-slugs/${tenantSlug}`; // Use the identified slug
       let adjustedPathname = pathname.replace(/^\/|\/$/g, '');
 
