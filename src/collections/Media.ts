@@ -10,7 +10,6 @@ export const Media: CollectionConfig = {
         plural: 'Slike',
     },
     admin: {
-        defaultColumns:["alt","updatedAt"],
         useAsTitle: 'alt',
         description: 'Naložite in upravljajte slike ter druge medijske datoteke.',
         // components:{
