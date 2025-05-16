@@ -10,9 +10,9 @@ export const Tenants: CollectionConfig = {
   slug: 'tenants',
   access: {
     create: isSuperAdminAccess,
-    delete: deleteAccess,
+    delete: isSuperAdminAccess,
     read: ()=>true,
-    update: updateAccess,
+    update: isSuperAdminAccess,
   },
   labels:{
     singular:"Spletno mesto",
@@ -22,13 +22,6 @@ export const Tenants: CollectionConfig = {
     useAsTitle: 'name',
     group: 'Struktura',
     defaultColumns:["name","domain","updatedAt"],
-    // components:{
-    //   views:{
-    //     list:{
-    //       Component:"/components/admin/collections/tenants/tenants-list.tsx"
-    //     }
-    //   }
-    // }
   },
   hooks: {
 

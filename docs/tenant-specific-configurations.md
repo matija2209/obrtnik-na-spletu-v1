@@ -1,8 +1,6 @@
 # How-To: Implement Tenant-Specific "Globals" with @payloadcms/plugin-multi-tenant
 
-EDIT: Add eprsonal intro. I have been setting up mutlit tenant plugin for couple of days. The last thing was globals. I quickly found out it cannot be made sujed as collections as it doesnt you cannot add globals under payload config...
-
-END EDIT
+Hi there! After spending a few days setting up the @payloadcms/plugin-multi-tenant for a project, I ran into a common challenge: making "global" configurations (like Navbar, Footer, or Business Info) specific to each tenant. If you've tried to use Payload's built-in Globals for this, you probably noticed they aren't tenant-aware out of the box. I quickly discovered that you can't just add globals under the multi-tenant plugin config the way you do with collections. This guide shares what I learned and how you can solve this elegantly!
 
 This guide addresses a common challenge: making global-like configurations (e.g., Navbar, Footer, Business Info) specific to each tenant when using the `@payloadcms/plugin-multi-tenant` in Payload CMS. It assumes you already have the multi-tenant plugin installed and configured for your general collections.
 
@@ -23,6 +21,8 @@ To properly implement tenant-specific "globals," you **must** define them as Pay
 The recommended and supported approach is to:
 1. Define your configurations (Navbar, Footer, etc.) as regular Payload **Collections** instead of Globals.
 2. Instruct the `@payloadcms/plugin-multi-tenant` to treat these specific collections as "global" for each tenant by using the `isGlobal: true` flag in the plugin's configuration.
+
+**This is a crucial detail that is not always emphasized in the code or docs, so make sure you don't miss it!**
 
 Here's how:
 
@@ -125,12 +125,7 @@ export default buildConfig({
 
 Setting `isGlobal: true` tells the `@payloadcms/plugin-multi-tenant` to ensure that only one document for this collection can exist per tenant. It handles the underlying logic to make this collection behave like a global from the perspective of a tenant administrator.
 
-EDIT: Soruce here if you pass attention
-https://payloadcms.com/docs/plugins/multi-tenant#basic-usage
-
-This is very imporatnt details that is not really ephasises in the code SO it needs to be made abubnadaly clear in the copy 
-
-END EDIT
+> **Tip:** This detail is very important and not always obvious in the code or docs. If you want a collection to behave like a global for each tenant, you must set `isGlobal: true` in the plugin config. [See the official docs for more.](https://payloadcms.com/docs/plugins/multi-tenant#basic-usage)
 
 ## Access Control & Data Management
 
@@ -138,11 +133,6 @@ END EDIT
 *   **Admin UI:** Tenant administrators will typically see an interface to edit their single instance of this configuration. Super administrators might have a view that allows them to select a tenant and then edit its specific configuration, or see a list of all tenant configurations.
 
 ## Data Migration for Existing Globals
-
-EDIT: FROM ME. Form my exepricen data wont be lost. I did it for globals i create colleciton with identical fields and the existing table was correcltry migrated with perservice data no problme! Anaywas worth bakci ng up beforre doing just to be safe
-
-
-END EDIT:
 
 If you are converting an existing Payload Global to this new tenant-specific collection model:
 
@@ -153,8 +143,10 @@ If you are converting an existing Payload Global to this new tenant-specific col
 
 This might involve writing a one-time script using Payload's Local API.
 
-By following these steps, you can effectively manage configurations that need to be unique per tenant while leveraging the power and convenience of the `@payloadcms/plugin-multi-tenant`. 
+> **Personal note:** In my experience, when I created a collection with identical fields to an existing global, the underlying table was correctly migrated and the data persisted without issues. However, it's always a good idea to back up your data before making structural changes, just to be safe!
 
-EDIT: I have been working on payload cms recenytl. If you would be itnerested in more content like this let me know!
+By following these steps, you can effectively manage configurations that need to be unique per tenant while leveraging the power and convenience of the `@payloadcms/plugin-multi-tenant`.
 
-END EDIT
+---
+
+If you found this helpful or would like to see more content like this, let me know! I'm happy to share more tips and guides from my experience working with Payload CMS and multi-tenant setups.
