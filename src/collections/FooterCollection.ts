@@ -1,14 +1,10 @@
-import { GlobalConfig, Access, Block } from 'payload';
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
-import { Menus } from '../collections/Menus'; // Import Menus to ensure relationTo works
+import type { CollectionConfig, Block } from 'payload';
 
-// Define access control - allowing anyone to read, admin to update
-const anyone: Access = () => true;
-
-// Define the Menu Section Block
+// Define the Menu Section Block (moved from the old global)
 const MenuSectionBlock: Block = {
   slug: 'menuSection',
-  interfaceName: 'MenuSectionItem', // Payload interface name
+  interfaceName: 'MenuSectionItem',
   labels: {
     singular: 'Sekcija Menija',
     plural: 'Sekcije Menijev',
@@ -31,21 +27,26 @@ const MenuSectionBlock: Block = {
   ],
 };
 
-export const Footer: GlobalConfig = {
-  slug: 'footer',
-  label: 'Noga strani',
-  access: {
-    read: anyone,
-    update: superAdminOrTenantAdminAccess,
+export const FooterCollection: CollectionConfig = {
+  slug: 'footer', // Using the same slug
+  labels: {
+    singular: 'Noga',
+    plural: 'Noga',
   },
-  admin:{
-    description: 'Podatki o podjetju',
-    group: 'Konfiguracija',
-    
+  access: {
+    create: superAdminOrTenantAdminAccess,
+    read: superAdminOrTenantAdminAccess, // Changed from anyone to tenant-specific
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess,
+  },
+  admin: {
+    description: 'Nastavitve podnožja strani za vsakega najemnika.',
+    group: 'Struktura',
+
   },
   fields: [
     {
-      type: 'tabs', // Add tabs field
+      type: 'tabs',
       tabs: [
         {
           label: 'General Settings',
@@ -85,7 +86,7 @@ export const Footer: GlobalConfig = {
               type: 'blocks',
               minRows: 0,
               maxRows: 4,
-              blocks: [MenuSectionBlock],
+              blocks: [MenuSectionBlock], // Use the block defined above
               admin: {
                 description: 'Dodajte eno ali več sekcij menijev, ki bodo prikazane v nogi.',
               }
@@ -105,6 +106,4 @@ export const Footer: GlobalConfig = {
       ],
     },
   ],
-};
-
-export default Footer; 
+}; 

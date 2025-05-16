@@ -1,14 +1,16 @@
+"use cache"
 import './globals.css'
 import { headers, draftMode } from 'next/headers';
 import { AdminBar } from '@/components/admin/admin-bar'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 // Import all Google fonts you plan to support by their 'next/font/google' names
 import { Inter, Roboto, Open_Sans, Lato, Montserrat } from 'next/font/google';
 import type { NextFontWithVariable } from 'next/dist/compiled/@next/font'; // Import this type
 import { getTenantThemeConfig, defaultConfig, type TenantThemeConfig, type FontConfigPayload, fetchTenantStyles, getTenantFontClasses } from '@/utilities/themeUtils';
-
-
+import AnalyticsLoader from '@/components/analytics-loader';
+import CookieConsent from '@/components/cookie-consent';
+import FullScreenLoader from '@/components/common/FullScreenLoader';
 
 // --- BEGIN MODULE SCOPE FONT DEFINITIONS ---
 // These MUST be const assignments at the module scope.
@@ -78,6 +80,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="sl" suppressHydrationWarning className={activeFontClasses.join(' ')}> 
+      <Suspense fallback={<FullScreenLoader />}>
       <head>
         {/* Basic Meta tags */} 
         <meta charSet="utf-8" />
@@ -108,8 +111,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             // You might want to pass the tenantSlug or status here too
           }}
         />
-        
-        {children}
+       
+          {children}
+      
         
         {/* Optional: Add a small indicator for development/staging environments */} 
         {process.env.NODE_ENV !== 'production' && (
@@ -129,6 +133,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
         )}
       </body>
+      <AnalyticsLoader />
+        <Suspense fallback={null}>
+            <CookieConsent />
+        </Suspense>
+        </Suspense>
     </html>
   );
 }

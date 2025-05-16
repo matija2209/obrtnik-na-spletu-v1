@@ -14,8 +14,9 @@ import { FaqItems } from '@/collections/FaqItems'
 import { Services } from '@/collections/Services'
 import { Ctas } from '@/collections/Ctas'
 
-import { Navbar } from '@/globals/Navbar'
-import { BusinessInfo } from '@/globals/BusinessInfo'
+import { NavbarCollection } from '@/collections/NavbarCollection'
+import { BusinessInfoCollection } from '@/collections/BusinessInfoCollection'
+import { FooterCollection } from '@/collections/FooterCollection'
 import { Machinery } from '@/collections/Machinery'
 import { OpeningHours } from '@/collections/OpeningHours'
 import { Tenants } from '@/collections/Tenants'
@@ -31,7 +32,6 @@ import { isSuperAdmin } from '@/access/isSuperAdminAccess'
 import { getUserTenantIDs } from '@/utilities/getUserTenantIDs'
 import { seed } from './src/seed'; // Import the seed function
 import { Pages } from '@/collections/Pages';
-import { Footer } from '@/globals/Footer';
 import { Redirects } from '@/collections/Redirects'; // Import the new collection
 import { Pricelists } from '@/collections/Pricelists'; // Import the new Pricelists collection
 import { PriceListSections } from '@/collections/PriceListSections'; // Import new
@@ -126,12 +126,13 @@ const allCollections: CollectionConfig[] = [
   Banners, // Add the Banners collection here
   Menus, // Add the Menus collection here
   SubServices, // Add SubServices to the collections array
+  BusinessInfoCollection, // Add new BusinessInfoCollection here
+  FooterCollection, // Add new FooterCollection here
+  NavbarCollection, // Add new NavbarCollection here
 ];
 
 const allGlobals: GlobalConfig[] = [
-  BusinessInfo,
-  Navbar,
-  Footer,
+  // Navbar, // Remove old Navbar global
 ];
 
 if (!process.env.PAYLOAD_SECRET) {
@@ -387,10 +388,12 @@ export default buildConfig({
           },
         },
       },
+      
       tenantsArrayField: {
         includeDefaultField: false,
       },
       userHasAccessToAllTenants: (user) => isSuperAdmin(user),
+      
       collections: {
         [Projects.slug]: {},
         [Services.slug]: {},
@@ -411,6 +414,9 @@ export default buildConfig({
         [PriceListItems.slug]: {}, // Add new
         [Banners.slug]: {},
         [Menus.slug]: {},
+        [BusinessInfoCollection.slug]: { isGlobal: true }, // Configure new collection
+        [FooterCollection.slug]: { isGlobal: true }, // Configure new FooterCollection
+        [NavbarCollection.slug]: { isGlobal: true }, // Configure new NavbarCollection
       } as any, // Cast to any to bypass strict type checking for dynamic slugs
     }),
   ],

@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: false, // Recommended for Payload compatibility
     useCache: true, // Enable use cache directive
-    dynamicIO: true,
+    // dynamicIO: true,
   },
   images:{
     remotePatterns: [

@@ -86,6 +86,9 @@ export interface Config {
     banners: Banner;
     menus: Menu;
     sub_services: SubService;
+    'business-info': BusinessInfo;
+    footer: Footer;
+    navbar: Navbar;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-jobs': PayloadJob;
@@ -114,6 +117,9 @@ export interface Config {
     banners: BannersSelect<false> | BannersSelect<true>;
     menus: MenusSelect<false> | MenusSelect<true>;
     sub_services: SubServicesSelect<false> | SubServicesSelect<true>;
+    'business-info': BusinessInfoSelect<false> | BusinessInfoSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    navbar: NavbarSelect<false> | NavbarSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -124,16 +130,8 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  globals: {
-    'business-info': BusinessInfo;
-    navbar: Navbar;
-    footer: Footer;
-  };
-  globalsSelect: {
-    'business-info': BusinessInfoSelect<false> | BusinessInfoSelect<true>;
-    navbar: NavbarSelect<false> | NavbarSelect<true>;
-    footer: FooterSelect<false> | FooterSelect<true>;
-  };
+  globals: {};
+  globalsSelect: {};
   locale: null;
   user: User & {
     collection: 'users';
@@ -1415,6 +1413,150 @@ export interface Menu {
   createdAt: string;
 }
 /**
+ * Osnovni podatki in nastavitve podjetja za vsakega najemnika.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "business-info".
+ */
+export interface BusinessInfo {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * Polno ime podjetja.
+   */
+  companyName?: string | null;
+  companyAbout?: string | null;
+  vatId?: string | null;
+  businessId?: string | null;
+  registryDate?: string | null;
+  location?: string | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  /**
+   * Temna varianta logotipa, ki se uporablja na svetlih ozadjih.
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Svetla varianta logotipa, ki se uporablja na temnih ozadjih. Če ni izbrana, se uporabi temna varianta.
+   */
+  logoLight?: (number | null) | Media;
+  facebookUrl?: string | null;
+  googleReviewUrl?: string | null;
+  /**
+   * Dodajte povezave do vaših profilov na platformah za pridobivanje strank.
+   */
+  leadGenPlatformUrls?:
+    | {
+        platformName?: ('Primerjam.si' | 'Omisli.si' | 'MojMojster.net') | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Koordinate lokacije podjetja za prikaz na zemljevidu.
+   */
+  coordinates?: {
+    /**
+     * Geografska širina lokacije podjetja.
+     */
+    latitude?: number | null;
+    /**
+     * Geografska dolžina lokacije podjetja.
+     */
+    longitude?: number | null;
+  };
+  /**
+   * Radius v metrih, ki označuje območje kjer podjetje nudi svoje storitve.
+   */
+  serviceRadius?: number | null;
+  /**
+   * Naslov, ki se prikaže v zavihku brskalnika in rezultatih iskanja.
+   */
+  metaTitle?: string | null;
+  /**
+   * Kratek opis strani za rezultate iskanja (približno 155-160 znakov).
+   */
+  metaDescription?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Nastavitve podnožja strani za vsakega najemnika.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * Besedilo avtorskih pravic, ki bo prikazano na dnu noge. Uporabite {{year}} za dinamično leto.
+   */
+  copyrightText?: string | null;
+  /**
+   * Ali naj se v nogi prikaže besedilni naslov?
+   */
+  showLogoText?: boolean | null;
+  showContactInFooter?: boolean | null;
+  /**
+   * Dodajte eno ali več sekcij menijev, ki bodo prikazane v nogi.
+   */
+  menuSections?: MenuSectionItem[] | null;
+  /**
+   * Izberite meni, ki vsebuje povezave do družabnih omrežij (neobvezno). Ustvarite nov meni v sekciji "Meniji", če ga še nimate.
+   */
+  socialMenu?: (number | null) | Menu;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MenuSectionItem".
+ */
+export interface MenuSectionItem {
+  title?: string | null;
+  menu: number | Menu;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'menuSection';
+}
+/**
+ * Nastavitve navigacijske vrstice za vsakega najemnika.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navbar".
+ */
+export interface Navbar {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * Ali naj se v navigaciji prikaže slika logotipa?
+   */
+  showLogoImage?: boolean | null;
+  /**
+   * Ali naj se v navigaciji prikaže besedilni naslov (če je logotip onemogočen ali ni naložen)?
+   */
+  showLogoText?: boolean | null;
+  /**
+   * Ali naj bo ozadje navigacije prozorno (običajno na vrhu strani)?
+   */
+  isTransparent?: boolean | null;
+  /**
+   * Ali naj bo navigacija pripeta na vrh zaslona med drsenjem?
+   */
+  isFixed?: boolean | null;
+  /**
+   * Izberite meni, ki bo uporabljen za glavno navigacijo.
+   */
+  mainMenu: number | Menu;
+  /**
+   * Izberite CTA gumb, ki bo prikazan v navigaciji.
+   */
+  mainCta?: (number | null) | Cta;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "form-submissions".
  */
@@ -1606,6 +1748,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'sub_services';
         value: number | SubService;
+      } | null)
+    | ({
+        relationTo: 'business-info';
+        value: number | BusinessInfo;
+      } | null)
+    | ({
+        relationTo: 'footer';
+        value: number | Footer;
+      } | null)
+    | ({
+        relationTo: 'navbar';
+        value: number | Navbar;
       } | null)
     | ({
         relationTo: 'forms';
@@ -2399,6 +2553,86 @@ export interface SubServicesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "business-info_select".
+ */
+export interface BusinessInfoSelect<T extends boolean = true> {
+  tenant?: T;
+  companyName?: T;
+  companyAbout?: T;
+  vatId?: T;
+  businessId?: T;
+  registryDate?: T;
+  location?: T;
+  phoneNumber?: T;
+  email?: T;
+  logo?: T;
+  logoLight?: T;
+  facebookUrl?: T;
+  googleReviewUrl?: T;
+  leadGenPlatformUrls?:
+    | T
+    | {
+        platformName?: T;
+        url?: T;
+        id?: T;
+      };
+  coordinates?:
+    | T
+    | {
+        latitude?: T;
+        longitude?: T;
+      };
+  serviceRadius?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  tenant?: T;
+  copyrightText?: T;
+  showLogoText?: T;
+  showContactInFooter?: T;
+  menuSections?:
+    | T
+    | {
+        menuSection?: T | MenuSectionItemSelect<T>;
+      };
+  socialMenu?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MenuSectionItem_select".
+ */
+export interface MenuSectionItemSelect<T extends boolean = true> {
+  title?: T;
+  menu?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navbar_select".
+ */
+export interface NavbarSelect<T extends boolean = true> {
+  tenant?: T;
+  showLogoImage?: T;
+  showLogoText?: T;
+  isTransparent?: T;
+  isFixed?: T;
+  mainMenu?: T;
+  mainCta?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "forms_select".
  */
 export interface FormsSelect<T extends boolean = true> {
@@ -2612,227 +2846,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * Podatki o podjetju
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "business-info".
- */
-export interface BusinessInfo {
-  id: number;
-  /**
-   * Polno ime podjetja.
-   */
-  companyName: string;
-  companyAbout: string;
-  vatId: string;
-  businessId: string;
-  registryDate: string;
-  location: string;
-  phoneNumber: string;
-  email: string;
-  /**
-   * Temna varianta logotipa, ki se uporablja na svetlih ozadjih.
-   */
-  logo?: (number | null) | Media;
-  /**
-   * Svetla varianta logotipa, ki se uporablja na temnih ozadjih. Če ni izbrana, se uporabi temna varianta.
-   */
-  logoLight?: (number | null) | Media;
-  facebookUrl?: string | null;
-  googleReviewUrl?: string | null;
-  /**
-   * Dodajte povezave do vaših profilov na platformah za pridobivanje strank.
-   */
-  leadGenPlatformUrls?:
-    | {
-        platformName: 'Primerjam.si' | 'Omisli.si' | 'MojMojster.net';
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Koordinate lokacije podjetja za prikaz na zemljevidu.
-   */
-  coordinates: {
-    /**
-     * Geografska širina lokacije podjetja.
-     */
-    latitude: number;
-    /**
-     * Geografska dolžina lokacije podjetja.
-     */
-    longitude: number;
-  };
-  /**
-   * Radius v metrih, ki označuje območje kjer podjetje nudi svoje storitve.
-   */
-  serviceRadius: number;
-  /**
-   * Naslov, ki se prikaže v zavihku brskalnika in rezultatih iskanja.
-   */
-  metaTitle: string;
-  /**
-   * Kratek opis strani za rezultate iskanja (približno 155-160 znakov).
-   */
-  metaDescription: string;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * Navigacija
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "navbar".
- */
-export interface Navbar {
-  id: number;
-  /**
-   * Ali naj se v navigaciji prikaže slika logotipa?
-   */
-  showLogoImage?: boolean | null;
-  /**
-   * Ali naj se v navigaciji prikaže besedilni naslov (če je logotip onemogočen ali ni naložen)?
-   */
-  showLogoText?: boolean | null;
-  /**
-   * Ali naj bo ozadje navigacije prozorno (običajno na vrhu strani)?
-   */
-  isTransparent?: boolean | null;
-  /**
-   * Ali naj bo navigacija pripeta na vrh zaslona med drsenjem?
-   */
-  isFixed?: boolean | null;
-  /**
-   * Izberite meni, ki bo uporabljen za glavno navigacijo.
-   */
-  mainMenu: number | Menu;
-  /**
-   * Izberite CTA gumb, ki bo prikazan v navigaciji.
-   */
-  mainCta?: (number | null) | Cta;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * Podatki o podjetju
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer".
- */
-export interface Footer {
-  id: number;
-  /**
-   * Besedilo avtorskih pravic, ki bo prikazano na dnu noge. Uporabite {{year}} za dinamično leto.
-   */
-  copyrightText?: string | null;
-  /**
-   * Ali naj se v nogi prikaže besedilni naslov?
-   */
-  showLogoText?: boolean | null;
-  showContactInFooter?: boolean | null;
-  /**
-   * Dodajte eno ali več sekcij menijev, ki bodo prikazane v nogi.
-   */
-  menuSections?: MenuSectionItem[] | null;
-  /**
-   * Izberite meni, ki vsebuje povezave do družabnih omrežij (neobvezno). Ustvarite nov meni v sekciji "Meniji", če ga še nimate.
-   */
-  socialMenu?: (number | null) | Menu;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MenuSectionItem".
- */
-export interface MenuSectionItem {
-  title?: string | null;
-  menu: number | Menu;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'menuSection';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "business-info_select".
- */
-export interface BusinessInfoSelect<T extends boolean = true> {
-  companyName?: T;
-  companyAbout?: T;
-  vatId?: T;
-  businessId?: T;
-  registryDate?: T;
-  location?: T;
-  phoneNumber?: T;
-  email?: T;
-  logo?: T;
-  logoLight?: T;
-  facebookUrl?: T;
-  googleReviewUrl?: T;
-  leadGenPlatformUrls?:
-    | T
-    | {
-        platformName?: T;
-        url?: T;
-        id?: T;
-      };
-  coordinates?:
-    | T
-    | {
-        latitude?: T;
-        longitude?: T;
-      };
-  serviceRadius?: T;
-  metaTitle?: T;
-  metaDescription?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "navbar_select".
- */
-export interface NavbarSelect<T extends boolean = true> {
-  showLogoImage?: T;
-  showLogoText?: T;
-  isTransparent?: T;
-  isFixed?: T;
-  mainMenu?: T;
-  mainCta?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "footer_select".
- */
-export interface FooterSelect<T extends boolean = true> {
-  copyrightText?: T;
-  showLogoText?: T;
-  showContactInFooter?: T;
-  menuSections?:
-    | T
-    | {
-        menuSection?: T | MenuSectionItemSelect<T>;
-      };
-  socialMenu?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MenuSectionItem_select".
- */
-export interface MenuSectionItemSelect<T extends boolean = true> {
-  title?: T;
-  menu?: T;
-  id?: T;
-  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

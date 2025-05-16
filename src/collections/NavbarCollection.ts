@@ -1,42 +1,25 @@
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
-import { GlobalConfig, Access, FieldHook } from 'payload';
+import type { CollectionConfig } from 'payload';
 
-// Define access control - allowing anyone to read, admin to update
-const anyone: Access = () => true;
-
-
-// Available icons for dropdown items based on desktop-navbar.tsx
-// These are now managed within the Menus collection
-// const iconOptions = [
-//   { label: 'Sparkles', value: 'Sparkles' },
-//   { label: 'Zap', value: 'Zap' },
-//   { label: 'Droplet (Drop)', value: 'Drop' },
-//   { label: 'Hand (Hands)', value: 'Hands' },
-//   { label: 'Footprints', value: 'Footprints' },
-//   { label: 'Paintbrush', value: 'Paintbrush' },
-// ];
-
-// Define a type for the sibling data in navItems for better type safety
-// This logic is now part of the Menus collection
-// type NavItemSiblingData = {
-//   hasChildren?: boolean;
-//   // other fields if needed for condition logic
-// };
-
-
-
-export const Navbar: GlobalConfig = {
-  slug: 'navbar',
-  label: 'Navigacija',
-  access: {
-    read: anyone,
-    update: superAdminOrTenantAdminAccess,
+export const NavbarCollection: CollectionConfig = {
+  slug: 'navbar', // Using the same slug
+  labels: {
+    singular: 'Navigacija',
+    plural: 'Navigacija',
   },
-  admin:{
-    description: 'Navigacija',
-    group: 'Struktura',
+  access: {
+    create: superAdminOrTenantAdminAccess,
+    read: superAdminOrTenantAdminAccess, // Changed from anyone to tenant-specific
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess,
+  },
+  admin: {
+    description: 'Nastavitve navigacijske vrstice za vsakega najemnika.',
+    group: 'Struktura', // Keeping original group
+
   },
   fields: [
+   
     {
       type: 'tabs',
       tabs: [
@@ -94,7 +77,6 @@ export const Navbar: GlobalConfig = {
                   description: 'Izberite meni, ki bo uporabljen za glavno navigacijo.',
                 }
             },
-            // --- Main CTA Button ---
             {
                 name: 'mainCta',
                 label: 'Glavni CTA Gumb (v navigaciji)',

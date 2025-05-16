@@ -1,13 +1,19 @@
-/* src/styles/payloadStyles.css */
-
-/* Define the Tailwind layers in the correct order */
 @layer theme, base, components, utilities;
 
-/* Import the Tailwind theme styles */
 @import 'tailwindcss/theme.css' layer(theme);
-
-
 /* @import 'tailwindcss/preflight.css' layer(base); */
-
 @import 'tailwindcss/utilities.css' layer(utilities);
-/* @import "tailwindcss"; */
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *)); 
+
+:root {
+  --theme-elevation-100: #f06c9e;
+  --theme-elevation-200: #d06979;
+  --theme-elevation-800: #e31f3c;
+}
+
+.card {
+  background-color: var(--theme-elevation-100);
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 1px;
+}

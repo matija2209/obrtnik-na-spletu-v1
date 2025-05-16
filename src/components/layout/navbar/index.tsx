@@ -24,7 +24,7 @@ interface NavItem {
 
 // Define the props for the Navbar component
 interface NavbarProps {
-  navbarData: NavbarType;
+  navbarData: NavbarType | null;
   logoLightUrl?: string;
   logoDarkUrl?: string;
   companyName?: string;
@@ -58,7 +58,7 @@ const Navbar = ({
 
   // Extract menu items from the mainMenu relationship
   // Ensure mainMenu is populated and is an object before accessing menuItems
-  const mainMenuItems = (typeof navbarData.mainMenu === 'object' && navbarData.mainMenu?.menuItems) 
+  const mainMenuItems = (typeof navbarData?.mainMenu === 'object' && navbarData?.mainMenu?.menuItems) 
     ? navbarData.mainMenu.menuItems 
     : null;
 

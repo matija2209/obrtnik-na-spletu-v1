@@ -1,14 +1,31 @@
 import type { Payload } from 'payload';
 import type { SeedArgs } from '../utils';
+import type { BusinessInfo } from '../../../payload-types'; // Import the collection type
 
-export const seedBusinessInfo = async (args: Pick<SeedArgs, 'payload' | 'tenantA1' | 'simulatedReq'>): Promise<void> => {
-  const { payload, tenantA1, simulatedReq } = args;
-  payload.logger.info('--- Seeding BusinessInfo Global ---');
+export const seedBusinessInfo = async (args: Pick<SeedArgs, 'payload' | 'tenantA1'>): Promise<void> => {
+  const { payload, tenantA1 } = args;
+  payload.logger.info('--- Seeding BusinessInfo Collection for Tenant A1 ---');
 
   try {
+    payload.logger.info(`Checking for existing BusinessInfo for tenant ${tenantA1.id}...`);
+    const existing = await payload.find({
+      collection: 'business-info',
+      where: {
+        tenant: {
+          equals: tenantA1.id,
+        },
+      },
+      limit: 1,
+    });
+
+    if (existing.docs.length > 0) {
+      payload.logger.info(`BusinessInfo already exists for tenant ${tenantA1.id}. Skipping seeding for this tenant.`);
+      return;
+    }
+
     payload.logger.info(`Seeding BusinessInfo for tenant ${tenantA1.id}...`);
-    await payload.updateGlobal({
-      slug: 'business-info',
+    await payload.create({
+      collection: 'business-info',
       data: {
         companyName: 'A1 INŠTALACIJE d.o.o.',
         companyAbout: 'Smo strokovnjaki za vodoinštalacije in montažo sanitarne opreme. Nudimo kakovostne storitve z dolgoletnimi izkušnjami.',
@@ -32,11 +49,11 @@ export const seedBusinessInfo = async (args: Pick<SeedArgs, 'payload' | 'tenantA
         serviceRadius: 50000,
         metaTitle: 'A1 INŠTALACIJE d.o.o. | Vodoinštalacije Ljubljana',
         metaDescription: 'Profesionalne vodoinštalaterske storitve in montaža sanitarne opreme v Ljubljani in okolici. A1 INŠTALACIJE d.o.o.',
+        tenant: tenantA1.id, // Associate with the tenant
       },
-      req: simulatedReq, // Pass simulated request for tenant context
     });
-    payload.logger.info(`BusinessInfo seeded for tenant ${tenantA1.id}.`);
+    payload.logger.info(`BusinessInfo collection entry seeded for tenant ${tenantA1.id}.`);
   } catch (err) {
-    payload.logger.error('Error seeding BusinessInfo global:', err);
+    payload.logger.error('Error seeding BusinessInfo collection:', err);
   }
 }; 

@@ -23,21 +23,23 @@ export default async function TenantSlugPage({
 
   // Await parameters
   const params = await paramsPromise
-  const { slug, tenant } = params
+  const { slug, tenant:tenantSlug } = params
 
   // Get authenticated user
   const headers = await getHeaders()
   const payload = await getPayload({ config: configPromise })
   const { user } = await payload.auth({ headers })
-
+  const tenantId = await getTenantIdBySlug(tenantSlug)
   // Get draft mode status
   const { isEnabled: draft } = await draftMode()
 
-
+if (!tenantSlug || !tenantId) {
+  return notFound()
+}
   const [navbarData, businessInfoData, footerData] = await Promise.all([
-    getNavbar(tenant),
-    getBusinessInfo(tenant),
-    getFooter(tenant),
+    getNavbar(tenantId),
+    getBusinessInfo(tenantId),
+    getFooter(tenantId),
   ])
   // Query for the page, passing draft status
   const safeSlug = slug === undefined || slug.length === 0 ? ['home'] : slug;
@@ -46,14 +48,14 @@ export default async function TenantSlugPage({
   if (safeSlug.includes('storitve') || safeSlug.includes('storitve/') || safeSlug.includes('tretmaji')) {
     page = await queryServicePageBySlug({
       slug: safeSlug,
-      tenant,
+      tenant:tenantSlug,
       overrideAccess: draft,
       draft,
     })
   } else {
     page = await queryPageBySlug({
       slug: safeSlug,
-      tenant,
+      tenant:tenantSlug,
       overrideAccess: draft,
       draft,
   })

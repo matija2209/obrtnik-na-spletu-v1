@@ -4,9 +4,14 @@ import config from '@payload-config'
 import '@payloadcms/next/css'
 import type { ServerFunctionClient } from 'payload'
 import { handleServerFunctions, RootLayout } from '@payloadcms/next/layouts'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { importMap } from './admin/importMap.js'
 // import '../../styles/payloadStyles.css'
+
+import '@payloadcms/next/css'
+import FullScreenLoader from '@/components/common/FullScreenLoader'
+// import '@/styles/payloadStyles.css';
+
 
 type Args = {
   children: React.ReactNode
@@ -22,10 +27,12 @@ const serverFunction: ServerFunctionClient = async function (args) {
 }
 
 // Using custom layout instead of Payload's RootLayout to avoid duplicate html tags
-const Layout = ({ children }: Args) => (
-  <RootLayout config={config} importMap={importMap} serverFunction={serverFunction}>
-    {children}
-  </RootLayout>
+const Layout = ({ children }: Args) =>  (
+    <Suspense fallback={<FullScreenLoader />}>
+      <RootLayout config={config} importMap={importMap} serverFunction={serverFunction}>
+        {children}
+      </RootLayout>
+    </Suspense>
 )
 
 export default Layout

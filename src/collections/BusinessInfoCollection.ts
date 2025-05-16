@@ -1,21 +1,22 @@
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
-import { GlobalConfig, Access } from 'payload';
+import type { CollectionConfig } from 'payload';
 
-// Define access control - allowing anyone to read, admin to update
-const anyone: Access = () => true;
-
-
-export const BusinessInfo: GlobalConfig = {
-  slug: 'business-info',
-  label: 'Podatki o podjetju',
-  access: {
-    read: anyone,
-    update: superAdminOrTenantAdminAccess, // Only admins can update business info
+export const BusinessInfoCollection: CollectionConfig = {
+  slug: 'business-info', // Using the same slug for potential data migration ease
+  labels: {
+    singular: 'Podatki o podjetju',
+    plural: 'Podatki o podjetju',
   },
-  admin:{
-    description: 'Podatki o podjetju',
+  access: {
+    create: superAdminOrTenantAdminAccess,
+    read: superAdminOrTenantAdminAccess,
+    update: superAdminOrTenantAdminAccess,
+    delete: superAdminOrTenantAdminAccess, // Consider if delete should be more restrictive
+  },
+  admin: {
+    description: 'Osnovni podatki in nastavitve podjetja za vsakega najemnika.',
     group: 'Konfiguracija',
-    
+    useAsTitle: 'companyName', // Makes sense if super admin views a list
   },
   fields: [
     {
@@ -28,7 +29,7 @@ export const BusinessInfo: GlobalConfig = {
               name: 'companyName',
               label: 'Ime podjetja',
               type: 'text',
-              required: true,
+              required: false,
               admin: {
                 description: 'Polno ime podjetja.',
               },
@@ -37,25 +38,25 @@ export const BusinessInfo: GlobalConfig = {
               name: "companyAbout",
               label: "O podjetju",
               type: "textarea",
-              required: true,
+              required: false,
             },
             {
               name: 'vatId',
               label: 'Davčna številka (ID za DDV)',
               type: 'text',
-              required: true,
+              required: false,
             },
             {
               name: 'businessId',
               label: 'Matična številka',
               type: 'text',
-              required: true,
+              required: false,
             },
             {
               name: 'registryDate',
               label: 'Datum vpisa v register',
               type: 'date',
-              required: true,
+              required: false,
               admin: {
                 date: {
                   pickerAppearance: 'dayOnly',
@@ -67,19 +68,19 @@ export const BusinessInfo: GlobalConfig = {
               name: 'location',
               label: 'Naslov / Lokacija',
               type: 'text',
-              required: true,
+              required: false,
             },
             {
               name: 'phoneNumber',
               label: 'Telefonska številka',
               type: 'text',
-              required: true,
+              required: false,
             },
             {
               name: 'email',
               label: 'E-poštni naslov',
               type: 'email',
-              required: true,
+              required: false,
             },
           ],
         },
@@ -139,13 +140,13 @@ export const BusinessInfo: GlobalConfig = {
                       value: 'MojMojster.net',
                     },
                   ],
-                  required: true,
+                  required: false,
                 },
                 {
                   name: 'url',
                   label: 'URL povezava do profila',
                   type: 'text',
-                  required: true,
+                  required: false,
                 },
               ],
               admin: {
@@ -166,7 +167,7 @@ export const BusinessInfo: GlobalConfig = {
                   name: 'latitude',
                   label: 'Latitude',
                   type: 'number',
-                  required: true,
+                  required: false,
                   defaultValue: 46.2191697,
                   admin: {
                     description: 'Geografska širina lokacije podjetja.',
@@ -176,7 +177,7 @@ export const BusinessInfo: GlobalConfig = {
                   name: 'longitude',
                   label: 'Longitude',
                   type: 'number',
-                  required: true,
+                  required: false,
                   defaultValue: 15.4705641,
                   admin: {
                     description: 'Geografska dolžina lokacije podjetja.',
@@ -191,7 +192,7 @@ export const BusinessInfo: GlobalConfig = {
               name: 'serviceRadius',
               label: 'Območje storitev (v metrih)',
               type: 'number',
-              required: true,
+              required: false,
               admin: {
                 description: 'Radius v metrih, ki označuje območje kjer podjetje nudi svoje storitve.',
               },
@@ -205,7 +206,7 @@ export const BusinessInfo: GlobalConfig = {
               name: 'metaTitle',
               label: 'SEO Meta naslov',
               type: 'text',
-              required: true,
+              required: false,
               admin: {
                 description: 'Naslov, ki se prikaže v zavihku brskalnika in rezultatih iskanja.',
               },
@@ -214,7 +215,7 @@ export const BusinessInfo: GlobalConfig = {
               name: 'metaDescription',
               label: 'SEO Meta opis',
               type: 'textarea',
-              required: true,
+              required: false,
               admin: {
                 description: 'Kratek opis strani za rezultate iskanja (približno 155-160 znakov).',
               },

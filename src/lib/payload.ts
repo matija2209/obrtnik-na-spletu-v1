@@ -175,54 +175,65 @@ export const getMedia = async (query = {}) => {
   })
 }
 
-export const BUSINESS_INFO_TAG = async (tenantId: string) => `business-info-${tenantId}`;
+export const BUSINESS_INFO_TAG = async (tenantId: number) => `business-info-${tenantId}`;
 // Global utility functions
-export const getBusinessInfo = async (tenantId: string) => {
+export const getBusinessInfo = async (tenantId: number) => {
   "use cache"
   unstable_cacheLife('max')
   cacheTag(await BUSINESS_INFO_TAG(tenantId));
   const payload = await getPayloadClient()
-  return payload.findGlobal({
-    slug: 'business-info',
-    user: {
+  const result = await payload.find({
+    collection: 'business-info',
+    where: {
       tenant: {
-        equals: tenantId
+        equals: 2
       }
-    }
-  })
+    },
+    limit: 1
+  });
+  return result.docs.length > 0 ? result.docs[0] : null;
 }
 
-export const NAVBAR_TAG = async (tenantId: string) => `navbar-${tenantId}`;
+export const NAVBAR_TAG = async (tenantId: number) => `navbar-${tenantId}`;
 
-export const getNavbar = async (tenantId:string ) => {
+export const getNavbar = async (tenantId:number ) => {
   "use cache"
   unstable_cacheLife('max')
   cacheTag(await NAVBAR_TAG(tenantId));
   const payload = await getPayloadClient()
-  return payload.findGlobal({
-    slug: 'navbar',
-    user: {
+  if (!tenantId) {
+    return null;
+  }
+  console.log('tenantId', tenantId);
+  
+  const result = await payload.find({
+    collection: 'navbar',
+    where: {
       tenant: {
-        equals: tenantId
+        equals: 2
       }
-    }
-  })
+    },
+    limit: 1
+  });
+  return result.docs.length > 0 ? result.docs[0] : null;
 }
 
-export const FOOTER_TAG = async (tenantId: string) => `footer-${tenantId}`;
-export const getFooter = async (tenantId: string) => {
+export const FOOTER_TAG = async (tenantId: number) => `footer-${tenantId}`;
+export const getFooter = async (tenantId: number) => {
   "use cache"
   unstable_cacheLife('max')
   cacheTag(await FOOTER_TAG(tenantId));
   const payload = await getPayloadClient()
-  return payload.findGlobal({
-    slug: 'footer',
-    user: {
+  const result = await payload.find({
+    collection: 'footer',
+    where: {
       tenant: {
-        equals: tenantId
+        equals: 2
       }
-    }
-  })
+    },
+    limit: 1
+  });
+  return result.docs.length > 0 ? result.docs[0] : null;
 }
 
 // Logo utilities

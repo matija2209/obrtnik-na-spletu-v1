@@ -42,7 +42,7 @@ This guide outlines the steps to add a new data collection to your Payload CMS p
      ```typescript
      import { MyNewCollection } from './collections/MyNewCollection'; // Adjust path
      ```
-   - **Add to `collections` Array:** Add the imported collection object to the `collections` array within the `buildConfig` function.
+   - **Add to `collections` Array:** Add the imported collection object to the `collections` array within the `buildConfig` function. **This is a critical step! Failure to do so will prevent Payload CMS from recognizing your new collection.**
      ```typescript
      // payload.config.ts
      export default buildConfig({
@@ -62,7 +62,40 @@ This guide outlines the steps to add a new data collection to your Payload CMS p
    - **Alternatively:** Restarting your Payload development server often triggers type generation automatically.
    - This will update the `[payload-types.ts](mdc:payload-types.ts)` file to include interfaces and types for your new collection.
 
-### 5. Update Data Fetching Utilities (If Applicable)
+### 5. Seed Initial Data (Optional)
+
+   - For development, testing, or providing initial content, you might want to add sample data for your new collection to the seed script (`[src/seed.ts](mdc:src/seed.ts)`).
+   - **Locate Seed File:** Open `[src/seed.ts](mdc:src/seed.ts)`.
+   - **Import Types (if needed):** You might need to import types related to your new collection or related collections if you're creating relationships.
+   - **Add Seeding Logic:**
+     - Use `payload.create` to add new documents to your collection.
+     - Define the data for each field according to your collection's schema.
+     - If your collection is tenant-specific or requires user context for creation (due to access controls or hooks), ensure you provide the necessary `req` object, often a `simulatedReq` as seen in the seed file for other collections.
+     - Log the creation process for better traceability.
+   - **Example:**
+     ```typescript
+     // src/seed.ts
+     // ... (import your new collection's type if needed)
+
+     payload.logger.info('Seeding MyNewCollection...');
+     try {
+       await payload.create({
+         collection: 'my-new-collection', // Use the slug of your new collection
+         data: {
+           // ... your data fields ...
+           title: 'Sample Item 1',
+           // tenant: tenantA1.id, // If tenant-specific
+         },
+         // req: simulatedReq, // If context is needed
+       });
+       payload.logger.info('MyNewCollection seeded successfully.');
+     } catch (err) {
+       payload.logger.error('Error seeding MyNewCollection:', err);
+     }
+     ```
+   - **Run Seed Script:** Execute the seed script (e.g., often part of `npm run dev` or a specific seed command) to populate the database.
+
+### 6. Update Data Fetching Utilities (If Applicable)
 
    - If you need to query or display data from this new collection in your application (e.g., on your website frontend or in server-side logic), you'll likely want to add utility functions.
    - **Locate Utility File:** This is often a file like `[src/lib/payload.ts](mdc:src/lib/payload.ts)`.
@@ -73,14 +106,14 @@ This guide outlines the steps to add a new data collection to your Payload CMS p
    - **Create Getter Functions:** Add functions to fetch all items, a single item by ID or slug, or items based on relationships. Include caching strategies (like Next.js cache tags) if appropriate.
      *Example:* We added `getSubServicesByParent` and `SUB_SERVICES_BY_PARENT_TAG` to `[src/lib/payload.ts](mdc:src/lib/payload.ts)` for the `SubServices` collection.
 
-### 6. Relate to Other Collections (If Needed)
+### 7. Relate to Other Collections (If Needed)
 
    - If your new collection needs to be linked from or to other existing collections, you'll need to add `relationship` fields.
    - **Modify Existing Collection:** Open the `index.ts` file of the collection you want to link *from*.
    - **Add Relationship Field:** Add a new field of type `relationship`, specifying the `relationTo` property as the `slug` of your new collection. Set `hasMany: true` if you want to link to multiple items from the new collection.
      *Example:* We modified `[ServicePages.ts](mdc:src/collections/ServicePages.ts)` to add a `subServices` relationship field pointing to the `sub-services` collection.
 
-### 7. Final Checks
+### 8. Final Checks
 
    - **Restart Development Server:** Ensure all changes are picked up.
    - **Test in Admin UI:** Navigate to the Payload admin panel. Your new collection should appear (possibly within the group you specified). Test creating, updating, and deleting items. Verify all fields work as expected.
