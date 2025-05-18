@@ -1,14 +1,14 @@
 import type { CollectionConfig } from 'payload'
 
-import { createAccess } from './access/create'
-import { readAccess } from './access/read'
-import { updateAndDeleteAccess } from './access/updateAndDelete'
+// import { createAccess } from './access/create'
+// import { readAccess } from './access/read'
+// import { updateAndDeleteAccess } from './access/updateAndDelete'
 import { externalUsersLogin } from './endpoints/externalUsersLogin'
 import { ensureUniqueUsername } from './hooks/ensureUniqueUsername'
 
 import { setCookieBasedOnDomain } from './hooks/setCookieBasedOnDomain'
 import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields'
-import { isSuperAdmin } from '@/access/isSuperAdminAccess'
+import { isSuperAdmin, isSuperAdminAccess } from '@/access/isSuperAdminAccess'
 
 const defaultTenantArrayField = tenantsArrayField({
   tenantsArrayFieldName: 'tenants',
@@ -31,10 +31,10 @@ const defaultTenantArrayField = tenantsArrayField({
 const Users: CollectionConfig = {
   slug: 'users',
   access: {
-    create: createAccess,
-    delete: updateAndDeleteAccess,
-    read: readAccess,
-    update: updateAndDeleteAccess,
+    create: isSuperAdminAccess,
+    delete: isSuperAdminAccess,
+    read: isSuperAdminAccess,
+    update: isSuperAdminAccess,
   },
   admin: {
     useAsTitle: 'email',

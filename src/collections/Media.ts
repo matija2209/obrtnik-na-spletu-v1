@@ -1,8 +1,6 @@
 import { CollectionConfig, Access } from 'payload';
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 
-
-
 export const Media: CollectionConfig = {
     slug: 'media',
     labels:{
@@ -57,6 +55,11 @@ export const Media: CollectionConfig = {
             type: 'text',
             label: 'Nadomestno besedilo',
             required: false,
+            admin: {
+              components: {
+                Cell: '@/components/admin/collections/media/ThumbnailCell',
+              }
+            }
         },
     ],
 }; 
