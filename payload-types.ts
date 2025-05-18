@@ -181,6 +181,10 @@ export interface Tenant {
    */
   slug: string;
   /**
+   * If checked, logging in is not required to read. Useful for building public pages.
+   */
+  allowPublicRead?: boolean | null;
+  /**
    * Define the color palette for this tenant.
    */
   colors?: {
@@ -193,6 +197,10 @@ export interface Tenant {
     background?: string | null;
     foreground?: string | null;
   };
+  /**
+   * Controls the roundness of elements (e.g., buttons, cards). Use rem, px, etc.
+   */
+  radius?: string | null;
   /**
    * Define fonts, weights, and subsets for this tenant. These will be used with next/font/google.
    */
@@ -240,14 +248,6 @@ export interface Tenant {
         | null;
     };
   };
-  /**
-   * Controls the roundness of elements (e.g., buttons, cards). Use rem, px, etc.
-   */
-  radius?: string | null;
-  /**
-   * If checked, logging in is not required to read. Useful for building public pages.
-   */
-  allowPublicRead?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1823,6 +1823,7 @@ export interface TenantsSelect<T extends boolean = true> {
   name?: T;
   domain?: T;
   slug?: T;
+  allowPublicRead?: T;
   colors?:
     | T
     | {
@@ -1835,6 +1836,7 @@ export interface TenantsSelect<T extends boolean = true> {
         background?: T;
         foreground?: T;
       };
+  radius?: T;
   typography?:
     | T
     | {
@@ -1873,8 +1875,6 @@ export interface TenantsSelect<T extends boolean = true> {
                   };
             };
       };
-  radius?: T;
-  allowPublicRead?: T;
   updatedAt?: T;
   createdAt?: T;
 }

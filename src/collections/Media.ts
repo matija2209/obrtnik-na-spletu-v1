@@ -8,7 +8,6 @@ export const Media: CollectionConfig = {
         plural: 'Slike',
     },
     admin: {
-        useAsTitle: 'alt',
         description: 'Naložite in upravljajte slike ter druge medijske datoteke.',
         // components:{
         //   views:{
@@ -26,6 +25,8 @@ export const Media: CollectionConfig = {
       delete: superAdminOrTenantAdminAccess
     },
     upload: {
+      bulkUpload: true,
+      crop: true,
       imageSizes: [
         {
           name: 'thumbnail',
@@ -55,11 +56,11 @@ export const Media: CollectionConfig = {
             type: 'text',
             label: 'Nadomestno besedilo',
             required: false,
-            admin: {
-              components: {
-                Cell: '@/components/admin/collections/media/ThumbnailCell',
-              }
-            }
+            // admin: {
+            //   components: {
+            //     Cell: '@/components/admin/collections/media/ThumbnailCell',
+            //   }
+            // }
         },
     ],
 }; 
