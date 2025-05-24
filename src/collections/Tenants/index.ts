@@ -4,6 +4,7 @@ import { updateAccess } from './access/update'
 import { deleteAccess } from './access/delete'
 import { isSuperAdminAccess, isSuperAdmin } from '@/access/isSuperAdminAccess'
 import afterChangeHook from './hooks/afterChange'
+import afterOperationHook from './hooks/afterOperation'
 
 
 export const Tenants: CollectionConfig = {
@@ -21,10 +22,16 @@ export const Tenants: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'Struktura',
+    components:{
+      // beforeList: ['/components/admin/collections/tenants/populate-with-ai.tsx'],
+      edit:{
+        beforeDocumentControls:['/components/admin/collections/tenants/populate-with-ai.tsx'],
+      }
+    },
     defaultColumns:["name","domain","updatedAt"],
   },
   hooks: {
-
+    afterOperation: [afterOperationHook],
     afterChange: [afterChangeHook],
   },
   fields: [

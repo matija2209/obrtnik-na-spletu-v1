@@ -16,7 +16,7 @@ export const Services: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     description: 'Upravljajte seznam storitev, ki jih ponujate.',
-    group: 'Vsebina',
+    group: 'Dejavnost',
     defaultColumns: ['title', 'serviceId', 'updatedAt'],
     // components:{
     //   views:{

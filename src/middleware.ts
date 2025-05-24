@@ -53,6 +53,15 @@ export function middleware(req: NextRequest) {
     tenantSlug = 'moj-mojster-gradnje';
   }
 
+  if (hostname === "kr-hausbetreuung.vercel.app") {
+    tenantSlug = "kr-hausbetreuung";
+  }
+
+  if (hostname === "top-tla.vercel.app") {
+    tenantSlug = "top-tla";
+  }
+
+
   // 2. If no specific hostname match, check for direct tenant-slugs path access
   if (!tenantSlug) {
     const pathSegments = pathname.split('/').filter(Boolean); // Remove empty segments

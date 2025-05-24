@@ -17,7 +17,7 @@ export const Projects: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     description: 'Predstavite zaključene projekte ali reference.',
-    group: 'Vsebina',
+    group: 'Dejavnost',
     defaultColumns: ['title', 'projectStatus', 'location', 'updatedAt'],
     // components:{
     //   views:{

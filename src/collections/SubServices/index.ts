@@ -16,7 +16,7 @@ export const SubServices: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'parentService', 'updatedAt', 'publishedAt'],
-    group: 'Storitve', // Group with main Services or a relevant group
+    group: 'Dejavnost', // Group with main Services or a relevant group
   },
   versions: {
     drafts: {

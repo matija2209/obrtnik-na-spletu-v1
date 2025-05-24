@@ -1,5 +1,6 @@
-import { Button } from '@/components/ui/button';
+
 import { Tenant } from '@payload-types';
+import { Button } from '@payloadcms/ui';
 import Link from 'next/link'
 import { AdminViewServerProps } from 'payload'
 import React from 'react'
@@ -15,7 +16,7 @@ function PreviewSite(props:AdminViewServerProps) {
   return (
     
     <Link href={url} target="_blank" rel="noopener noreferrer">
-      <Button variant="default">
+      <Button disabled={!tenantSlug}>
         Ogled spletne strani
       </Button>
     </Link>

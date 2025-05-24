@@ -24,14 +24,14 @@ const anyone: Access = () => true;
 export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: {
-    singular: 'Podstran',
-    plural: 'Podstrani',
+    singular: 'Navadna stran',
+    plural: 'Navadne strani',
   },
   
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
-    group: 'Struktura',
+    group: 'Strani',
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({

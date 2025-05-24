@@ -31,7 +31,7 @@ export const ServicePages: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
-    group: 'Struktura', // Or a new group like 'Storitve'
+    group: 'Strani', // Or a new group like 'Storitve'
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
