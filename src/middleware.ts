@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { get } from '@vercel/edge-config'
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const hostname = req.headers.get('host') || '';
   const url = req.nextUrl.clone();
   const pathname = url.pathname; // Original pathname
@@ -39,26 +40,33 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // 1. Check for specific hostnames first
-  if (
-    hostname === 'a1-instalacije.vercel.app' ||
-    hostname === 'a1-instalacije.local:3000'
-  ) {
-    tenantSlug = 'a1-instalacije';
-  } 
-
-  if (
-    hostname === 'moj-mojster-gradnje.vercel.app'
-  ) {
-    tenantSlug = 'moj-mojster-gradnje';
+  // 1. Check Edge Config for hostname mapping first
+  if (process.env.EDGE_CONFIG) {
+    try {
+      const edgeConfigSlug = await get(hostname) as string | undefined;
+      if (edgeConfigSlug) {
+        tenantSlug = edgeConfigSlug;
+        console.log(`Found tenant '${tenantSlug}' from Edge Config for hostname '${hostname}'`);
+      }
+    } catch (error) {
+      console.error('Error fetching from Edge Config:', error);
+    }
   }
-
-  if (hostname === "kr-hausbetreuung.vercel.app") {
-    tenantSlug = "kr-hausbetreuung";
-  }
-
-  if (hostname === "top-tla.vercel.app") {
-    tenantSlug = "top-tla";
+  
+  // Fallback to hardcoded mappings if no Edge Config result
+  if (!tenantSlug) {
+    if (
+      hostname === 'a1-instalacije.vercel.app' ||
+      hostname === 'a1-instalacije.local:3000'
+    ) {
+      tenantSlug = 'a1-instalacije';
+    } else if (hostname === 'moj-mojster-gradnje.vercel.app') {
+      tenantSlug = 'moj-mojster-gradnje';
+    } else if (hostname === "kr-hausbetreuung.vercel.app") {
+      tenantSlug = "kr-hausbetreuung";
+    } else if (hostname === "top-tla.vercel.app") {
+      tenantSlug = "top-tla";
+    }
   }
 
 
@@ -79,12 +87,10 @@ export function middleware(req: NextRequest) {
     requestHeaders.set('X-Tenant-Slug', 'default');
   }
 
-  // 4. Rewrite ONLY if it was based on specific HOSTNAME (initial request)
-  if ((
-      hostname === 'a1-instalacije.vercel.app' ||
-      hostname === 'a1-instalacije.local:3000' ||
-      hostname === 'moj-mojster-gradnje.vercel.app'
-    ) && !pathname.startsWith('/tenant-slugs')) { // Avoid rewrite loop
+  // 4. Rewrite ONLY if tenant was found via hostname mapping (initial request)  
+  const shouldRewrite = tenantSlug && !pathname.startsWith('/tenant-slugs');
+  
+  if (shouldRewrite) {
       const tenantPath = `/tenant-slugs/${tenantSlug}`; // Use the identified slug
       let adjustedPathname = pathname.replace(/^\/|\/$/g, '');
 

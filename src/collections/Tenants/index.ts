@@ -5,6 +5,7 @@ import { deleteAccess } from './access/delete'
 import { isSuperAdminAccess, isSuperAdmin } from '@/access/isSuperAdminAccess'
 import afterChangeHook from './hooks/afterChange'
 import afterOperationHook from './hooks/afterOperation'
+import afterDeleteHook from './hooks/afterDelete'
 
 
 export const Tenants: CollectionConfig = {
@@ -33,6 +34,7 @@ export const Tenants: CollectionConfig = {
   hooks: {
     afterOperation: [afterOperationHook],
     afterChange: [afterChangeHook],
+    afterDelete: [afterDeleteHook],
   },
   fields: [
     {

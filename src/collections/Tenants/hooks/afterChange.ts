@@ -5,6 +5,7 @@ import { generateTenantCSS } from '@/utilities/css-generator';
 import type { Tenant } from '@payload-types';
 import { revalidateTag } from 'next/cache';
 import { TENANT_CSS_TAG, TENANT_THEME_CONFIG_TAG } from '@/utilities/themeUtils';
+import { handleTenantDomainUpdate } from '@/lib/edge-config';
 
 
 // Debounce function to prevent multiple rapid generations
@@ -16,7 +17,7 @@ declare global {
   var assetProcessingTimeout: NodeJS.Timeout | null;
 }
 
-const afterChangeHook: CollectionAfterChangeHook<Tenant> = async ({ doc, req }) => {
+const afterChangeHook: CollectionAfterChangeHook<Tenant> = async ({ doc, req, previousDoc }) => {
   if (!doc?.slug) {
     req.payload.logger.warn(`Tenant document ${doc?.id} is missing required fields for asset generation.`);
     return;
@@ -31,6 +32,22 @@ const afterChangeHook: CollectionAfterChangeHook<Tenant> = async ({ doc, req }) 
   if (!global.assetProcessingTimeout) {
     global.assetProcessingTimeout = setTimeout(processAllPendingTenants, DEBOUNCE_TIME);
   }
+
+  // Handle Edge Config domain mapping updates
+  (async () => {
+    try {
+      const oldDomain = previousDoc?.domain;
+      const newDomain = doc.domain;
+      
+      if (oldDomain !== newDomain || !previousDoc) {
+        req.payload.logger.info(`Updating Edge Config domain mapping for tenant: ${doc.slug}`);
+        await handleTenantDomainUpdate(newDomain, doc.slug, oldDomain);
+        req.payload.logger.info(`Edge Config updated for tenant: ${doc.slug}`);
+      }
+    } catch (error) {
+      req.payload.logger.error(`Error updating Edge Config for tenant ${doc.slug}:`, error);
+    }
+  })();
 
   // Revalidate tags asynchronously to avoid issues with Next.js render cycle
   (async () => {

@@ -30,7 +30,7 @@ import type { Config, Tenant } from './payload-types'
 import { s3Storage } from '@payloadcms/storage-s3'
 import { isSuperAdmin } from '@/access/isSuperAdminAccess'
 import { getUserTenantIDs } from '@/utilities/getUserTenantIDs'
-import { seed } from './src/seed'; // Import the seed function
+
 import { Pages } from '@/collections/Pages';
 import { Redirects } from '@/collections/Redirects'; // Import the new collection
 import { Pricelists } from '@/collections/Pricelists'; // Import the new Pricelists collection
@@ -225,11 +225,11 @@ export default buildConfig({
     },
   },
   editor: lexicalEditor({}),
-  onInit: async (args) => {
-    if (process.env.SEED === 'true') {
-      await seed(args)
-    }
-  },
+  // onInit: async (args) => {
+  //   if (process.env.SEED === 'true') {
+  //     await seed(args)
+  //   }
+  // },
   i18n: {
     supportedLanguages: { en, sl },
     fallbackLanguage: 'sl',
