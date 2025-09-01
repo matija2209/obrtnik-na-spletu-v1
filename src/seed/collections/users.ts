@@ -1,4 +1,3 @@
-import type { Payload } from 'payload';
 import type { User } from '../../../payload-types';
 import type { SeedArgs } from '../utils';
 

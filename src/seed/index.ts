@@ -4,18 +4,18 @@ import { createSimulatedRequest } from './utils';
 import {
   seedTenants,
   seedUsers,
-  seedOpeningHours,
+  // seedOpeningHours,
   seedCtas,
   seedMenus,
-  seedServices,
-  seedSubServices,
-  seedServicePages,
-  seedTestimonials,
-  seedProjects,
-  seedFaqItems,
-  seedForms,
-  seedMedia,
-  updateCollectionsWithMedia,
+  // seedServices,
+  // seedSubServices,
+  // seedServicePages,
+  // seedTestimonials,
+  // seedProjects,
+  // seedFaqItems,
+  // seedForms,
+  // seedMedia,
+  // updateCollectionsWithMedia,
   seedPages,
 } from './collections';
 import {
@@ -43,7 +43,7 @@ export const seed = async (payload: Payload): Promise<void> => {
     const simulatedReq = createSimulatedRequest(payload, userForGlobalUpdates);
 
     // --- Create Image Data (Needed before Media Seeding) ---
-    const { seededImageIds } = await seedMedia({ payload, tenantA1, simulatedReq });
+    // const { seededImageIds } = await seedMedia({ payload, tenantA1, simulatedReq });
 
     // --- Base arguments for seeding functions ---
     // Note: We don't include imageAltMap here as it's used internally by seedMedia
@@ -53,7 +53,7 @@ export const seed = async (payload: Payload): Promise<void> => {
       tenantMoj: Tenant;
       userForGlobalUpdates: User;
       simulatedReq: PayloadRequest;
-      seededImageIds: { [key: string]: number };
+      // seededImageIds: { [key: string]: number };
       // Optional properties are NOT defined here
     } = {
       payload,
@@ -61,25 +61,25 @@ export const seed = async (payload: Payload): Promise<void> => {
       tenantMoj,
       userForGlobalUpdates,
       simulatedReq,
-      seededImageIds,
+      // seededImageIds,
       // REMOVE the initialization of optional properties here
     };
 
     // --- Seed Collections (in logical order of dependency) ---
-    const { regularHours } = await seedOpeningHours(baseSeedArgs);
-    const { ctaKontakt, ctaVseStoritve } = await seedCtas(baseSeedArgs);
+    // const { regularHours } = await seedOpeningHours(baseSeedArgs);
+    const { ctaKontakt,ctaVseStoritve } = await seedCtas(baseSeedArgs);
     const { mainMenu, footerMenu, socialMenu } = await seedMenus(baseSeedArgs);
-    const { serviceVodoinstalacije, serviceMontaza } = await seedServices(baseSeedArgs);
-    const subServiceArgs = { ...baseSeedArgs, serviceVodoinstalacije, serviceMontaza };
-    const { subServiceOdtok, subServicePipe, subServiceWC, subServiceShower } = await seedSubServices(subServiceArgs);
-    const testimonialArgs = { ...baseSeedArgs };
-    const { testimonial1, testimonial2 } = await seedTestimonials(testimonialArgs);
-    const projectArgs = { ...baseSeedArgs, serviceVodoinstalacije, testimonial1 };
-    const { projectAdaptacija, projectNovogradnja } = await seedProjects(projectArgs);
-    const faqArgs = { ...baseSeedArgs };
-    const { faq1, faq2, faq3 } = await seedFaqItems(faqArgs);
-    const formArgs = { ...baseSeedArgs };
-    const { contactForm, defaultSiteContactForm } = await seedForms(formArgs);
+    // const { serviceVodoinstalacije, serviceMontaza } = await seedServices(baseSeedArgs);
+    // const subServiceArgs = { ...baseSeedArgs, serviceVodoinstalacije, serviceMontaza };
+    // const { subServiceOdtok, subServicePipe, subServiceWC, subServiceShower } = await seedSubServices(subServiceArgs);
+    // const testimonialArgs = { ...baseSeedArgs };
+    // const { testimonial1, testimonial2 } = await seedTestimonials(testimonialArgs);
+    // const projectArgs = { ...baseSeedArgs, serviceVodoinstalacije, testimonial1 };
+    // const { projectAdaptacija, projectNovogradnja } = await seedProjects(projectArgs);
+    // const faqArgs = { ...baseSeedArgs };
+    // const { faq1, faq2, faq3 } = await seedFaqItems(faqArgs);
+    // const formArgs = { ...baseSeedArgs };
+    // const { contactForm, defaultSiteContactForm } = await seedForms(formArgs);
 
     // --- Seed Globals (depend on some collections) ---
     const businessInfoArgs = { ...baseSeedArgs };
@@ -90,30 +90,30 @@ export const seed = async (payload: Payload): Promise<void> => {
     await seedFooter(footerArgs);
 
     // --- Update Collections with Media (after media and collections are seeded) ---
-    const updateMediaArgs = { ...baseSeedArgs, serviceVodoinstalacije, serviceMontaza, projectAdaptacija, projectNovogradnja };
-    await updateCollectionsWithMedia(updateMediaArgs);
+    // const updateMediaArgs = { ...baseSeedArgs, serviceVodoinstalacije, serviceMontaza, projectAdaptacija, projectNovogradnja };
+    // await updateCollectionsWithMedia(updateMediaArgs);
 
     // --- Seed Service Pages (depend on services/sub-services) ---
-    const servicePageArgs = { ...baseSeedArgs, serviceVodoinstalacije, subServiceOdtok, subServicePipe };
-    await seedServicePages(servicePageArgs);
+    const servicePageArgs = { ...baseSeedArgs}; // , serviceVodoinstalacije, subServiceOdtok, subServicePipe 
+    // await seedServicePages(servicePageArgs);
 
     // --- Seed Main Pages (depend on most other collections/globals) ---
     const pageArgs = {
       ...baseSeedArgs,
-      serviceVodoinstalacije,
-      serviceMontaza,
-      projectAdaptacija,
-      projectNovogradnja,
-      testimonial1,
-      testimonial2,
-      faq1,
-      faq2,
-      faq3,
-      regularHours,
-      defaultSiteContactForm,
+      // serviceVodoinstalacije,
+      // serviceMontaza,
+      // projectAdaptacija,
+      // projectNovogradnja,
+      // testimonial1,
+      // testimonial2,
+      // faq1,
+      // faq2,
+      // faq3,
+      // regularHours,
+      // defaultSiteContactForm,
       ctaKontakt,
-      ctaVseStoritve,
-      mainMenu,
+      // ctaVseStoritve,
+      // mainMenu,
     };
     await seedPages(pageArgs);
 
