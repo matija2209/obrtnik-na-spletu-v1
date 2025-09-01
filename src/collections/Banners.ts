@@ -14,6 +14,7 @@ export const Banners: CollectionConfig = {
   admin: {
     useAsTitle: 'internalName', // Use internalName as the title in the admin UI
     defaultColumns: ['internalName', 'isActive', 'startDate', 'endDate', 'updatedAt'],
+    hidden: true,
     description: 'Pasice za prikazovanje obvestil, ponudb, itd.', // Translated description
     group: 'Vsebina', // Translated group name
   },

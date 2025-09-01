@@ -10,6 +10,7 @@ export const Machinery: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'type', 'updatedAt'],
+    hidden: true,
     description: 'Podatki o gradbeni mehanizaciji.',
     group: 'Dejavnost',
   },
@@ -38,7 +39,7 @@ export const Machinery: CollectionConfig = {
     {
       name: 'description',
       label: 'Splošni opis stroja',
-      type: 'textarea',
+      type: 'richText',
       required: false,
     },
     {

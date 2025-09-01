@@ -6,27 +6,9 @@ import type { CollectionConfig } from 'payload'
 import { externalUsersLogin } from './endpoints/externalUsersLogin'
 import { ensureUniqueUsername } from './hooks/ensureUniqueUsername'
 
-import { setCookieBasedOnDomain } from './hooks/setCookieBasedOnDomain'
-import { tenantsArrayField } from '@payloadcms/plugin-multi-tenant/fields'
-import { isSuperAdmin, isSuperAdminAccess } from '@/access/isSuperAdminAccess'
 
-const defaultTenantArrayField = tenantsArrayField({
-  tenantsArrayFieldName: 'tenants',
-  tenantsArrayTenantFieldName: 'tenant',
-  tenantsCollectionSlug: 'tenants',
-  arrayFieldAccess: {},
-  tenantFieldAccess: {},
-  rowFields: [
-    {
-      name: 'roles',
-      type: 'select',
-      defaultValue: ['tenant-viewer'],
-      hasMany: true,
-      options: ['tenant-admin', 'tenant-viewer'],
-      required: true,
-    },
-  ],
-})
+
+import { isSuperAdmin, isSuperAdminAccess } from '@/access/isSuperAdminAccess'
 
 const Users: CollectionConfig = {
   slug: 'users',
@@ -38,7 +20,7 @@ const Users: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'email',
-    group: 'Konfiguracija',
+    group: 'Nastavitve',
   },
   labels: {
     singular: 'Uporabnik',
@@ -58,35 +40,20 @@ const Users: CollectionConfig = {
       index: true,
     },
     {
-      name: 'firstName',
+      name: 'first_name',
       label: 'Ime',
       type: 'text',
       required: true,
     },
     {
-      name: 'lastName',
+      name: 'last_name',
       label: 'Priimek',
       type: 'text',
       required: true,
     },
     {
-      name: 'address',
-      label: 'Naslov',
-      type: 'text',
-    },
-    {
-      name: 'phoneNumber',
+      name: 'phone_number',
       label: 'Telefonska številka',
-      type: 'text',
-    },
-    {
-      name: 'vatId',
-      label: 'Davčna številka',
-      type: 'text',
-    },
-    {
-      name: 'companyName',
-      label: 'Naziv podjetja',
       type: 'text',
     },
     {
@@ -107,21 +74,10 @@ const Users: CollectionConfig = {
         },
       },
     },
-    {
-      ...defaultTenantArrayField,
-      admin: {
-        ...(defaultTenantArrayField?.admin || {}),
-        position: 'sidebar',
-      },
-    },
   ],
   // The following hook sets a cookie based on the domain a user logs in from.
   // It checks the domain and matches it to a tenant in the system, then sets
   // a 'payload-tenant' cookie for that tenant.
-
-  hooks: {
-    afterLogin: [setCookieBasedOnDomain],
-  },
 }
 
 export default Users

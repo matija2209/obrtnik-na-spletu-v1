@@ -8,14 +8,20 @@ import { en } from '@payloadcms/translations/languages/en'
 import { sl } from '@payloadcms/translations/languages/sl'
 import Users from '@/collections/Users'
 import { Media } from '@/collections/Media'
-import { Projects } from '@/collections/Projects'
+import { Projects } from '@/collections/ProjectsHighlights'
 import { Testimonials } from '@/collections/Testimonials'
 import { FaqItems } from '@/collections/FaqItems'
 import { Services } from '@/collections/Services'
 import { Ctas } from '@/collections/Ctas'
-
+import { Products } from '@/collections/Products'
+import { ProductVariants } from '@/collections/ProductVariants'
+import { Collections } from '@/collections/Collections'
+import { Customers } from '@/collections/Customers'
+import { Orders } from '@/collections/Orders'
+import ProductPages from '@/collections/ProductPages'
+import ProjectPages from '@/collections/ProjectPages'
 import { NavbarCollection } from '@/collections/NavbarCollection'
-import { BusinessInfoCollection } from '@/collections/BusinessInfoCollection'
+
 import { FooterCollection } from '@/collections/FooterCollection'
 import { Machinery } from '@/collections/Machinery'
 import { OpeningHours } from '@/collections/OpeningHours'
@@ -42,6 +48,8 @@ import { seoPlugin } from '@payloadcms/plugin-seo'; // Import SEO plugin
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'; // Import nodemailer adapter
 import { ServicePages } from '@/collections/ServicePages'; // Import the new ServicePages collection
 import SubServices from '@/collections/SubServices'
+import { Posts } from '@/collections/Posts'
+import { BusinessInfoCollection } from '@/collections/BusinessInfoCollection'
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -104,32 +112,35 @@ const addDeployHook = <T extends CollectionConfig | GlobalConfig>(config: T): T 
     },
   };
 };
-
-// Original collections and globals arrays
 const allCollections: CollectionConfig[] = [
-  Tenants,
   Users,
   Media,
-  Projects,
+  Machinery,
   Services,
   Testimonials,
   FaqItems,
   Ctas,
-  Machinery,
+  Projects,
   OpeningHours,
+  SubServices,
   Pages,
-  ServicePages, // Add ServicePages to the collections array
-  Redirects, // Add the Redirects collection here
-  Pricelists, // Add the Pricelists collection here
-  PriceListSections, // Add new
-  PriceListItems, // Add new
-  Banners, // Add the Banners collection here
-  Menus, // Add the Menus collection here
-  SubServices, // Add SubServices to the collections array
-  BusinessInfoCollection, // Add new BusinessInfoCollection here
-  FooterCollection, // Add new FooterCollection here
-  NavbarCollection, // Add new NavbarCollection here
+  ServicePages,
+  ProjectPages, 
+  ProductPages,
+  Redirects, 
+  Pricelists, 
+  PriceListSections, 
+  PriceListItems, 
+  Banners, 
+  Menus, 
+  Products,
+  ProductVariants,
+  Collections,
+  Posts,
+  Customers,
+  Orders
 ];
+
 
 const allGlobals: GlobalConfig[] = [
   // Navbar, // Remove old Navbar global

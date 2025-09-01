@@ -1,21 +1,29 @@
 import { CollectionConfig, Access, Block } from 'payload';
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
-import Hero from '../../blocks/general/Hero/config';
+import HeroBlock from '../../blocks/general/Hero/config';
 import Services from '../../blocks/general/Services/config';
-import ProjectHighlights from '../../blocks/general/ProjectHighlights/config';
-import About from '../../blocks/general/About/config';
-import Testimonials from '../../blocks/general/Testimonials/config';
-import Gallery from '../../blocks/general/Gallery/config';
-import ServiceArea from '../../blocks/general/ServiceArea/config';
-import Contact from '../../blocks/general/Contact/config';
-import FAQ from '../../blocks/general/FAQ/config';
-import Machinery from '../../blocks/general/Machinery/config';
+
+import AboutBlock from '../../blocks/general/About/config';
+import TestimonialsBlock from '../../blocks/general/Testimonials/config';
+import GalleryBlock from '../../blocks/general/Gallery/config';
+import ServiceAreaBlock from '../../blocks/general/ServiceArea/config';
+import ContactBlock from '../../blocks/general/Contact/config';
+import FaqBlock from '../../blocks/general/FAQ/config';
+
 
 import { slugField } from '@/fields/slug';
 // Import hooks
 import { populatePublishedAt } from './hooks/populatePublishedAt';
-import { revalidatePage, revalidateDelete } from './hooks/revalidatePage';
+
+import { revalidatePagesCache, revalidatePagesCacheDelete } from './hooks/revalidatePagesCache';
 import { generatePreviewPath } from '@/utilities/generatePreviewPath';
+import ProjectHighlightsBlock from '@/blocks/general/ProjectHighlights/config';
+import MachineryBlock from '@/blocks/general/Machinery/config';
+import { FormBlock } from '@/blocks/general/Form';
+import { HowToBlock } from '@/blocks/general/HowTo/config';
+import CtaBlock from '@/blocks/general/Cta/config';
+import FeaturedProductsBlock from '@/blocks/general/FeaturedProducts/config';
+import TextBlock from '@/blocks/general/Text/config';
 
 
 // Define access control - allowing anyone to read, admin to update
@@ -67,42 +75,41 @@ export const Pages: CollectionConfig = {
   },
   // Add hooks
   hooks: {
-    afterChange: [revalidatePage],
+    afterChange: [ revalidatePagesCache],
     beforeChange: [populatePublishedAt],
-    afterDelete: [revalidateDelete],
+    afterDelete: [ revalidatePagesCacheDelete],
   },
   fields: [
+    slugField('title', {
+      name: 'slug',
+      label: 'Pot / Unikatni ID',
+      unique: true,
+      index: true,
+      admin: {
+        description: 'ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.',
+        readOnly: false,
+        position: 'sidebar',
+      }
+    }),
     {
       name: 'title',
       type: 'text',
       label: 'Naslov',
       required: true,
       localized: true,
-    },
-    // Add publishedAt field
-    {
-      name: 'publishedAt',
-      type: 'date',
-      admin: {
+      admin:{
         position: 'sidebar',
-        date: {
-          pickerAppearance: 'dayAndTime',
-        },
-      },
-      label: 'Datum objave',
+      }
     },
-    slugField(),
     {
       name: 'pageType',
       type: 'select',
       label: 'Tip strani',
       required: true,
       options: [
-        { label: 'Privzeta pristajalna stran', value: 'landing' },
+        { label: 'Navadna stran', value: 'landing' },
         { label: 'Kontaktna stran', value: 'contact' },
-        { label: 'O nas', value: 'about' },
         { label: 'Politika zasebnosti', value: 'privacyPolicy' },
-        // { label: 'Storitve', value: 'services' }, // Removed as services have their own collection
       ],
       defaultValue: 'landing',
       admin: {
@@ -122,22 +129,24 @@ export const Pages: CollectionConfig = {
               type: 'blocks',
               admin:{
                 initCollapsed: true,
-                condition: (data, siblingData) => {
-                  return data.pageType === 'landing';
-                },
               },
               minRows: 1,
               blocks: [
-                Hero,
+                HeroBlock,
                 Services,
-                Machinery,
-                FAQ,
-                Contact,
-                ProjectHighlights,
-                About,
-                Testimonials,
-                Gallery,
-                ServiceArea,
+                FaqBlock,
+                ContactBlock,
+                AboutBlock,
+                TestimonialsBlock,
+                GalleryBlock,
+                ServiceAreaBlock,
+                ProjectHighlightsBlock,
+                MachineryBlock,
+                FormBlock,
+                HowToBlock,
+                CtaBlock,
+                FeaturedProductsBlock,
+                TextBlock
               ]
             },
           ],

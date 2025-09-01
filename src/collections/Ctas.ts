@@ -1,4 +1,5 @@
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
+import { slugField } from '@/fields/slug';
 import { CollectionConfig, Access } from 'payload';
 
 // Define access control
@@ -23,6 +24,16 @@ export const Ctas: CollectionConfig = {
     delete: superAdminOrTenantAdminAccess,
   },
   fields: [
+    slugField('ctaText', {
+      label: 'Pot / Unikatni ID',
+      unique: true,
+      index: true,
+      admin: {
+        description: 'ID se generira samodejno iz naslova.',
+        readOnly: false,
+        position: 'sidebar',
+      }
+    }),
     {
       name: 'ctaText',
       type: 'text',
@@ -125,6 +136,6 @@ export const Ctas: CollectionConfig = {
         description: 'Izberite stil gumba (npr. Primary, Secondary). To lahko vpliva na izgled gumba na spletni strani.',
       },
       defaultValue: 'primary', // Optional: Set a default value
-    }
+    },
   ],
 }; 

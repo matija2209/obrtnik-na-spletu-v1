@@ -1,6 +1,7 @@
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { CollectionConfig } from 'payload';
 import { slugField } from '@/fields/slug';
+import { syncProjectHighlightsBlocks } from './hooks/syncProjectHighlightsBlocks';
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -27,20 +28,40 @@ export const Projects: CollectionConfig = {
     //   }
     // }
   },
+  hooks: {
+    afterChange: [syncProjectHighlightsBlocks],
+  },
   fields: [
+    slugField('title', {
+      label: 'Pot / Unikatni ID',
+      unique: true,
+      index: true,
+      admin: {
+        description: 'ID se generira samodejno iz naslova.',
+        readOnly: false,
+        position: 'sidebar',
+      }
+    }),
     {
       name: 'title',
       type: 'text',
       label: 'Naslov',
       required: true,
     },
-    slugField(),
     {
       name: 'description',
       type: 'richText',
       label: 'Opis',
       admin: {
         description: 'Detailed description of the project',
+      },
+    },
+    {
+      name: 'excerpt',
+      type: 'text',
+      label: 'Kratek opis',
+      admin: {
+        description: 'Kratek opis projekta, ki se bo prikazal na strani projekta',
       },
     },
     {
@@ -125,6 +146,9 @@ export const Projects: CollectionConfig = {
           type: 'upload',
           relationTo: 'media',
           required: false,
+          admin: {
+            condition: (_, siblingData) => !!siblingData.image1,
+          }
         },
         {
           name: 'altText2',
@@ -140,27 +164,19 @@ export const Projects: CollectionConfig = {
           label: 'Opis slike/para (Izbirno)',
           admin: {
             description: 'Describe this image or the before/after comparison.',
+            condition: (_, siblingData) => !!siblingData.image2,
           }
         },
       ],
     },
     {
       name: 'tags',
-      type: 'array',
+      type: 'text',
       label: 'Oznake projekta',
-      labels: {
-        singular: 'Tag',
-        plural: 'Tags',
-      },
-      fields: [
-        {
-          name: 'tag',
-          type: 'text',
-          label: 'Oznaka',
-        },
-      ],
+      hasMany: true,
       admin: {
         description: 'Add relevant tags to categorize this project',
+        position: "sidebar",
       },
     },
     {
@@ -170,6 +186,7 @@ export const Projects: CollectionConfig = {
       relationTo: 'services',
       hasMany: true,
       admin: {
+        position: "sidebar",
         description: 'Select the services that were part of this project.',
       },
     },
@@ -180,17 +197,41 @@ export const Projects: CollectionConfig = {
       relationTo: 'testimonials',
       hasMany: true,
       admin: {
+        position: "sidebar",
         description: 'Link any testimonials specifically related to this project.',
       },
     },
     {
-      name: 'dedicatedPage',
-      label: 'Namenska stran študije primera (Izbirno)',
-      type: 'relationship',
-      relationTo: 'pages',
-      hasMany: false,
+      name: 'source',
+      type: 'select',
+      label: 'Vir',
+      options: [
+        {
+          label: 'Manual',
+          value: 'manual',
+        },
+        {
+          label: 'Facebook',
+          value: 'facebook',
+        },
+      ],
+      defaultValue: 'manual',
       admin: {
-        description: 'Link to a detailed page about this project, if one exists.',
+        description: 'Vir projekta',
+        readOnly: true,
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'facebookPostId',
+      type: 'text',
+      label: 'Facebook Post ID',
+      required: false,
+      admin: {
+        description: 'ID Facebook objave iz katere je bil projekt ustvarjen',
+        readOnly: true,
+        position: 'sidebar',
+        condition: (data) => data.source === 'facebook',
       },
     },
   ],

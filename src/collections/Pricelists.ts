@@ -13,6 +13,7 @@ export const Pricelists: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'updatedAt'],
     description: 'Upravljajte cenike za storitve ali izdelke.',
+    hidden: true,
     group: 'Prodaja',
   },
   access: {

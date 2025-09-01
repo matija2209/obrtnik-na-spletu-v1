@@ -1,5 +1,4 @@
 import type { CollectionConfig } from 'payload'
-import { Access } from 'payload'
 
 import type { User } from '@payload-types' // Corrected relative path
 
@@ -12,9 +11,6 @@ interface AccessArgs {
   }
 }
 
-// Access Control Functions
-const isLoggedIn: Access = ({ req }: AccessArgs) => !!req.user
-
 const anyone = () => true
 
 export const Redirects: CollectionConfig = {
@@ -26,7 +22,7 @@ export const Redirects: CollectionConfig = {
   admin: {
     useAsTitle: 'from',
     description: 'Upravljajte preusmeritve URL naslovov.',
-    group: 'Konfiguracija',
+    group: 'Nastavitve',
     defaultColumns: ['from', 'to.type', 'updatedAt'],
   },
   access: {

@@ -1,8 +1,7 @@
-
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
-
-import { CollectionConfig } from 'payload';
-import { Access } from 'payload';
+import { CollectionConfig, Access } from 'payload';
+import { slugField } from '@/fields/slug'; // Import slugField
+import { FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
 
 // Define access control
 const anyoneRead: Access = () => true;
@@ -31,10 +30,19 @@ export const SubServices: CollectionConfig = {
     delete: superAdminOrTenantAdminAccess,
   },
   hooks: {
-
     // Consider adding hooks to revalidate parent service pages if a sub-service changes.
   },
   fields: [
+    slugField('title', { // Generates slug from title
+      name: 'slug',
+      label: 'Pot / Unikatni ID podstoritve',
+      unique: true,
+      index: true,
+      admin: {
+        position: 'sidebar',
+        description: 'ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.',
+      }
+    }),
     {
       name: 'title',
       type: 'text',
@@ -42,53 +50,29 @@ export const SubServices: CollectionConfig = {
       required: true,
       localized: true,
     },
-    {
-      name: 'parentService',
-      type: 'relationship',
-      relationTo: 'services', // Slug of your main Services collection
-      label: 'Nadrejena storitev',
-      required: true,
-      hasMany: false,
-      admin: {
-        position: 'sidebar',
-      },
-    },
+    
     {
       name: 'description',
       type: 'richText',
       label: 'Opis podstoritve',
-      localized: true,
-    },
-    {
-      name: 'bulletPoints',
-      label: 'Ključne točke',
-      type: 'array',
-      localized: true,
-      minRows: 0,
-      fields: [
-        {
-          name: 'point',
-          type: 'text',
-          label: 'Točka',
-          required: true,
-          localized: true,
+      editor: lexicalEditor({
+        features: ({ rootFeatures }) => {
+          return [
+            ...rootFeatures,
+            HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+            // BlocksFeature({ blocks: [Banner, Code, MediaBlock] }), // Uncomment if you have these blocks
+            FixedToolbarFeature(),
+            InlineToolbarFeature(),
+            HorizontalRuleFeature(),
+          ]
         },
-      ],
-    },
+      }),
+    },  
     {
       name: 'images',
-      label: 'Slike podstoritve',
-      type: 'array',
-      minRows: 0,
-      fields: [
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media', // Slug of your Media collection
-          label: 'Slika',
-          required: true,
-        },
-      ],
+      type: 'upload',
+      relationTo: 'media',
+      hasMany: true,
     },
     {
       name: 'price',
@@ -97,17 +81,16 @@ export const SubServices: CollectionConfig = {
       localized: true,
     },
     {
-      name: 'publishedAt',
-      type: 'date',
-      label: 'Datum objave',
+      name: 'parentService',
+      type: 'relationship',
+      relationTo: 'services', // Slug of your main Services collection
+      label: 'Nadrejena storitev',
+      required: false,
       admin: {
+        readOnly:true,
         position: 'sidebar',
-        date: {
-          pickerAppearance: 'dayAndTime',
-        },
       },
-    },
-    
+    }
   ],
 };
 

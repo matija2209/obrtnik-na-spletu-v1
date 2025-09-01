@@ -27,28 +27,6 @@ export const externalUsersLogin: Endpoint = {
       throw new APIError('Username and Password are required for login.', 400, null, true)
     }
 
-    // Find tenant based on domain or slug
-    const tenantQuery = (tenantDomain ? {
-      domain: { equals: tenantDomain }
-    } : {
-      slug: { equals: tenantSlug }
-    }) as Where; // Explicitly cast to Where
-
-    if (!tenantDomain && !tenantSlug) {
-       throw new APIError('Tenant domain or slug is required.', 400, null, true)
-    }
-
-    const tenantResult = await req.payload.find({
-      collection: 'tenants',
-      where: tenantQuery,
-      limit: 1,
-      depth: 0,
-    })
-
-    if (tenantResult.totalDocs === 0) {
-       throw new APIError('Tenant not found.', 404, null, true)
-    }
-    const fullTenant = tenantResult.docs[0];
 
     // Find user matching username/email within that tenant
     const foundUser = await req.payload.find({
@@ -58,13 +36,11 @@ export const externalUsersLogin: Endpoint = {
           {
             and: [
               { email: { equals: username } },
-              { 'tenants.tenant': { equals: fullTenant.id } },
             ],
           },
           {
             and: [
               { username: { equals: username } }, // Check username field too
-              { 'tenants.tenant': { equals: fullTenant.id } },
             ],
           },
         ],
@@ -108,7 +84,7 @@ export const externalUsersLogin: Endpoint = {
         throw new APIError('Login failed after user verification.', 500, null, true)
 
       } catch (e: any) {
-         req.payload.logger.error(`Login attempt failed for user ${username} in tenant ${fullTenant.id}: ${e.message || e}`);
+         req.payload.logger.error(`Login attempt failed for user ${username}: ${e.message || e}`);
         throw new APIError('Unable to login with the provided username and password.', 401, null, true)
       }
     }

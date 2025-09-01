@@ -13,6 +13,7 @@ export const PriceListItems: CollectionConfig = {
     useAsTitle: 'name',
     defaultColumns: ['name', 'price', 'section', 'displayOrder', 'updatedAt'],
     description: 'Posamezne postavke na ceniku (npr. Goveja juha, Vrtanje 10cm luknje).',
+    
     group: 'Ceniki',
     hidden: true,
   },

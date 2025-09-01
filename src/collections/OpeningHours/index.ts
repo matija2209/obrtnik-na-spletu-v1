@@ -1,3 +1,4 @@
+import { slugField } from '@/fields/slug';
 import type { CollectionConfig } from 'payload';
 
 export const OpeningHours: CollectionConfig = {
@@ -10,12 +11,23 @@ export const OpeningHours: CollectionConfig = {
     useAsTitle: 'name',
     description: 'Določite različne urnike odpiralnega časa (npr. redni, sezonski, nujni).',
     defaultColumns: ['name', 'startDate', 'endDate', 'updatedAt'],
-    group: 'Konfiguracija', // Grouping in admin UI
+    group: 'Nastavitve', // Grouping in admin UI
+    hidden: true,
   },
   access: {
     read: () => true, // Allow public read access
   },
   fields: [
+    slugField('name', {
+      label: 'Pot / Unikatni ID',
+      unique: true,
+      index: true,
+      admin: {
+        description: 'ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.',
+        readOnly: false,
+        position: 'sidebar',
+      }
+    }),
     {
       name: 'name',
       type: 'text',

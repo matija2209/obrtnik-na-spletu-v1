@@ -1,29 +1,32 @@
+import { slugField } from '@/fields/slug';
 import { superAdminOrTenantAdminAccess } from '../access/superAdminOrTenantAdmin';
 
 
-import { Access, CollectionConfig, FieldHook } from 'payload';
+import { Access, CollectionAfterChangeHook, CollectionConfig, FieldHook } from 'payload';
+import iconField from '@/fields/iconsField';
+import { revalidateTag } from 'next/cache';
+import { TAGS } from '@/lib/payload/cache-keys';
 
 // Define access control - allowing anyone to read, admin to create/update/delete
 const anyone: Access = () => true;
 
 // Available icons for dropdown items (reusing from Navbar definition)
-const iconOptions = [
-  { label: 'Sparkles', value: 'Sparkles' },
-  { label: 'Zap', value: 'Zap' },
-  { label: 'Droplet (Drop)', value: 'Drop' },
-  { label: 'Hand (Hands)', value: 'Hands' },
-  { label: 'Footprints', value: 'Footprints' },
-  { label: 'Paintbrush', value: 'Paintbrush' },
-];
+
+
+const revalidateMenusCache: CollectionAfterChangeHook = async ({
+  doc,
+  previousDoc,
+  operation
+}) => {
+  revalidateTag(TAGS.FOOTER)
+  revalidateTag(TAGS.NAVBAR)
+}
 
 // Define a type for the sibling data in menuItems for better type safety
 type MenuItemSiblingData = {
   hasChildren?: boolean;
   // other fields if needed for condition logic
 };
-
-
-
 
 export const Menus: CollectionConfig = {
   slug: 'menus',
@@ -34,7 +37,11 @@ export const Menus: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     description: 'Upravljajte navigacijske menije za uporabo v glavi, nogi ali drugje.',
+  
     group: 'Struktura', // Grouping in admin UI
+  },
+  hooks:{
+    afterChange:[revalidateMenusCache],
   },
   access: {
     read: anyone, // Anyone can read menus (needed for frontend)
@@ -43,12 +50,23 @@ export const Menus: CollectionConfig = {
     delete: superAdminOrTenantAdminAccess,
   },
   fields: [
+    slugField('title', {
+      label: 'Pot / Unikatni ID',
+      unique: true,
+      index: true,
+      admin: {
+        description: 'ID se generira samodejno iz naslova.',
+        readOnly: false,
+        position: 'sidebar',
+      }
+    }),
     {
       name: 'title',
       type: 'text',
       label: 'Ime menija (za administracijo)',
       required: true,
       admin: {
+        position:"sidebar",
         description: 'Interno ime za lažje prepoznavanje menija (npr. Glavni meni, Meni za nogo).',
       },
     },
@@ -118,21 +136,13 @@ export const Menus: CollectionConfig = {
               name: 'description',
               type: 'textarea',
               label: 'Opis elementa',
-              required: true, // Making description optional for flexibility
+              required: false,
               localized: true,
               admin: {
                 description: 'Kratek opis, ki se prikaže v spustnem meniju (neobvezno).',
               }
             },
-            {
-              name: 'icon',
-              type: 'select',
-              label: 'Ikona elementa (neobvezno)',
-              options: iconOptions,
-              admin: {
-                description: 'Izberite ikono, ki se prikaže ob elementu v spustnem meniju.',
-              }
-            },
+            iconField()
           ],
         },
       ],
