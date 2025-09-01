@@ -1,15 +1,21 @@
+import { SearchParams } from 'next/dist/server/request/search-params';
 import DefaultGallerySection from './default-gallery-section';
-import type { GalleryBlock as GalleryBlockType } from '@payload-types'; // Assuming GalleryBlock is the type name
 
-const GalleryBlock = ({ ...block }: GalleryBlockType) => {
+import type { GalleryBlock as GalleryBlockType } from '@payload-types'; // Assuming GalleryBlock is the type name
+import { Suspense } from 'react';
+
+const GalleryBlock = ({ searchParams, ...block }: GalleryBlockType & { searchParams?: SearchParams }) => {
   // Assuming a template field might exist
   switch (block?.template) {
+    case 'variant1':
     case 'default':
     default: // Defaulting to render GallerySection
-      // GallerySection currently handles its own title, description, and photos internally.
-      // Pass props from 'block' if GallerySection is refactored to accept them later.
       return (
-        <DefaultGallerySection />
+        <Suspense fallback={<div>Nalaganje galerije...</div>}>
+          <DefaultGallerySection
+            {...block}
+          />
+        </Suspense>
       );
       // Add other cases for different templates if needed
   }

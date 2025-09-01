@@ -1,12 +1,16 @@
+import backgroundColour from '@/fields/backgroundColour';
+import colourSchema from '@/fields/colourSchema';
+import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
-const Gallery: Block = {
+const GalleryBlock: Block = {
   slug: 'gallery',
   interfaceName: 'GalleryBlock',
   labels: {
-    singular: 'Gallery Block',
-    plural: 'Gallery Blocks',
+    singular: 'Galerija (Splošni)',
+    plural: 'Galerije (Splošni)',
   },
+
   fields: [
     {
       name: 'template',
@@ -19,8 +23,21 @@ const Gallery: Block = {
           label: 'Default Layout',
           value: 'default',
         },
+        {
+          label: 'Carousel Layout',
+          value: 'variant1',
+        },
         // Add more template options here
       ],
+    },
+    {
+      name: 'autoSyncMedia',
+      type: 'checkbox',
+      label: 'Samodejno dodaj nove slike iz mape',
+      defaultValue: false,
+      admin: {
+        description: 'Ko je omogočeno, se bodo nove naložene slike samodejno dodale v to galerijo',
+      },
     },
     {
       name: 'title',
@@ -38,28 +55,10 @@ const Gallery: Block = {
       defaultValue: '',
     },
     {
-      name: 'galleryImages',
-      type: 'array',
-      required: false,
-      label: 'Slike galerije',
-    
-      fields: [
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          label: 'Slika',
-          required: true,
-        },
-        {
-          name: 'caption',
-          type: 'text',
-          label: 'Napis (neobvezno)',
-          required: false,
-          localized: true,
-          defaultValue: '',
-        }
-      ]
+      name: 'images',
+      type: 'upload',
+      relationTo: 'media',
+      hasMany: true,
     },
     {
       name: 'galleryCta',
@@ -68,9 +67,16 @@ const Gallery: Block = {
       hasMany: false,
       required: false,
       label: 'CTA gumb galerije',
-     
-    }
+    },
+    backgroundColour(),
+    colourSchema(),
+    isTransparent(),
+    {
+      name:"idHref",
+      type:"text",
+      defaultValue:"galerija"
+    },
   ]
 };
 
-export default Gallery; 
+export default GalleryBlock; 

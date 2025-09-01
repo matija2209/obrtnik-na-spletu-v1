@@ -1,60 +1,59 @@
 import React from 'react';
-import Image from 'next/image';
+import PayloadImage from '@/components/ui/PayloadImage';
 import { ContainedSection } from '@/components/layout/container-section';
 import SectionHeading from '@/components/layout/section-heading';
-import { Cta } from '@payload-types';
+import type { AboutBlock, Cta } from '@payload-types';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { getImageUrl } from '@/utilities/images/getImageUrl';
+import getFirstImage from '@/utilities/images/getFirstImage';
+import getImageAlt from '@/utilities/images/getImageAlt';
+import RichText from '@/components/payload/RichText';
+import CtaButtons from '@/components/common/cta-buttons';
+import { ColorScheme, getBackgroundClass, getColorClasses } from '@/utilities/getColorClasses';
+import { extractIdsFromNullable } from '@/utilities/extractIds';
+import { getCtasByIds, getImage } from '@/lib/payload';
 
 
-interface AboutMeSectionProps {
-  title?: string;
-  subtitle?: string;
-  ctas?: Cta[];
-  imageUrl?: string;
-}
+export default async function DefaultAboutMeSection(props: AboutBlock) {
+  const { title, subtitle, ctas, image, description, colourScheme, bgColor: backgroundColor, isTransparent, idHref } = props
 
-export default function DefaultAboutMeSection({
-  title,
-  subtitle,
+  // Extract image IDs and fetch image data
+  const imageIds = extractIdsFromNullable(image);
+  const imageData = imageIds.length > 0 ? await Promise.all(imageIds.map(id => getImage(id))) : [];
+  
+  const firstImage = getFirstImage(imageData)
+  const imageUrl = getImageUrl(firstImage)
+  const imageAlt = getImageAlt(firstImage,title ?? "")
 
-  ctas,
-  imageUrl,
+  // Process color classes
+  const colorClasses = getColorClasses(colourScheme as ColorScheme);
+  const backgroundClass = getBackgroundClass(backgroundColor as any);
+  const overlayClass = isTransparent ? 'bg-transparent' : backgroundClass;
 
-}: AboutMeSectionProps) {
+  // Extract IDs and fetch CTA data
+  const ctaIds = extractIdsFromNullable(ctas);
+  const ctaData = ctaIds.length > 0 ? await getCtasByIds(ctaIds) : [];
+
   return (
     <ContainedSection 
-      id="o-meni" 
-      bgColor="bg-white"
+      id={idHref ?? "o-nas"} 
       backgroundImage={imageUrl}
       verticalPadding="xl"
-      overlayClassName="bg-white/80"
+      overlayClassName={overlayClass}
     >
-            <div className='space-y-6'>
-          <SectionHeading>
-            <SectionHeading.Title className='bg-primary p-2'>{title}</SectionHeading.Title>
-          </SectionHeading>
-          <p className='text-left md:text-center'>
+      <div className='space-y-6'>
+        <SectionHeading>
+          <SectionHeading.Title className={`p-2 ${colorClasses.textClass}`}>{title}</SectionHeading.Title>
+        </SectionHeading>
+        <p className={`text-left md:text-center ${colorClasses.textClass}`}>
           {subtitle}
-          </p>
-          {ctas && ctas.map((cta) => {
-            // Determine href based on link type
-            const href = cta.link?.type === 'external' 
-              ? cta.link.externalUrl || '#' 
-              : (typeof cta.link?.internalLink === 'object' && cta.link.internalLink?.slug ? `/${cta.link.internalLink.slug}` : '/'); // Basic internal link handling
-            
-            // Determine target based on newTab setting
-            const target = cta.link?.newTab ? '_blank' : '_self';
-            
-            return (
-              <Button key={cta.id} asChild>
-                <Link href={href} target={target}>{cta.ctaText}</Link>
-              </Button>
-            );
-          })}
-
+        </p>
+       {description && <div className=''>
+          <RichText data={description} className={colorClasses.textClass}></RichText>
+        </div>}
+       <CtaButtons ctas={ctaData}></CtaButtons>
       </div>
-     
     </ContainedSection>
   );
 } 

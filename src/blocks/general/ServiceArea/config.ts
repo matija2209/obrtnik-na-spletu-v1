@@ -1,12 +1,15 @@
+import backgroundColour from '@/fields/backgroundColour';
+import colourSchema from '@/fields/colourSchema';
+import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
 
-const ServiceArea: Block = {
+const ServiceAreaBlock: Block = {
   slug: 'serviceArea',
   interfaceName: 'ServiceAreaBlock',
   labels: {
-    singular: 'Service Area Block',
-    plural: 'Service Area Blocks',
+    singular: 'Območje delovanja odsek (Splošni)',
+    plural: 'Območja delovanja odseki (Splošni)',
   },
   fields: [
     {
@@ -60,7 +63,16 @@ const ServiceArea: Block = {
         }
       ]
     },
+    backgroundColour(),
+    colourSchema(),
+    isTransparent(),
+    
+    {
+      name:"idHref",
+      type:"text",
+      defaultValue:"obmocje-delovanja"
+    },
   ]
 };
 
-export default ServiceArea; 
+export default ServiceAreaBlock; 

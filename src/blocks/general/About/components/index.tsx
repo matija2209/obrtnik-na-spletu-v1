@@ -1,28 +1,22 @@
-import DefaultAboutMeSection from "./default-about-section"
-import Variant2AboutSection from "./variant-2-about-section"
-import type { AboutBlock as AboutBlockType, Cta, Media } from "@payload-types"
-
-const AboutBlock = ({ ...block }: AboutBlockType) => {
+import AboutSectionVariant2 from "./AboutSectionVariant2"
+import AboutSectionVariant3 from "./AboutSectionVariant3"
   
+import type { AboutBlock } from "@payload-types"
+import DefaultAboutMeSection from "./default-about-section"
+import { SearchParams } from "next/dist/server/request/search-params"
+
+const AboutBlockComponent = async ({ searchParams,...block }: AboutBlock & { searchParams?: SearchParams }) => {
   switch (block?.template) {
     case "default":
-      return (
-        <DefaultAboutMeSection 
-          title={block.title ?? undefined}
-          subtitle={block.description ?? undefined}
-        />
-      )
+      return <DefaultAboutMeSection {...block}/>
     case "variant-2":
-      return (
-        <Variant2AboutSection
-          title={block.title ?? undefined}
-          subtitle={block.description ?? undefined}
-          description={block.description ?? undefined}
-          image={block.image as Media ?? undefined}
-          isInverted={block.isInverted ?? undefined}
-          ctas={block.ctas as Cta[] ?? undefined}
-        />
-      )
+      return <AboutSectionVariant2 {...block} />
+    case "variant-3":
+      return <>Manjkajoča funkcionalnost1</> // <AboutSectionVariant3 {...block} />
+    case "variant-4":
+      return <>Manjkajoča funkcionalnost4</>
+    case "variant-5":
+      return <>Manjkajoča funkcionalnost5</>
     default:
       return (
         <div>Please select a template for the About block.</div>
@@ -30,4 +24,4 @@ const AboutBlock = ({ ...block }: AboutBlockType) => {
   }
 }
 
-export default AboutBlock
+export default AboutBlockComponent

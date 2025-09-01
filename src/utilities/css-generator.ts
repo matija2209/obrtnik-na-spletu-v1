@@ -1,4 +1,3 @@
-import type { Tenant } from '../../payload-types'; // Corrected import path
 import actualFontInstanceVariables from './fontMapping';
 
 // Define default theme values
@@ -31,21 +30,21 @@ const defaults = {
   };
 
 /**
- * Generates CSS custom properties for a tenant theme.
+ * Generates CSS custom properties for a design theme.
  * Uses optional chaining and nullish coalescing for safe access and fallbacks.
  * 
- * @param {Tenant} tenant - The tenant object from Payload CMS.
+ * @param {any} design - The design object from Payload CMS Design global.
  * @returns {string} - The generated CSS string.
- * @throws {Error} If the tenant object is invalid or missing a slug.
+ * @throws {Error} If the design object is invalid.
  */
-export function generateTenantCSS(tenant: Tenant): string {
-  // Validate tenant object minimally
-  if (!tenant || !tenant.slug) {
-    console.error('Invalid tenant object passed to generateTenantCSS:', tenant);
-    throw new Error('Invalid tenant object provided for CSS generation.');
+export function generateDesignCSS(design: any): string {
+  // Validate design object minimally
+  if (!design) {
+    console.error('Invalid design object passed to generateDesignCSS:', design);
+    throw new Error('Invalid design object provided for CSS generation.');
   }
 
-  const { colors, typography, radius } = tenant;
+  const { colors, typography, radius } = design;
 
   // Use optional chaining (?.) and nullish coalescing (??) for defaults
   const primaryColor = colors?.primary ?? defaults.colors.primary;
@@ -56,7 +55,7 @@ export function generateTenantCSS(tenant: Tenant): string {
   const accentForeground = colors?.accentForeground ?? defaults.colors.accentForeground;
   const backgroundColor = colors?.background ?? defaults.colors.background;
   const foregroundColor = colors?.foreground ?? defaults.colors.foreground;
-  const tenantRadius = radius ?? defaults.radius;
+  const designRadius = radius ?? defaults.radius;
 
   let cssLines: string[] = [];
 
@@ -69,34 +68,23 @@ export function generateTenantCSS(tenant: Tenant): string {
   cssLines.push(`  --secondary-foreground: ${secondaryForeground} !important;`);
   cssLines.push(`  --accent: ${accentColor} !important;`);
   cssLines.push(`  --accent-foreground: ${accentForeground} !important;`);
-  cssLines.push(`  --radius: ${tenantRadius} !important;`);
+  cssLines.push(`  --radius: ${designRadius} !important;`);
 
-
-  const headingFont = actualFontInstanceVariables[typography.headingFont.name]
-  const bodyFont = actualFontInstanceVariables[typography.bodyFont.name]
-  cssLines.push(`  --font-heading: var(${headingFont}) !important;`);
-  cssLines.push(`  --font-body: var(${bodyFont}) !important;`);
-
-  if (cssLines.every(line => line.includes(': undefined;') || line.includes(': null;') || line.trim() === '' || line.includes('var(undefined)') )) {
-    // A more robust check to see if any meaningful CSS was generated
-    // This check might need refinement based on typical variable outputs
-    let hasMeaningfulCss = false;
-    const tempRoot = `:root{\n${cssLines.join('\n')}\n}`;
-    if (!tempRoot.includes('var(undefined)') && !tempRoot.includes(': undefined;') && !tempRoot.includes(': null;') && cssLines.length > 0) {
-        // Basic check, if after joining, there are non-empty lines that don't seem to be broken variable assignments.
-        // This is still a heuristic.
-        if (cssLines.filter(l => l.trim() !== '').length > 0) hasMeaningfulCss = true;
+  // Typography variables - only add if typography is configured
+  if (typography?.headingFont?.name && typography?.bodyFont?.name) {
+    const headingFont = actualFontInstanceVariables[typography.headingFont.name];
+    const bodyFont = actualFontInstanceVariables[typography.bodyFont.name];
+    
+    if (headingFont) {
+      cssLines.push(`  --font-heading: var(${headingFont}) !important;`);
     }
-    if (!hasMeaningfulCss && cssLines.length > 0) {
-
-    } 
-   
+    if (bodyFont) {
+      cssLines.push(`  --font-body: var(${bodyFont}) !important;`);
+    }
   }
 
-
-
   const css = `
-/* Tenant: ${tenant.name || tenant.slug} (${tenant.slug}) */
+/* Design Configuration */
 /* Generated: ${new Date().toISOString()} */
 
 :root {

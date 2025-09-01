@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Cta } from '@payload-types';
-import CtaButton from '@/components/ui/cta-button';
+import CtaButton from "@/components/common/cta-buttons";
 
 interface TitleSubtitleProps {
   preTitle?: React.ReactNode;

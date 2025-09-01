@@ -1,12 +1,15 @@
+import backgroundColour from '@/fields/backgroundColour';
+import colourSchema from '@/fields/colourSchema';
+import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
 
-const ProjectHighlights: Block = {
+const ProjectHighlightsBlock: Block = {
   slug: 'projectHighlights',
   interfaceName: 'ProjectHighlightsBlock',
   labels: {
-    singular: 'Project Highlights Block',
-    plural: 'Project Highlights Blocks',
+    singular: 'Projekti odsek (Splošni)',
+    plural: 'Projekti odseki (Splošni)',
   },
   fields: [
     {
@@ -20,6 +23,15 @@ const ProjectHighlights: Block = {
           label: 'Default Layout',
           value: 'default',
         },
+        {
+          label: 'Variant 1',
+          value: 'variant1',
+        },
+        {
+          label: 'Variant 2',
+          value: 'variant2',
+        },
+
         // Add more template options here
       ],
     },
@@ -38,18 +50,17 @@ const ProjectHighlights: Block = {
       localized: true,
       defaultValue: '',
     },
+    backgroundColour(),
+    colourSchema(),
+    isTransparent(),
+    
     {
-      name: 'buttonText',
-      type: 'text',
-      label: 'Besedilo gumba (npr. Vsi projekti)',
-      localized: true,
-      defaultValue: '',
-    },
-    {
-      name: 'buttonHref',
-      type: 'text',
-      label: 'Povezava gumba (npr. /projekti)',
-  
+      name:"cta",
+      relationTo:"ctas",
+      hasMany:true,
+      label:"CTA",
+      required:false,
+      type:"relationship",
     },
     {
       name: 'highlightedProjects',
@@ -58,9 +69,22 @@ const ProjectHighlights: Block = {
       hasMany: true,
       label: 'Izbrani projekti za prikaz',
       required: false,
- 
-    }
+    },
+    {
+      name: 'autoSyncProjects',
+      type: 'checkbox',
+      label: 'Samodejno dodaj nove projekte',
+      defaultValue: false,
+      admin: {
+        description: 'Ko je omogočeno, se bodo nove naložene slike samodejno dodale v to galerijo',
+      },
+    },
+    {
+      name:"idHref",
+      type:"text",
+      defaultValue:"projekti"
+    },
   ]
 };
 
-export default ProjectHighlights; 
+export default ProjectHighlightsBlock; 

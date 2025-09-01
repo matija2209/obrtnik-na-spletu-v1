@@ -1,4 +1,3 @@
-"use client"
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -11,26 +10,46 @@ import {
 import { ContainedSection } from '@/components/layout/container-section';
 import SectionHeading from '@/components/layout/section-heading';
 
-import type { Cta, Testimonial as PayloadTestimonial } from "@payload-types";
+import type { TestimonialsBlock, Testimonial as PayloadTestimonial } from "@payload-types";
 import CtaButton from "@/components/ui/cta-button";
 import StarIcon from '@/components/common/icons/star-icon';
+import { getBackgroundClass, getColorClasses, type ColorScheme } from '@/utilities/getColorClasses';
+import { cn } from '@/lib/utils';
+import { extractIdsFromNullable, extractIdFromNullable } from '@/utilities/extractIds';
+import { getTestimonialsByIds, getCta } from '@/lib/payload';
 
-interface TestimonialsSectionProps {
-  testimonials: PayloadTestimonial[];
-  title?: string;
-  cta?: Cta;
-}
+const DefaultTestimonialsSection: React.FC<TestimonialsBlock> = async (props) => {
+  const { 
+    selectedTestimonials, 
+    title, 
+    googleReviewCta, 
+    colourScheme,
+    bgColor: backgroundColor,
+    isTransparent
+  } = props;
 
-const DefaultTestimonialsSection: React.FC<TestimonialsSectionProps> = ({ 
-  testimonials,
-  title = "Kaj pravijo naše stranke",
-  cta
-}) => {
+  // Get color classes and background styling
+  const colorClasses = getColorClasses((colourScheme as ColorScheme) || 'primary');
+  const backgroundClass = getBackgroundClass( backgroundColor as any);
+  const overlayClass = isTransparent ? 'bg-transparent' : backgroundClass;
+
+  // Extract IDs and fetch testimonials data
+  const testimonialIds = extractIdsFromNullable(selectedTestimonials);
+  const ctaId = extractIdFromNullable(googleReviewCta);
+
+  // Fetch testimonials and CTA data
+  const validTestimonials = testimonialIds.length > 0 ? await getTestimonialsByIds(testimonialIds) : [];
+  const ctaData = ctaId ? await getCta(ctaId) : null;
+
+  // Render nothing if no testimonials are valid
+  if (validTestimonials.length === 0) {
+    return null; 
+  }
 
   return (
-    <ContainedSection id="reference" bgColor="bg-background" verticalPadding="xl">
+    <ContainedSection id="reference" overlayClassName={overlayClass} verticalPadding="xl">
       <SectionHeading>
-        <SectionHeading.Title>{title}</SectionHeading.Title>
+        <SectionHeading.Title className={colorClasses.textClass}>{title ?? "Kaj pravijo naše stranke"}</SectionHeading.Title>
       </SectionHeading>
       
       <Carousel 
@@ -38,10 +57,10 @@ const DefaultTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
         className="w-full relative px-12 mb-12" // Add padding for arrows and bottom margin
       >
         <CarouselContent className="-ml-4">
-          {testimonials.map((testimonial) => (
+          {validTestimonials.map((testimonial) => (
             <CarouselItem key={testimonial.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
               <div className="p-1 h-full">
-                <Card className="h-full shadow-md border border-gray-200">
+                <Card className={cn("h-full shadow-md border border-gray-200 bg-white")}>
                   <CardContent className="flex flex-col items-start justify-between p-6 space-y-4 h-full">
                     <div className="flex">
                       {[...Array(5)].map((_, i) => (
@@ -51,29 +70,29 @@ const DefaultTestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                         />
                       ))}
                     </div>
-                    <blockquote className="text-gray-700 italic text-sm md:text-base flex-grow">
+                    <blockquote className={cn("italic text-sm md:text-base flex-grow")}>
                       {`"${testimonial.content}"`}
                     </blockquote>
-                    <p className="font-semibold text-sm text-gray-800">- {testimonial.name}</p>
+                    <p className={cn("font-semibold text-sm")}>- {testimonial.name}</p>
                     {testimonial.testimonialDate && 
-                      <p className="text-xs text-gray-500 mt-2">
+                      <p className={cn("text-xs mt-2", "opacity-70")}>
                         {new Date(testimonial.testimonialDate).toLocaleDateString('sl-SI')} 
                       </p>
                     }
-                    {testimonial.location && <p className="text-xs text-gray-500">{testimonial.location}</p>}
-                    {testimonial.service && <p className="text-xs text-gray-500">{testimonial.service}</p>}
+                    {testimonial.location && <p className={cn("text-xs", colorClasses.textClass, "opacity-70")}>{testimonial.location}</p>}
+
                   </CardContent>
                 </Card>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2" />
-        <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2" />
+        <CarouselPrevious className={cn("absolute left-0 top-1/2 -translate-y-1/2", colorClasses.secondaryButtonClass)} />
+        <CarouselNext className={cn("absolute right-0 top-1/2 -translate-y-1/2", colorClasses.secondaryButtonClass)} />
       </Carousel>
-      {cta && (
+      {ctaData && (
         <div className="my-8 flex justify-center">
-          <CtaButton mainCta={cta} />
+          <CtaButton mainCta={ctaData} />
         </div>
       )}
     </ContainedSection>

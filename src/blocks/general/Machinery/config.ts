@@ -1,11 +1,14 @@
+import backgroundColour from '@/fields/backgroundColour';
+import colourSchema from '@/fields/colourSchema';
+import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
-const Machinery: Block = {
+const MachineryBlock: Block = {
   slug: 'machinery',
   interfaceName: 'MachineryBlock',
   labels: {
-    singular: 'Machinery Block',
-    plural: 'Machinery Blocks',
+    singular: 'Strojni park odsek (Splošni)',
+    plural: 'Strojni parki odseki (Splošni)',
   },
   fields: [
    
@@ -49,6 +52,9 @@ const Machinery: Block = {
         // Add more template options here
       ],
     },
+    backgroundColour(),
+    colourSchema(),
+    isTransparent(),
     {
       name: 'callToAction',
       label: 'Call to Action (Neobvezno)',
@@ -59,8 +65,13 @@ const Machinery: Block = {
       admin: {
         description: 'Dodajte gumb \'call to action\' pod seznam strojev.'
       }
-    }
+    },
+    {
+      name:"idHref",
+      type:"text",
+      defaultValue:"strojni-park"
+    },
   ]
 };
 
-export default Machinery; 
+export default MachineryBlock; 

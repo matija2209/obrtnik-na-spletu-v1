@@ -1,11 +1,15 @@
+import backgroundColour from '@/fields/backgroundColour';
+import colourSchema from '@/fields/colourSchema';
+import iconField from '@/fields/iconsField';
+import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
-const Service: Block = {
+const ServiceBlock: Block = {
   slug: 'services',
   interfaceName: 'ServicesBlock',
   labels: {
-    singular: 'Services Section',
-    plural: 'Services Sections',
+    singular: 'Storitve odsek (Splošni)',
+    plural: 'Storitve odseki (Splošni)',
   },
   fields: [
     {
@@ -19,28 +23,40 @@ const Service: Block = {
           value: 'default',
         },
         {
-          label: 'Service Cards',
-          value: 'service-cards',
+          label: 'Variant 1',
+          value: 'variant-1',
         },
         {
-          label: 'Big Cards',
-          value: 'big-cards',
+          label: 'Variant 2',
+          value: 'variant-2',
         },
         {
-          label: 'Simple List',
-          value: 'simple-list',
+          label: 'Variant 3',
+          value: 'variant-3',
         },
         {
-          label: 'Simple Card',
-          value: 'simple-card',
+          label: 'Variant 4',
+          value: 'variant-4',
         },
         {
-          label: 'Service Feature Row',
-          value: 'service-feature-row',
+          label: 'Variant 5',
+          value: 'variant-5',
         },
         {
-          label: 'Rounded Cards',
-          value: 'rounded-cards',
+          label: 'Variant 6',
+          value: 'variant-6',
+        },
+        {
+          label: 'Variant 7',
+          value: 'variant-7',
+        },
+        {
+          label: 'Variant 8',
+          value: 'variant-8',
+        },
+        {
+          label: 'Variant 9',
+          value: 'variant-9',
         },
       ],
       defaultValue: 'default',
@@ -55,6 +71,9 @@ const Service: Block = {
       type: 'textarea',
       label: 'Section Description',
     },
+    backgroundColour(),
+    colourSchema(),
+    isTransparent(),
     {
       name: 'selectedServices',
       type: 'relationship',
@@ -65,26 +84,13 @@ const Service: Block = {
         description: 'Select the services to display in this section.',
       },
     },
-    // {
-    //   name: 'cta',
-    //   type: 'relationship',
-    //   hasMany: true,
-    //   relationTo: 'ctas',
-    //   label: 'Call to Action',
-    //   required: false,
-    //   admin: {
-    //     description: 'Select a call to action button to display in this section.',
-    //   },
-    // },
-    // You might want to add a CTA field specific to the services, like 'View Service Details'
-    // {
-    //   name: 'serviceCta',
-    //   label: 'Service Call to Action Label',
-    //   type: 'text',
-    //   defaultValue: 'Learn More',
-    // },
-    // TODO: Consider adding an 'alternateLayout' boolean field here if needed
+    {
+      name:"idHref",
+      type:"text",
+      defaultValue:"storitve"
+    },
+   
   ],
 }; 
 
-export default Service;
+export default ServiceBlock;

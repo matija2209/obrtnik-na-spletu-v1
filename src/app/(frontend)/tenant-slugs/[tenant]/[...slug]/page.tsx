@@ -12,7 +12,7 @@ import Navbar from '@/components/layout/navbar'
 import { Page } from '@payload-types'
 import { ServicePage } from '@payload-types'
 import { RenderServicesPageBlocks } from '@/blocks/RenderServicesPageBlocks'
-import { RenderGeneralBlocks } from '@/blocks/RenderGeneralBlocks'
+// import { RenderGeneralPageBlocks } from '@/blocks/RenderGeneralPageBlocks'
 
 // eslint-disable-next-line no-restricted-exports
 export default async function TenantSlugPage({
@@ -87,9 +87,11 @@ if (!tenantSlug || !tenantId) {
       />
       {draft && <LivePreviewListener />}
       {page.pageType === 'service' ? (
-        <RenderServicesPageBlocks pageType={page.pageType as ServicePage['pageType']} blocks={page.layout as ServicePage['layout']} />
+        // <RenderServicesPageBlocks pageType={page.pageType as ServicePage['pageType']} blocks={page.layout as ServicePage['layout']} />
+        <>{page.pageType}</>
       ) : (
-        <RenderGeneralBlocks pageType={page.pageType as Page['pageType']} blocks={page.layout as Page['layout']} />
+        <>TENATN IS {tenantSlug}</>
+        // <RenderGeneralPageBlocks pageType={page.pageType as Page['pageType']} blocks={page.layout as Page['layout']} />
       )}
       <Footer 
         footerData={footerData} 

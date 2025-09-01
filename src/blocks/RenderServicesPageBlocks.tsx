@@ -1,31 +1,41 @@
 import React, { Fragment } from 'react'
-import AboutBlock from '@/blocks/general/About/components'
-import ContactBlock from '@/blocks/general/Contact/components'
-import FAQBlock from '@/blocks/general/FAQ/components'
-import GalleryBlock from '@/blocks/general/Gallery/components'
+
+import SubServicesBlock from '@/blocks/services/SubServices/components'
+import CtaBlock from '@/blocks/general/Cta/components'
 import HeroBlock from '@/blocks/general/Hero/components'
-import MachineryBlock from '@/blocks/general/Machinery/components'
-import ProjectHighlightsBlock from '@/blocks/general/ProjectHighlights/components'
-import ServiceAreaBlock from '@/blocks/general/ServiceArea/components'
-import ServicesBlock from '@/blocks/general/Services/components'
-import TestimonialsBlock from '@/blocks/general/Testimonials/components'
-import ServicesHeroBlock from '@/blocks/services/Hero/components'
-import ServicesPresentationBlock from '@/blocks/services/Presentation/components'
-import ServicesCtaBlock from '@/blocks/services/Cta/components'
-import { Page, ServicePage } from '@payload-types'
+import ProjectHighlightsBlockComponent from './general/ProjectHighlights/components'
+
+import { ServicePage } from '@payload-types'
+import AboutProjectBlock from './projects/About/components'
+import AboutBlock from './general/About/components'
+import RelatedProjectsBlock from './projects/RelatedProjects/components'
+import TestimonialsBlock from './general/Testimonials/components'
+import GalleryBlock from './general/Gallery/components'
+import FAQBlock from './general/FAQ/components'
+import ContactBlock from './general/Contact/components'
+
 
 const blockComponents = {
-
-  servicesHero: ServicesHeroBlock,
-  sPresentation: ServicesPresentationBlock,
-  servicesCta: ServicesCtaBlock,
+  // You must do it by the slug
+  hero: HeroBlock,
+  projectHighlights: ProjectHighlightsBlockComponent,
+  cta_block: CtaBlock,
+  gallery: GalleryBlock,
+  faq: FAQBlock,
+  contact: ContactBlock,
+  about: AboutBlock,
+  testimonials: TestimonialsBlock,
+  aboutProject: AboutProjectBlock,
+  relatedProjects: RelatedProjectsBlock,
+  "sub-services": SubServicesBlock,
 }
 
 export const RenderServicesPageBlocks: React.FC<{
   pageType: ServicePage["pageType"],
-  blocks: ServicePage["layout"]
+  blocks: ServicePage["layout"],
+  searchParams?: Record<string, string | string[] | undefined>
 }> = (props) => {
-  const { blocks, pageType } = props
+  const { blocks, pageType, searchParams } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
@@ -40,10 +50,19 @@ export const RenderServicesPageBlocks: React.FC<{
               const blockContent = (
                 <React.Fragment key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} />
+                  <Block {...block} disableInnerContainer searchParams={searchParams} />
                 </React.Fragment>
               )
-              return blockContent
+
+              if (blockType === "gallery" || blockType === "projectHighlights") {
+                return (
+                  <div className="relative z-50" key={index}>
+                    {blockContent}
+                  </div>
+                )
+              } else {
+                return blockContent
+              }
             }
           }
           return null

@@ -2,14 +2,17 @@
 
 // Removed local CtaField definition
 
+import backgroundColour from "@/fields/backgroundColour";
+import colourSchema from "@/fields/colourSchema";
+import isTransparent from "@/fields/isTransperant";
 import { Block } from "payload";
 
-const About: Block = {
+const AboutBlock: Block = {
   slug: 'about',
   interfaceName: 'AboutBlock',
   labels: {
-    singular: 'About Block',
-    plural: 'About Blocks',
+    singular: 'O nas odsek (Splošni)',
+    plural: 'O nas odseki (Splošni)',
   },
   fields: [
     {
@@ -28,12 +31,24 @@ const About: Block = {
           label: 'Variant 2',
           value: 'variant-2',
         },
+        {
+          label: 'Variant 3',
+          value: 'variant-3',
+        },
+        {
+          label: 'Variant 4',
+          value: 'variant-4',
+        },
+        {
+          label: 'Variant 5',
+          value: 'variant-5',
+        },
       ],
     },
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov (Title)',
+      label: 'Naslov',
       required: false,
       localized: true,
       defaultValue: '',
@@ -41,43 +56,52 @@ const About: Block = {
     {
       name: 'subtitle',
       type: 'text',
-      label: 'Podnaslov (Subtitle)',
+      label: 'Podnaslov',
       localized: true,
       required: false,
     },
     {
       name: 'description',
-      type: 'textarea',
-      label: 'Opis (Description/Text)',
+      type: 'richText',
+      label: 'Opis',
       localized: true,
-      defaultValue: '',
     },
     {
       name: 'image',
-      label: 'Slika (Image)',
+      label: 'Slika',
       type: 'upload',
       relationTo: 'media', 
+      hasMany: true,
       required: false,
     },
     {
       name: 'isInverted',
-      label: 'Obrni postavitev (Invert Layout)',
+      label: 'Obrni postavitev',
       type: 'checkbox',
       defaultValue: false,
     },
     {
+      name:"idHref",
+      type:"text",
+      defaultValue:"o-nas"
+    },
+    {
       name: 'ctas',
-      label: 'Gumbi (CTAs)',
+      label: 'Gumbi',
       type: 'relationship',       // Changed type to relationship
       relationTo: 'ctas',       // Relates to the 'ctas' collection
       hasMany: true,             // Indicates it can have multiple CTAs
       required: false,
     },
+    backgroundColour(),
+    colourSchema(),
+    isTransparent(),
+    
     {
       name: 'benefits',
       type: 'array',
       required: false,
-      label: 'Prednosti (Benefits)',
+      label: 'Prednosti',
       fields: [
         {
           name: 'title',
@@ -106,4 +130,4 @@ const About: Block = {
   ],
 };
 
-export default About; 
+export default AboutBlock; 

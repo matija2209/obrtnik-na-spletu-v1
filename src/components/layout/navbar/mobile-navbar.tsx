@@ -9,7 +9,7 @@ import Logo from '@/components/common/logo';
 import { cn } from '@/lib/utils';
 import GoogleIcon from '@/components/common/icons/google-icon';
 import { Cta } from '@payload-types';
-import CtaButton from '@/components/ui/cta-button';
+import CtaButton from "@/components/common/cta-buttons";
 
 // Define the NavItem interface
 interface NavItem {

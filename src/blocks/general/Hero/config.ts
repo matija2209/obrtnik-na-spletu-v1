@@ -1,11 +1,14 @@
+import backgroundColour from '@/fields/backgroundColour';
+import colourSchema from '@/fields/colourSchema';
+import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
-const Hero: Block = {
+const HeroBlock: Block = {
   slug: 'hero',
   interfaceName: 'HeroBlock',
   labels: {
-    singular: 'Hero Block',
-    plural: 'Hero Blocks',
+    singular: 'Hero odsek (Splošni)',
+    plural: 'Heroji (Splošni)',
   },
   fields: [
     {
@@ -20,15 +23,38 @@ const Hero: Block = {
           value: 'default',
         },
         {
-          label: 'One Hero Section',
-          value: 'one-hero-section',
+          label: 'Variant 1',
+          value: 'variant1',
         },
         {
-          label: 'Two Column Hero',
-          value: 'two-column-hero',
+          label: 'Variant 2',
+          value: 'variant2',
         },
+        {
+          label: 'Variant 3',
+          value: 'variant3',
+        },
+        {
+          label: 'Variant 4',
+          value: 'variant4',
+        },
+        {
+          label: 'Variant 5',
+          value: 'variant5',
+        },
+        {
+          label: 'Variant 6',
+          value: 'variant6',
+        },
+        {
+          label: 'Variant 7',
+          value: 'variant7',
+        }
       ],
     },
+    backgroundColour(),
+    colourSchema(),
+    isTransparent(),
     {
       name: 'kicker',
       type: 'text',
@@ -80,6 +106,16 @@ const Hero: Block = {
       minRows: 1,
     },
     {
+      name: 'showFeatures',
+      type: 'checkbox',
+      label: 'Prikaži značilnosti',
+      required: false,
+      defaultValue: false,
+      admin: {
+        description: 'Prikaži značilnosti (če so na voljo). Relavantno za storitvene strani',
+      }
+    },
+    {
       name: 'features',
       type: 'array',
       required: false,
@@ -103,7 +139,24 @@ const Hero: Block = {
         }
       ]
     },
+    {
+      name: 'testimonials',
+      type: 'relationship',
+      relationTo: 'testimonials',
+      hasMany: true,
+      required: false,
+      label: 'Mnenja za prikaz',
+      maxRows: 2,
+      admin: {
+        description: 'Izberite mnenja, ki se bodo prikazala v floating elementih (maksimalno 2).',
+      }
+    },
+    {
+      name:"idHref",
+      type:"text",
+      defaultValue:"hero"
+    },
   ]
 };
 
-export default Hero; 
+export default HeroBlock; 

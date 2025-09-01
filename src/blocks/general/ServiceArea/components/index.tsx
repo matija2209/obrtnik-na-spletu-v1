@@ -1,3 +1,4 @@
+import { SearchParams } from 'next/dist/server/request/search-params';
 import DefaultServiceAreaSection from './default-service-area-section';
 import type { ServiceAreaBlock as ServiceAreaBlockType, Media } from '@payload-types'; // Assuming ServiceAreaBlock is the type name
 
@@ -12,7 +13,7 @@ interface LocationItem {
 const isLocationItem = (item: any): item is LocationItem => 
   item !== null && typeof item === 'object' && typeof item.name === 'string';
 
-const ServiceAreaBlock = ({ ...block }: ServiceAreaBlockType) => {
+const ServiceAreaBlock = ({ searchParams, ...block }: ServiceAreaBlockType  & { searchParams?: SearchParams }) => {
   // Assuming a template field might exist
   switch (block?.template) {
     case 'default':
@@ -25,13 +26,7 @@ const ServiceAreaBlock = ({ ...block }: ServiceAreaBlockType) => {
       // const mapImage = typeof block.mapImage === 'object' && block.mapImage !== null ? block.mapImage as Media : undefined; // Removed as field doesn't exist on block type
 
       return (
-        <DefaultServiceAreaSection
-          title={block.title ?? undefined}
-          description={block.description ?? undefined}
-          // mapImage={mapImage} // Removed prop
-          locations={validLocations.length > 0 ? validLocations : undefined} // Pass validated locations or rely on default
-          // additionalInfo={block.additionalInfo ?? undefined} // Removed prop as field doesn't exist on block type
-        />
+        <DefaultServiceAreaSection {...block}/>
       );
       // Add other cases for different templates if needed
   }

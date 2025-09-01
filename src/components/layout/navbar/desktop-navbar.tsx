@@ -1,6 +1,5 @@
 'use client';
-import { Button } from "@/components/ui/button";
-import CtaButton from "@/components/ui/cta-button";
+import CtaButton from "@/components/common/cta-buttons";
 import {
     NavigationMenu,
     NavigationMenuContent,

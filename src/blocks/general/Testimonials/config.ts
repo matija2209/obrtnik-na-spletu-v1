@@ -1,13 +1,15 @@
 import type { Block } from 'payload';
 import type { TestimonialsBlock } from '@payload-types';
+import isTransparent from '@/fields/isTransperant';
+import colourSchema from '@/fields/colourSchema';
+import backgroundColour from '@/fields/backgroundColour';
 
-
-const Testimonials: Block = {
+const TestimonialsBlock: Block = {
   slug: 'testimonials',
   interfaceName: 'TestimonialsBlock',
   labels: {
-    singular: 'Testimonials Block',
-    plural: 'Testimonials Blocks',
+    singular: 'Mnenja odsek (Splošni)',
+    plural: 'Mnenja odseki (Splošni)',
   },
   fields: [
     {
@@ -22,22 +24,25 @@ const Testimonials: Block = {
           value: 'default',
         },
         {
-          label: 'Single Testimonial Carousel',
-          value: 'single-testimonial',
+          label: 'Variant 1',
+          value: 'variant1',
         },
         {
-          label: 'Side Carousel',
-          value: 'side-carousel',
+          label: 'Variant 2',
+          value: 'variant2',
         },
         {
-          label: 'Three Column Carousel',
-          value: 'three-carousel',
+          label: 'Variant 3',
+          value: 'variant3',
         },
         {
-          label: 'Three Column Carousel (Recycled)',
-          value: 'three-column-carousel-recycled',
+          label: 'Variant 4',
+          value: 'variant4',
         },
-        // Add more template options here
+        {
+          label: 'Variant 5',
+          value: 'variant5',
+        }
       ],
     },
     {
@@ -55,6 +60,25 @@ const Testimonials: Block = {
       localized: true,
       defaultValue: '',
     },
+    backgroundColour(),
+    colourSchema(),
+    isTransparent(),
+    
+    {
+      name: 'googleReviewCta',
+      label: 'Google Review CTA',
+      type: 'relationship',
+      relationTo: 'ctas',
+      hasMany: false, // Allow only one CTA
+      admin: {
+        // condition: (_, siblingData: Partial<TestimonialsBlock>) => siblingData.template === 'variant-3',
+      }
+    },
+    {
+      name:"idHref",
+      type:"text",
+      defaultValue:"mnenja"
+    },
     {
       name: 'selectedTestimonials',
       type: 'relationship',
@@ -64,17 +88,8 @@ const Testimonials: Block = {
       required: false,
     },
     // Add googleReviewCta field based on recycled code
-    {
-      name: 'googleReviewCta',
-      label: 'Google Review CTA',
-      type: 'relationship',
-      relationTo: 'ctas',
-      hasMany: false, // Allow only one CTA
-      admin: {
-        condition: (_, siblingData: Partial<TestimonialsBlock>) => siblingData.template === 'three-column-carousel-recycled',
-      }
-    }
+   
   ]
 };
 
-export default Testimonials; 
+export default TestimonialsBlock; 

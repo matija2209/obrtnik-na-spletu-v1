@@ -1,25 +1,13 @@
+import { SearchParams } from 'next/dist/server/request/search-params';
 import DefaultContactSection from './default-contact-section';
-import type { ContactBlock as ContactBlockType } from '@payload-types'; // Assuming ContactBlock is the type name
+import type { ContactBlock } from '@payload-types';
 
-const ContactBlock = ({ ...block }: ContactBlockType) => {
-  // Assuming a template field might exist, though not strictly necessary if only one template
-  const form = block?.form;
+const ContactBlockComponent = ({ searchParams, ...block }: ContactBlock & { searchParams?: SearchParams }) => {
   switch (block?.template) {
     case 'default':
-    default: // Defaulting to render DefaultContactSection
-      return (
-        <DefaultContactSection
-          title={block.title ?? undefined}
-          description={block.description ?? undefined}
-          form={form}
-          // Add other props from ContactBlockType if needed by DefaultContactSection in the future
-        />
-      );
-      // Add other cases for different templates if needed
+    default:
+      return <DefaultContactSection {...block} />
   }
-
-  // Fallback (optional, as default case covers everything now)
-  // return <div>Please select a template for the Contact block.</div>;
 };
 
-export default ContactBlock;
+export default ContactBlockComponent;

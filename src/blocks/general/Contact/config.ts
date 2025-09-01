@@ -1,11 +1,14 @@
+import backgroundColour from '@/fields/backgroundColour';
+import colourSchema from '@/fields/colourSchema';
+import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
-const Contact: Block = {
+const ContactBlock: Block = {
   slug: 'contact',
   interfaceName: 'ContactBlock',
   labels: {
-    singular: 'Contact Block',
-    plural: 'Contact Blocks',
+    singular: 'Kontaktni odsek (Splošni)',
+    plural: 'Kontaktni odseki (Splošni)',
   },
   fields: [
     {
@@ -66,9 +69,16 @@ const Contact: Block = {
       name: 'address',
       type: 'text',
       label: 'Naslov',
-
+    },
+    backgroundColour(),
+    colourSchema(),
+    isTransparent(),
+    {
+      name:"idHref",
+      type:"text",
+      defaultValue:"kontakt"
     },
   ]
 };
 
-export default Contact; 
+export default ContactBlock; 

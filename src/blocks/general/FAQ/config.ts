@@ -1,11 +1,14 @@
+import backgroundColour from '@/fields/backgroundColour';
+import colourSchema from '@/fields/colourSchema';
+import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
-const FAQ: Block = {
+const FaqBlock: Block = {
   slug: 'faq',
   interfaceName: 'FAQBlock',
   labels: {
-    singular: 'FAQ Block',
-    plural: 'FAQ Blocks',
+    singular: 'FAQ odsek (Splošni)',
+    plural: 'FAQ odseki (Splošni)',
   },
   fields: [
     {
@@ -52,8 +55,16 @@ const FAQ: Block = {
       hasMany: false,
       required: false,
       label: 'CTA gumb sekcije FAQ',
-    }
+    },
+    backgroundColour(),
+    colourSchema(),
+    isTransparent(),
+    {
+      name:"idHref",
+      type:"text",
+      defaultValue:"faq"
+    },
   ]
 };
 
-export default FAQ; 
+export default FaqBlock; 
