@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useTransition, useState } from "react";
 import { useParams } from 'next/navigation'; // Import useParams
 import { submitContactForm } from "@/actions/form"; // This will need to be updated later
-import { type Form as PayloadFormType } from "@payload-types"; // Import the Form type
+import { Form as FormType, type Form as PayloadFormType } from "@payload-types"; // Import the Form type
 
 import { 
   Form, 
@@ -17,7 +17,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea"; // Keep for potential 'textarea' field type
+import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import RichText from "./payload/RichText";
 // Import other UI components as needed for different field types (e.g., Select)
 
 interface ContactFormProps {
@@ -26,12 +28,11 @@ interface ContactFormProps {
 
 export function ContactForm({ form: payloadForm }: ContactFormProps) {
   const params = useParams(); // Get URL parameters
-  const tenantSlug = params.tenant as string; // Extract tenantSlug
 
   const [isPending, startTransition] = useTransition();
   const [formStatus, setFormStatus] = useState<{
     success?: boolean;
-    message?: string;
+    message?: FormType["confirmationMessage"] | string;
   } | null>(null);
   
   // react-hook-form setup. Default values can be dynamically generated.
@@ -41,8 +42,13 @@ export function ContactForm({ form: payloadForm }: ContactFormProps) {
     defaultValues: payloadForm.fields?.reduce((acc, field) => {
       if ('name' in field && field.name) { // Ensure field has a name property
         // @ts-ignore // field type is complex, handle specific blockTypes later
-        acc[field.name] = field.defaultValue || "";
+        if (field.blockType === 'checkbox') {
+          acc[field.name] = ('defaultValue' in field ? field.defaultValue : false) || false;
+        } else {
+          acc[field.name] = ('defaultValue' in field ? field.defaultValue : "") || "";
+        }
       }
+  
       return acc;
     }, {} as Record<string, any>) || {},
   });
@@ -57,7 +63,6 @@ export function ContactForm({ form: payloadForm }: ContactFormProps) {
         const result = await submitContactForm({
           formId: String(payloadForm.id),
           submissionData: values,
-          tenantSlug: tenantSlug, // Pass the tenantSlug
         });
         
         if (result.success) {
@@ -83,10 +88,33 @@ export function ContactForm({ form: payloadForm }: ContactFormProps) {
           }
         }
       } catch (error) {
-        console.error("Error submitting form:", error);
         setFormStatus({
           success: false,
-          message: "An unexpected error occurred. Please try again later."
+          message: {
+            root: {
+              type: "doc",
+              children: [
+                { 
+                  type: "paragraph", 
+                  children: [
+                    { 
+                      type: "text", 
+                      text: "An unexpected error occurred. Please try again later.", 
+                      version: 1 
+                    }
+                  ], 
+                  direction: "ltr", 
+                  format: "left", 
+                  indent: 0, 
+                  version: 1 
+                }
+              ],
+              direction: "ltr",  // Added missing property
+              format: "left",    // Added missing property  
+              indent: 0,         // Added missing property
+              version: 1         // Added missing property
+            }
+          }
         });
       }
     });
@@ -102,23 +130,50 @@ export function ContactForm({ form: payloadForm }: ContactFormProps) {
     
     const fieldName = fieldConfig.name;
 
+    const isRequired = 'required' in fieldConfig ? fieldConfig.required : false;
+
     return (
       <FormField
         control={form.control}
         // @ts-ignore
         name={fieldName}
         key={fieldName}
+        rules={{
+          required: isRequired ? `${fieldConfig.label || fieldName} is required` : false,
+        }}
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{fieldConfig.label || fieldName}</FormLabel>
+            <FormLabel>
+              {fieldConfig.label || fieldName}
+              {isRequired && <span className="text-red-500 ml-1">*</span>}
+            </FormLabel>
             <FormControl>
               {/* Basic input for now, expand with switch for blockType */}
               {fieldConfig.blockType === 'textarea' ? (
-                <Textarea placeholder={fieldConfig.placeholder || ''} {...field} />
+                <Textarea 
+                  placeholder={fieldConfig.placeholder || ''} 
+                  required={isRequired}
+                  {...field} 
+                />
               ) : fieldConfig.blockType === 'email' ? (
-                 <Input type="email" placeholder={fieldConfig.placeholder || ''} {...field} />
+                 <Input 
+                   type="email" 
+                   placeholder={fieldConfig.placeholder || ''} 
+                   required={isRequired}
+                   {...field} 
+                 />
+              ) : fieldConfig.blockType === 'checkbox' ? (
+                <Checkbox 
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  required={isRequired}
+                />
               ) : (
-                <Input placeholder={fieldConfig.placeholder || ''} {...field} />
+                <Input 
+                  placeholder={fieldConfig.placeholder || ''} 
+                  required={isRequired}
+                  {...field} 
+                />
               )}
             </FormControl>
             <FormMessage />
@@ -130,17 +185,18 @@ export function ContactForm({ form: payloadForm }: ContactFormProps) {
 
   return (
     <Form {...form}>
-      <form id={String(payloadForm.id)} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 bg-white p-4 rounded-lg shadow-sm">
+      <form id={String(payloadForm.id)} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {formStatus && (
-          <Alert variant={formStatus.success ? "default" : "destructive"}>
-            <AlertDescription>{formStatus.message}</AlertDescription>
-          </Alert>
+          <div className="space-y-2 border p-2">
+              {typeof formStatus.message === 'string' ? formStatus.message : typeof formStatus.message === 'object' && formStatus.message?.root ? <RichText data={formStatus.message} /> : null}
+          </div>
         )}
         
         {payloadForm.fields?.map(renderField)}
         
         <Button 
           type="submit" 
+          variant="secondary"
           disabled={isPending || !payloadForm.fields || payloadForm.fields.length === 0} // Disable if no fields
         >
           {isPending ? (
@@ -149,7 +205,7 @@ export function ContactForm({ form: payloadForm }: ContactFormProps) {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Sending...
+              Pošiljam...
             </>
           ) : (
             payloadForm.submitButtonLabel || "Submit"

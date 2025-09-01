@@ -88,14 +88,14 @@ export function generatePageSEOMetadata(
   const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.laneks.si'
   const url = `${baseUrl}/${slug.join('/')}`
   
-  const seoTitle = page.meta?.title || page.title || undefined
-  const seoDescription = page.meta?.description || undefined
-  const seoImage = typeof page.meta?.image === 'object' && page.meta.image ? page.meta.image as Media : null
+  const seoTitle = ""// page.meta?.title || page.title || undefined
+  const seoDescription = ""//page.meta?.description || undefined
+  const seoImage = "" // typeof page.meta?.image === 'object' && page.meta.image ? page.meta.image as Media : null
 
   return generateSEOMetadata({
     title: seoTitle,
     description: seoDescription,
-    image: seoImage,
+    // image: seoImage,
     url,
     type: 'website',
     noIndex: options?.noIndex,

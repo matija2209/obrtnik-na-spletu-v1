@@ -1,8 +1,9 @@
 import { ProductFormBlock } from "@payload-types";
 import DefaultProductFormComponent from "./DefaultProductFormComponent";
-import { SearchParams } from "next/dist/server/request/search-params";
+import { SearchParams } from "next/dist/server/request/search-params"
+import { Params } from "next/dist/server/request/params";
 
-const ProductFormBlockCoordinator = async ({ searchParams, ...block }: ProductFormBlock & { searchParams?: SearchParams }) => {
+const ProductFormBlockCoordinator = async ({ searchParams,params, ...block }: ProductFormBlock & { searchParams?: SearchParams ,params?:Params}) => {
   switch (block.template) {
     case 'default':
     default: // Defaulting to render DefaultServicesSection

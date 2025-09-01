@@ -1,6 +1,6 @@
 import { CollectionConfig, Access } from 'payload';
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
-import { syncGalleryBlocks } from './hooks/syncGalleryBlocks';
+
 import { revalidateMediaCache, revalidateMediaCacheDelete } from './hooks/revalidateMediaCache';
 
 export const Media: CollectionConfig = {
@@ -27,7 +27,7 @@ export const Media: CollectionConfig = {
       delete: superAdminOrTenantAdminAccess
     },
     hooks: {
-      afterChange: [syncGalleryBlocks, revalidateMediaCache],
+      afterChange: [ revalidateMediaCache],
       afterDelete: [revalidateMediaCacheDelete],
     },
     upload: {

@@ -1,101 +1,73 @@
 'use client';
-import React,{ useState, useEffect } from 'react';
-
+import React from 'react';
+import { usePathname } from 'next/navigation';
 import DesktopNav from './desktop-navbar';
 import MobileNav from './mobile-navbar';
 import Logo from '@/components/common/logo';
+import { useScrollState, useNavbarConfig, useBusinessInfo } from './hooks';
+import { transformMenuItems, selectCurrentLogo, getNavbarClasses } from '@/utils/navbar-helpers';
+import type { NavbarProps } from './types';
+import type { Cta } from '@payload-types';
 
-import type { Cta, Navbar as NavbarType, Menu } from '@payload-types';
-
-
-// Define the NavItem interface
-interface NavItem {
-  title: string;
-  href: string;
-  hasChildren?: boolean;
-  children?: {
-    title: string;
-    href: string;
-    description: string;
-    icon?: string | React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  }[];
-  description?: string;
-}
-
-// Define the props for the Navbar component
-interface NavbarProps {
-  navbarData: NavbarType | null;
-  logoLightUrl?: string;
-  logoDarkUrl?: string;
-  companyName?: string;
-  phoneNumber?: string;
-  email?: string;
-  location?: string;
-}
-
-// Main Navbar Component
 const Navbar = ({ 
   navbarData, 
-  logoLightUrl, 
-  logoDarkUrl,
-  companyName,
-  phoneNumber,
-  email,
-  location 
-}: NavbarProps) => {
-  const [isScrolled, setIsScrolled] = useState(false);
+  businessInfoData
+}: Omit<NavbarProps, 'footerData'>) => {
+  const isHome = usePathname() === '/';
+  const isScrolled = useScrollState();
+  const navbarConfig = useNavbarConfig(navbarData, isHome);
+  const businessInfo = useBusinessInfo(businessInfoData);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Calculate effective scrolled state based on transparency setting
+  const effectiveScrolled = isScrolled || !navbarConfig.isTransparent;
 
-  // Calculate effective scrolled state, hardcoding forceBackground to true
-  const effectiveScrolled = isScrolled || true; // Force background
-
-  // Extract menu items from the mainMenu relationship
-  // Ensure mainMenu is populated and is an object before accessing menuItems
+  // Extract and transform menu items
   const mainMenuItems = (typeof navbarData?.mainMenu === 'object' && navbarData?.mainMenu?.menuItems) 
     ? navbarData.mainMenu.menuItems 
     : null;
-
-  // Map menu items to the expected NavItem format using Payload types
-  const dynamicNavItems: NavItem[] = mainMenuItems?.map((item: NonNullable<Menu['menuItems']>[number]) => ({
-    title: item.title,
-    href: item.href || '#',
-    hasChildren: Boolean(item.hasChildren),
-    children: item.children?.map((child: NonNullable<NonNullable<Menu['menuItems']>[number]['children']>[number]) => ({ // Explicitly type the child using indexed access
-      title: child.title,
-      href: child.href,
-      description: child.description ?? '',
-    }))
-  })) || [];
+  const dynamicNavItems = transformMenuItems(mainMenuItems);
 
   // Determine which logo to use based on effective scroll state
-  const currentLogoSrc = effectiveScrolled ? logoDarkUrl : logoLightUrl;
+  const currentLogo = selectCurrentLogo(effectiveScrolled, businessInfo.logoDark, businessInfo.logoLight);
+  
+  // Determine what to show for logo based on settings
+  const shouldShowLogoImage = navbarConfig.showLogoImage && currentLogo;
+  const shouldShowLogoText = navbarConfig.showLogoText;
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${effectiveScrolled ? 'bg-white/90 shadow-sm backdrop-blur-sm' : 'bg-transparent'}`}>
-      <div className="container mx-auto max-w-7xl px-4">
+    <nav className={getNavbarClasses(navbarConfig.isFixed, effectiveScrolled)}>
+      <div className="mx-auto max-w-7xl px-2">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-
+          {/* Logo - conditionally render based on settings */}
+          {(shouldShowLogoImage || shouldShowLogoText) && (
+            <Logo 
+              title={shouldShowLogoText ? businessInfo.companyName : ''} 
+              logo={shouldShowLogoImage ? currentLogo : null} 
+            />
+          )}
+          
           {/* Desktop Navigation */}
-          <DesktopNav mainCta={navbarData?.mainCta as Cta} forceBackground={true} isScrolled={isScrolled} navItems={dynamicNavItems} />
+          <DesktopNav 
+            mainCta={navbarData?.mainCta as Cta} 
+            forceBackground={!navbarConfig.isTransparent} 
+            isScrolled={isScrolled} 
+            navItems={dynamicNavItems}
+            isTransparent={navbarConfig.isTransparent}
+          />
 
           {/* Mobile Navigation - Pass business info props down */}
           <MobileNav 
-            currentLogoSrc={currentLogoSrc} 
-            isScrolled={effectiveScrolled} 
+            currentLogo={shouldShowLogoImage ? currentLogo : null} 
+            isScrolled={isScrolled} 
             navItems={dynamicNavItems} 
             mainCta={navbarData?.mainCta as Cta}
-            companyName={companyName}
-            phoneNumber={phoneNumber}
-            email={email}
-            location={location}
+            companyName={businessInfo.companyName}
+            phoneNumber={businessInfo.phoneNumber}
+            email={businessInfo.email}
+            location={businessInfo.location}
+            showLogoImage={navbarConfig.showLogoImage}
+            showLogoText={navbarConfig.showLogoText}
+            isTransparent={navbarConfig.isTransparent}
           />
         </div>
       </div>

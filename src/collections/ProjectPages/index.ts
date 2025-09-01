@@ -46,9 +46,6 @@ export const ProjectPages: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
     group: 'Strani',
-    components:{
-      beforeList:['/components/admin/CreateProjectPageFromProject']
-    },
     livePreview: {
       url: async ({ data, req }) => {
         const slug = typeof data?.slug === 'string' ? `/projekti/${data.slug}` : ''

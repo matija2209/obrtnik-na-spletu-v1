@@ -1,6 +1,5 @@
 import { Mail, Phone, MapPin } from 'lucide-react'
 import React from 'react'
-import Image from 'next/image'
 
 function ContactInformation() {
   return (
@@ -10,7 +9,7 @@ function ContactInformation() {
                 </h2>
                 
                 <div className="mb-6">
-                  <Image 
+                  <img 
                     src="/gallery/vas-koticek-razvajanje-salon-ambient-maribor.jpg"
                     alt="Vas kotiček razvajanje salon ambient Maribor"
                     width={600}

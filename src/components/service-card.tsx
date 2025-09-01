@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import PayloadImage from '@/components/ui/PayloadImage';
 import Link from 'next/link';
 
 interface ServiceCardProps {
@@ -14,11 +14,12 @@ export function ServiceCard({ imageSrc, imageAlt, title, description, href }: Se
   return (
     <div className="relative w-full max-w-md h-[500px]">
       <div className="absolute inset-x-0 top-0 h-[270px] overflow-hidden">
-        <Image
+        <img
           src={imageSrc}
           alt={imageAlt}
-          fill
-          className="object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
       </div>
       <div className="absolute right-0 top-[190px] w-[90%] p-6 flex flex-col gap-2 bg-[#F5F9FF] shadow-sm rounded-[20px_0_20px_20px] min-h-[280px]">

@@ -4,7 +4,7 @@ import RichText from '@/components/payload/RichText';
 import { ContainedSection } from '@/components/layout/container-section';
 import { ColorScheme, getBackgroundClass, getColorClasses } from '@/utilities/getColorClasses';
 import { SearchParams } from 'next/dist/server/request/search-params';
-
+import { Params } from 'next/dist/server/request/params';
 // Define the interface for the Form block
 interface FormBlockProps {
   form: number | Form;
@@ -19,7 +19,7 @@ interface FormBlockProps {
   idHref?: string;
 }
 
-const FormBlock = ({ searchParams,...block }: FormBlockProps & { searchParams?: SearchParams }) => {
+const FormBlock = ({ searchParams,...block }: FormBlockProps & { searchParams?: SearchParams ,params?:Params}) => {
   const { form, enableIntro, introContent, colourScheme, bgColor: backgroundColor, isTransparent, idHref } = block;
 
   // Process color classes

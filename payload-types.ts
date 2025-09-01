@@ -67,28 +67,36 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    tenants: Tenant;
     users: User;
     media: Media;
-    projects: Project;
+    machinery: Machinery;
     services: Service;
     testimonials: Testimonial;
     'faq-items': FaqItem;
     ctas: Cta;
-    machinery: Machinery;
+    projects: Project;
     'opening-hours': OpeningHour;
+    sub_services: SubService;
     pages: Page;
     'service-pages': ServicePage;
+    'project-pages': ProjectPage;
+    'product-pages': ProductPage;
     redirects: Redirect;
     pricelists: Pricelist;
     'price-list-sections': PriceListSection;
     'price-list-items': PriceListItem;
     banners: Banner;
     menus: Menu;
-    sub_services: SubService;
+    products: Product;
+    'product-variants': ProductVariant;
+    collections: Collection;
+    posts: Post;
+    customers: Customer;
+    orders: Order;
     'business-info': BusinessInfo;
-    footer: Footer;
     navbar: Navbar;
+    footer: Footer;
+    tenants: Tenant;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-jobs': PayloadJob;
@@ -96,30 +104,42 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    products: {
+      productVariants: 'product-variants';
+    };
+  };
   collectionsSelect: {
-    tenants: TenantsSelect<false> | TenantsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    machinery: MachinerySelect<false> | MachinerySelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     'faq-items': FaqItemsSelect<false> | FaqItemsSelect<true>;
     ctas: CtasSelect<false> | CtasSelect<true>;
-    machinery: MachinerySelect<false> | MachinerySelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'opening-hours': OpeningHoursSelect<false> | OpeningHoursSelect<true>;
+    sub_services: SubServicesSelect<false> | SubServicesSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     'service-pages': ServicePagesSelect<false> | ServicePagesSelect<true>;
+    'project-pages': ProjectPagesSelect<false> | ProjectPagesSelect<true>;
+    'product-pages': ProductPagesSelect<false> | ProductPagesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     pricelists: PricelistsSelect<false> | PricelistsSelect<true>;
     'price-list-sections': PriceListSectionsSelect<false> | PriceListSectionsSelect<true>;
     'price-list-items': PriceListItemsSelect<false> | PriceListItemsSelect<true>;
     banners: BannersSelect<false> | BannersSelect<true>;
     menus: MenusSelect<false> | MenusSelect<true>;
-    sub_services: SubServicesSelect<false> | SubServicesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    'product-variants': ProductVariantsSelect<false> | ProductVariantsSelect<true>;
+    collections: CollectionsSelect<false> | CollectionsSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
+    customers: CustomersSelect<false> | CustomersSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
     'business-info': BusinessInfoSelect<false> | BusinessInfoSelect<true>;
-    footer: FooterSelect<false> | FooterSelect<true>;
     navbar: NavbarSelect<false> | NavbarSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+    tenants: TenantsSelect<false> | TenantsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -164,6 +184,48 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  username?: string | null;
+  firstName: string;
+  lastName: string;
+  address?: string | null;
+  phoneNumber?: string | null;
+  vatId?: string | null;
+  companyName?: string | null;
+  roles?: ('super-admin' | 'user')[] | null;
+  tenants?:
+    | {
+        tenant: number | Tenant;
+        roles: ('tenant-admin' | 'tenant-viewer')[];
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -252,48 +314,6 @@ export interface Tenant {
   createdAt: string;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  username?: string | null;
-  firstName: string;
-  lastName: string;
-  address?: string | null;
-  phoneNumber?: string | null;
-  vatId?: string | null;
-  companyName?: string | null;
-  roles?: ('super-admin' | 'user')[] | null;
-  tenants?:
-    | {
-        tenant: number | Tenant;
-        roles: ('tenant-admin' | 'tenant-viewer')[];
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-  enableAPIKey?: boolean | null;
-  apiKey?: string | null;
-  apiKeyIndex?: string | null;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-}
-/**
  * Naložite in upravljajte slike ter druge medijske datoteke.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -303,6 +323,14 @@ export interface Media {
   id: number;
   tenant?: (number | null) | Tenant;
   alt?: string | null;
+  /**
+   * Vir medijske datoteke
+   */
+  source?: ('manual' | 'facebook') | null;
+  /**
+   * Facebook attachment ID (if imported from Facebook)
+   */
+  facebookId?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -310,7 +338,13 @@ export interface Media {
   filename?: string | null;
   mimeType?: string | null;
   filesize?: number | null;
+  /**
+   * Originalna širina slike v pikslih
+   */
   width?: number | null;
+  /**
+   * Originalna višina slike v pikslih
+   */
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
@@ -342,19 +376,19 @@ export interface Media {
   };
 }
 /**
- * Predstavite zaključene projekte ali reference.
+ * Podatki o gradbeni mehanizaciji.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "projects".
+ * via the `definition` "machinery".
  */
-export interface Project {
+export interface Machinery {
   id: number;
   tenant?: (number | null) | Tenant;
-  title: string;
-  slug?: string | null;
+  tabName: string;
   /**
-   * Detailed description of the project
+   * Npr. Volvo EL70, Komatsu PC210
    */
+  name: string;
   description?: {
     root: {
       type: string;
@@ -370,319 +404,6 @@ export interface Project {
     };
     [k: string]: unknown;
   } | null;
-  projectStatus: 'planned' | 'in-progress' | 'completed';
-  location?: string | null;
-  metadata?: {
-    startDate?: string | null;
-    completionDate?: string | null;
-    client?: string | null;
-    /**
-     * Optional budget information
-     */
-    budget?: string | null;
-  };
-  projectImages?:
-    | {
-        image1: number | Media;
-        altText1?: string | null;
-        image2?: (number | null) | Media;
-        altText2?: string | null;
-        /**
-         * Describe this image or the before/after comparison.
-         */
-        pairDescription?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Add relevant tags to categorize this project
-   */
-  tags?:
-    | {
-        tag?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Select the services that were part of this project.
-   */
-  servicesPerformed?: (number | Service)[] | null;
-  /**
-   * Link any testimonials specifically related to this project.
-   */
-  relatedTestimonials?: (number | Testimonial)[] | null;
-  /**
-   * Link to a detailed page about this project, if one exists.
-   */
-  dedicatedPage?: (number | null) | Page;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Upravljajte seznam storitev, ki jih ponujate.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "services".
- */
-export interface Service {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  /**
-   * ID se generira samodejno iz naslova.
-   */
-  serviceId?: string | null;
-  title: string;
-  description: string;
-  features?:
-    | {
-        featureText: string;
-        id?: string | null;
-      }[]
-    | null;
-  images?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Primer: "€50", "Od €100", "€150 - €250", "Po dogovoru"
-   */
-  priceDisplay?: string | null;
-  /**
-   * Prikaži projekte, kjer je bila ta storitev uporabljena.
-   */
-  relatedProjects?: (number | Project)[] | null;
-  /**
-   * Prikaži mnenja strank, ki se nanašajo na to storitev.
-   */
-  relatedTestimonials?: (number | Testimonial)[] | null;
-  /**
-   * Poveži storitev z njeno namensko podstranjo, če obstaja.
-   */
-  dedicatedPage?: (number | null) | Page;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Mnenja strank o naših storitvah.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials".
- */
-export interface Testimonial {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  name: string;
-  /**
-   * Datum, ko je bilo mnenje podano.
-   */
-  testimonialDate?: string | null;
-  source?: ('google' | 'facebook' | 'website' | 'manual') | null;
-  location?: string | null;
-  service?: string | null;
-  content: string;
-  /**
-   * Ocena stranke od 1 do 5 zvezdic.
-   */
-  rating: number;
-  /**
-   * Povežite to mnenje s specifičnimi storitvami ali projekti.
-   */
-  relatedItems?:
-    | (
-        | {
-            relationTo: 'services';
-            value: number | Service;
-          }
-        | {
-            relationTo: 'projects';
-            value: number | Project;
-          }
-      )[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  title: string;
-  publishedAt?: string | null;
-  slug?: string | null;
-  pageType: 'landing' | 'contact' | 'about' | 'privacyPolicy';
-  layout?:
-    | (
-        | HeroBlock
-        | ServicesBlock
-        | MachineryBlock
-        | FAQBlock
-        | ContactBlock
-        | ProjectHighlightsBlock
-        | AboutBlock
-        | TestimonialsBlock
-        | GalleryBlock
-        | ServiceAreaBlock
-      )[]
-    | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (number | null) | Media;
-  };
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "HeroBlock".
- */
-export interface HeroBlock {
-  template: 'default' | 'one-hero-section' | 'two-column-hero';
-  kicker?: string | null;
-  title?: string | null;
-  subtitle?: string | null;
-  includeFollowersBadge?: boolean | null;
-  ctas?: (number | Cta)[] | null;
-  image?: (number | Media)[] | null;
-  features?:
-    | {
-        iconText?: string | null;
-        text?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'hero';
-}
-/**
- * Upravljajte pozive k dejanju, ki jih lahko vključite na različnih mestih.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ctas".
- */
-export interface Cta {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  /**
-   * Besedilo, ki bo prikazano na gumbu.
-   */
-  ctaText: string;
-  link: {
-    type: 'internal' | 'external';
-    internalLink?: (number | null) | Page;
-    externalUrl?: string | null;
-    newTab?: boolean | null;
-  };
-  /**
-   * Vnesite ime ikone iz knjižnice Lucide React (npr. ArrowRight, CheckCircle).
-   */
-  icon?: string | null;
-  /**
-   * Dodaten CSS razred za stilsko oblikovanje gumba na spletni strani (npr. primary-button, secondary-button).
-   */
-  ctaClassname?: string | null;
-  /**
-   * Izberite stil gumba (npr. Primary, Secondary). To lahko vpliva na izgled gumba na spletni strani.
-   */
-  ctaType?: ('primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link' | 'icon') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ServicesBlock".
- */
-export interface ServicesBlock {
-  template:
-    | 'default'
-    | 'service-cards'
-    | 'big-cards'
-    | 'simple-list'
-    | 'simple-card'
-    | 'service-feature-row'
-    | 'rounded-cards';
-  title?: string | null;
-  description?: string | null;
-  /**
-   * Select the services to display in this section.
-   */
-  selectedServices?: (number | Service)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'services';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MachineryBlock".
- */
-export interface MachineryBlock {
-  title?: string | null;
-  description?: string | null;
-  selectedMachinery?: (number | Machinery)[] | null;
-  template: 'default';
-  /**
-   * Dodajte gumb 'call to action' pod seznam strojev.
-   */
-  callToAction?: (number | null) | Cta;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'machinery';
-}
-/**
- * Podatki o gradbeni mehanizaciji.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "machinery".
- */
-export interface Machinery {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  tabName: string;
-  /**
-   * Npr. Volvo EL70, Komatsu PC210
-   */
-  name: string;
-  description?: string | null;
   image?: (number | null) | Media;
   /**
    * Dodajte ključne specifikacije.
@@ -705,18 +426,154 @@ export interface Machinery {
   createdAt: string;
 }
 /**
+ * Upravljajte seznam storitev, ki jih ponujate.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FAQBlock".
+ * via the `definition` "services".
  */
-export interface FAQBlock {
-  template: 'default';
+export interface Service {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.
+   */
+  slug?: string | null;
+  title: string;
+  /**
+   * Kratek opis storitve, ki se bo prikazal na strani storitve
+   */
+  excerpt?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  images?: (number | Media)[] | null;
+  /**
+   * Primer: "€50", "Od €100", "€150 - €250", "Po dogovoru"
+   */
+  priceDisplay?: string | null;
+  /**
+   * Pokaži CTA na strani storitve
+   */
+  showCta?: boolean | null;
+  /**
+   * Tekst CTA na strani storitve
+   */
+  ctaText?: string | null;
+  /**
+   * Izberite ikono, ki se prikaže ob elementu v spustnem meniju.
+   */
+  icon?:
+    | ('Sparkles' | 'Zap' | 'Drop' | 'Hands' | 'Footprints' | 'Paintbrush' | 'bager' | 'excavator' | 'wrecking-ball')
+    | null;
+  features?:
+    | {
+        title: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Prikaži mnenja strank, ki se nanašajo na to storitev.
+   */
+  relatedTestimonials?: (number | Testimonial)[] | null;
+  /**
+   * Poveži podstoritve, ki so povezane z te storitvijo.
+   */
+  subServices?: (number | SubService)[] | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Mnenja strank o naših storitvah.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * ID se generira samodejno iz naslova.
+   */
+  slug?: string | null;
+  name: string;
+  /**
+   * Datum, ko je bilo mnenje podano.
+   */
+  testimonialDate?: string | null;
+  source?: ('google' | 'facebook' | 'website' | 'manual') | null;
   title?: string | null;
-  description?: string | null;
-  selectedFaqs?: (number | FaqItem)[] | null;
-  faqCta?: (number | null) | Cta;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'faq';
+  content: string;
+  location?: string | null;
+  /**
+   * Ocena stranke od 1 do 5 zvezdic.
+   */
+  rating: number;
+  /**
+   * Povežite to mnenje s specifičnimi storitvami ali projekti.
+   */
+  relatedItems?:
+    | {
+        relationTo: 'services';
+        value: number | Service;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sub_services".
+ */
+export interface SubService {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.
+   */
+  slug?: string | null;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  images?: (number | Media)[] | null;
+  price?: string | null;
+  parentService?: (number | null) | Service;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Pogosta vprašanja in odgovori.
@@ -755,6 +612,397 @@ export interface FaqItem {
   createdAt: string;
 }
 /**
+ * Upravljajte pozive k dejanju, ki jih lahko vključite na različnih mestih.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ctas".
+ */
+export interface Cta {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * ID se generira samodejno iz naslova.
+   */
+  slug?: string | null;
+  /**
+   * Besedilo, ki bo prikazano na gumbu.
+   */
+  ctaText: string;
+  link: {
+    type: 'internal' | 'external';
+    internalLink?: (number | null) | Page;
+    externalUrl?: string | null;
+    newTab?: boolean | null;
+  };
+  /**
+   * Vnesite ime ikone iz knjižnice Lucide React (npr. ArrowRight, CheckCircle).
+   */
+  icon?: string | null;
+  /**
+   * Dodaten CSS razred za stilsko oblikovanje gumba na spletni strani (npr. primary-button, secondary-button).
+   */
+  ctaClassname?: string | null;
+  /**
+   * Izberite stil gumba (npr. Primary, Secondary). To lahko vpliva na izgled gumba na spletni strani.
+   */
+  ctaType?: ('primary' | 'secondary' | 'destructive' | 'outline' | 'ghost' | 'link' | 'icon') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.
+   */
+  slug?: string | null;
+  title: string;
+  pageType: 'landing' | 'contact' | 'privacyPolicy';
+  layout?:
+    | (
+        | HeroBlock
+        | ServicesBlock
+        | FAQBlock
+        | ContactBlock
+        | AboutBlock
+        | TestimonialsBlock
+        | GalleryBlock
+        | ServiceAreaBlock
+        | ProjectHighlightsBlock
+        | MachineryBlock
+        | {
+            form: number | Form;
+            enableIntro?: boolean | null;
+            introContent?: {
+              root: {
+                type: string;
+                children: {
+                  type: string;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            /**
+             * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+             */
+            bgColor?:
+              | (
+                  | 'inherit'
+                  | 'white'
+                  | 'light'
+                  | 'light-30'
+                  | 'light-50'
+                  | 'muted'
+                  | 'primary'
+                  | 'primary-30'
+                  | 'primary-50'
+                  | 'secondary'
+                  | 'secondary-30'
+                  | 'secondary-50'
+                  | 'accent'
+                  | 'accent-30'
+                  | 'dark'
+                  | 'dark-30'
+                  | 'dark-50'
+                  | 'dark-80'
+                )
+              | null;
+            /**
+             * Izberite barvno shemo za ta odsek. Vpliva na ozadje, besedilo in gumbove.
+             */
+            colourScheme?:
+              | (
+                  | 'primary'
+                  | 'primary-30'
+                  | 'primary-50'
+                  | 'primary-80'
+                  | 'secondary'
+                  | 'secondary-30'
+                  | 'secondary-50'
+                  | 'secondary-80'
+                  | 'accent'
+                  | 'accent-30'
+                  | 'muted'
+                  | 'muted-50'
+                  | 'destructive'
+                  | 'destructive-30'
+                  | 'light'
+                  | 'light-50'
+                  | 'dark'
+                  | 'dark-80'
+                )
+              | null;
+            isTransparent?: boolean | null;
+            idHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'formBlock';
+          }
+        | HowToBlock
+        | CtaBlock
+        | FeaturedProductsBlock
+        | TextBlock
+      )[]
+    | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock".
+ */
+export interface HeroBlock {
+  template: 'default' | 'variant1' | 'variant2' | 'variant3' | 'variant4' | 'variant5' | 'variant6' | 'variant7';
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  kicker?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+  includeFollowersBadge?: boolean | null;
+  ctas?: (number | Cta)[] | null;
+  image?: (number | Media)[] | null;
+  /**
+   * Prikaži značilnosti (če so na voljo). Relavantno za storitvene strani
+   */
+  showFeatures?: boolean | null;
+  features?:
+    | {
+        iconText?: string | null;
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Izberite mnenja, ki se bodo prikazala v floating elementih (maksimalno 2).
+   */
+  testimonials?: (number | Testimonial)[] | null;
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ServicesBlock".
+ */
+export interface ServicesBlock {
+  template:
+    | 'default'
+    | 'variant-1'
+    | 'variant-2'
+    | 'variant-3'
+    | 'variant-4'
+    | 'variant-5'
+    | 'variant-6'
+    | 'variant-7'
+    | 'variant-8'
+    | 'variant-9';
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  /**
+   * Select the services to display in this section.
+   */
+  selectedServices?: (number | Service)[] | null;
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'services';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FAQBlock".
+ */
+export interface FAQBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  selectedFaqs?: (number | FaqItem)[] | null;
+  faqCta?: (number | null) | Cta;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faq';
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "ContactBlock".
  */
@@ -766,6 +1014,61 @@ export interface ContactBlock {
   form?: (number | null) | Form;
   phoneNumber?: string | null;
   address?: string | null;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  idHref?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'contact';
@@ -779,6 +1082,10 @@ export interface ContactBlock {
 export interface OpeningHour {
   id: number;
   tenant?: (number | null) | Tenant;
+  /**
+   * ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.
+   */
+  slug?: string | null;
   /**
    * Npr. "Redni urnik", "Poletni urnik", "Dežurstvo"
    */
@@ -1005,16 +1312,107 @@ export interface Form {
 export interface ServicePage {
   id: number;
   tenant?: (number | null) | Tenant;
+  /**
+   * ID se generira samodejno iz naslova.
+   */
+  slug?: string | null;
   title: string;
   pageType?: 'service' | null;
-  publishedAt?: string | null;
-  slug: string;
-  layout?: (ServicesHeroBlock | ServicesPresentationBlock | ServicesCtaBlock)[] | null;
   /**
-   * Izberite specifične podstoritve, ki jih želite prikazati na tej strani storitve.
+   * Dodaj odsek na strani storitve
    */
-  sub_services?: (number | SubService)[] | null;
+  layout?:
+    | (
+        | HeroBlock
+        | ServicesBlock
+        | FAQBlock
+        | ContactBlock
+        | AboutBlock
+        | TestimonialsBlock
+        | GalleryBlock
+        | ServiceAreaBlock
+        | ProjectHighlightsBlock
+        | MachineryBlock
+        | {
+            form: number | Form;
+            enableIntro?: boolean | null;
+            introContent?: {
+              root: {
+                type: string;
+                children: {
+                  type: string;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            /**
+             * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+             */
+            bgColor?:
+              | (
+                  | 'inherit'
+                  | 'white'
+                  | 'light'
+                  | 'light-30'
+                  | 'light-50'
+                  | 'muted'
+                  | 'primary'
+                  | 'primary-30'
+                  | 'primary-50'
+                  | 'secondary'
+                  | 'secondary-30'
+                  | 'secondary-50'
+                  | 'accent'
+                  | 'accent-30'
+                  | 'dark'
+                  | 'dark-30'
+                  | 'dark-50'
+                  | 'dark-80'
+                )
+              | null;
+            /**
+             * Izberite barvno shemo za ta odsek. Vpliva na ozadje, besedilo in gumbove.
+             */
+            colourScheme?:
+              | (
+                  | 'primary'
+                  | 'primary-30'
+                  | 'primary-50'
+                  | 'primary-80'
+                  | 'secondary'
+                  | 'secondary-30'
+                  | 'secondary-50'
+                  | 'secondary-80'
+                  | 'accent'
+                  | 'accent-30'
+                  | 'muted'
+                  | 'muted-50'
+                  | 'destructive'
+                  | 'destructive-30'
+                  | 'light'
+                  | 'light-50'
+                  | 'dark'
+                  | 'dark-80'
+                )
+              | null;
+            isTransparent?: boolean | null;
+            idHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'formBlock';
+          }
+        | SubServicesBlock
+        | CtaBlock
+      )[]
+    | null;
   services?: (number | null) | Service;
+  sub_services?: (number | SubService)[] | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -1029,69 +1427,12 @@ export interface ServicePage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ServicesHeroBlock".
+ * via the `definition` "AboutBlock".
  */
-export interface ServicesHeroBlock {
-  template: 'default';
+export interface AboutBlock {
+  template: 'default' | 'variant-2' | 'variant-3' | 'variant-4' | 'variant-5';
   title?: string | null;
   subtitle?: string | null;
-  ctas?: (number | Cta)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'servicesHero';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ServicesPresentationBlock".
- */
-export interface ServicesPresentationBlock {
-  template: 'default';
-  services?:
-    | {
-        title: string;
-        description: string;
-        order: 'normal' | 'inverse';
-        points?:
-          | {
-              point: string;
-              id?: string | null;
-            }[]
-          | null;
-        images?:
-          | {
-              image: number | Media;
-              alt: string;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'sPresentation';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ServicesCtaBlock".
- */
-export interface ServicesCtaBlock {
-  template: 'default';
-  title: string;
-  cta: number | Cta;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'servicesCta';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sub_services".
- */
-export interface SubService {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  title: string;
-  parentService: number | Service;
   description?: {
     root: {
       type: string;
@@ -1107,51 +1448,64 @@ export interface SubService {
     };
     [k: string]: unknown;
   } | null;
-  bulletPoints?:
-    | {
-        point: string;
-        id?: string | null;
-      }[]
-    | null;
-  images?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
-  price?: string | null;
-  publishedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProjectHighlightsBlock".
- */
-export interface ProjectHighlightsBlock {
-  template: 'default';
-  title?: string | null;
-  description?: string | null;
-  buttonText?: string | null;
-  buttonHref?: string | null;
-  highlightedProjects?: (number | Project)[] | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'projectHighlights';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "AboutBlock".
- */
-export interface AboutBlock {
-  template: 'default' | 'variant-2';
-  title?: string | null;
-  subtitle?: string | null;
-  description?: string | null;
-  image?: (number | null) | Media;
+  image?: (number | Media)[] | null;
   isInverted?: boolean | null;
+  idHref?: string | null;
   ctas?: (number | Cta)[] | null;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
   benefits?:
     | {
         title?: string | null;
@@ -1172,11 +1526,66 @@ export interface AboutBlock {
  * via the `definition` "TestimonialsBlock".
  */
 export interface TestimonialsBlock {
-  template: 'default' | 'single-testimonial' | 'side-carousel' | 'three-carousel' | 'three-column-carousel-recycled';
+  template: 'default' | 'variant1' | 'variant2' | 'variant3' | 'variant4' | 'variant5';
   title?: string | null;
   description?: string | null;
-  selectedTestimonials?: (number | Testimonial)[] | null;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
   googleReviewCta?: (number | null) | Cta;
+  idHref?: string | null;
+  selectedTestimonials?: (number | Testimonial)[] | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'testimonials';
@@ -1186,17 +1595,70 @@ export interface TestimonialsBlock {
  * via the `definition` "GalleryBlock".
  */
 export interface GalleryBlock {
-  template: 'default';
+  template: 'default' | 'variant1';
+  /**
+   * Ko je omogočeno, se bodo nove naložene slike samodejno dodale v to galerijo
+   */
+  autoSyncMedia?: boolean | null;
   title?: string | null;
   description?: string | null;
-  galleryImages?:
-    | {
-        image: number | Media;
-        caption?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  images?: (number | Media)[] | null;
   galleryCta?: (number | null) | Cta;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  idHref?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'gallery';
@@ -1216,9 +1678,1218 @@ export interface ServiceAreaBlock {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  idHref?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'serviceArea';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectHighlightsBlock".
+ */
+export interface ProjectHighlightsBlock {
+  template: 'default' | 'variant1' | 'variant2';
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  cta?: (number | Cta)[] | null;
+  highlightedProjects?: (number | Project)[] | null;
+  /**
+   * Ko je omogočeno, se bodo nove naložene slike samodejno dodale v to galerijo
+   */
+  autoSyncProjects?: boolean | null;
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'projectHighlights';
+}
+/**
+ * Predstavite zaključene projekte ali reference.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * ID se generira samodejno iz naslova.
+   */
+  slug?: string | null;
+  title: string;
+  /**
+   * Detailed description of the project
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Kratek opis projekta, ki se bo prikazal na strani projekta
+   */
+  excerpt?: string | null;
+  projectStatus: 'planned' | 'in-progress' | 'completed';
+  location?: string | null;
+  metadata?: {
+    startDate?: string | null;
+    completionDate?: string | null;
+    client?: string | null;
+    /**
+     * Optional budget information
+     */
+    budget?: string | null;
+  };
+  projectImages?:
+    | {
+        image1: number | Media;
+        altText1?: string | null;
+        image2?: (number | null) | Media;
+        altText2?: string | null;
+        /**
+         * Describe this image or the before/after comparison.
+         */
+        pairDescription?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add relevant tags to categorize this project
+   */
+  tags?: string[] | null;
+  /**
+   * Select the services that were part of this project.
+   */
+  servicesPerformed?: (number | Service)[] | null;
+  /**
+   * Link any testimonials specifically related to this project.
+   */
+  relatedTestimonials?: (number | Testimonial)[] | null;
+  /**
+   * Vir projekta
+   */
+  source?: ('manual' | 'facebook') | null;
+  /**
+   * ID Facebook objave iz katere je bil projekt ustvarjen
+   */
+  facebookPostId?: string | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineryBlock".
+ */
+export interface MachineryBlock {
+  title?: string | null;
+  description?: string | null;
+  selectedMachinery?: (number | Machinery)[] | null;
+  template: 'default';
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  /**
+   * Dodajte gumb 'call to action' pod seznam strojev.
+   */
+  callToAction?: (number | null) | Cta;
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'machinery';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SubServicesBlock".
+ */
+export interface SubServicesBlock {
+  template: 'default';
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  /**
+   * Select the services to display in this section.
+   */
+  selectedSubServices?: (number | SubService)[] | null;
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'sub-services';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBlock".
+ */
+export interface CtaBlock {
+  template: 'default';
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  cta: number | Cta;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cta_block';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HowToBlock".
+ */
+export interface HowToBlock {
+  title: string;
+  subtitle?: string | null;
+  steps?:
+    | {
+        useIcon?: boolean | null;
+        stepNumber?: number | null;
+        /**
+         * Enter icon class name (e.g., "fa-home", "icon-star") or icon identifier
+         */
+        icon?: string | null;
+        title?: string | null;
+        description: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  cta?: (number | Cta)[] | null;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  template: 'default';
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'howto';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturedProductsBlock".
+ */
+export interface FeaturedProductsBlock {
+  template: 'default';
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  kicker?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+  ctas?: (number | Cta)[] | null;
+  products: (number | Product)[];
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'featured_products';
+}
+/**
+ * Čistilne naprave za prikaz na spletni strani.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  /**
+   * ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.
+   */
+  slug?: string | null;
+  /**
+   * Kolekcija, ki ji pripada ta produkt
+   */
+  collection: number | Collection;
+  /**
+   * Whether this product has variants in ProductVariants collection
+   */
+  hasVariants?: boolean | null;
+  /**
+   * Define what variant option types this product supports (e.g., Color, Size, Material)
+   */
+  variantOptionTypes?:
+    | {
+        /**
+         * Database field name (lowercase, no spaces)
+         */
+        name: string;
+        /**
+         * User-friendly label shown in UI
+         */
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  title: string;
+  sku: string;
+  manufacturer?: string | null;
+  type?: ('variant1' | 'variant2' | 'tlakovci') | null;
+  shortDescription?: string | null;
+  longDescription?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Variante za ta izdelek - upravljajte jih v ProductVariants sekciji
+   */
+  productVariants?: {
+    docs?: (number | ProductVariant)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  /**
+   * Orientacijska cena - končna cena je odvisna od specifikacij
+   */
+  price?: number | null;
+  inStock?: boolean | null;
+  mountingIncluded?: boolean | null;
+  /**
+   * Dodajte tehnične specifikacije kot ključ-vrednost pare
+   */
+  technicalSpecs?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Glavna slika izdelka za prikaz v katalogu
+   */
+  image?: (number | null) | Media;
+  gallery?: (number | Media)[] | null;
+  /**
+   * Ključne lastnosti za prikaz na produktni strani
+   */
+  highlights?:
+    | {
+        highlight: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Avtomatsko izračunano iz ocen
+   */
+  rating?: number | null;
+  ratingCount?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Upravljajte kolekcije izdelkov.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections".
+ */
+export interface Collection {
+  id: number;
+  /**
+   * ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.
+   */
+  slug?: string | null;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Glavna slika, ki predstavlja kolekcijo
+   */
+  image?: (number | null) | Media;
+  /**
+   * Ali je kolekcija aktivna in vidna na spletni strani
+   */
+  isActive?: boolean | null;
+  /**
+   * Vrstni red prikaza kolekcij (manjša številka = višje)
+   */
+  sortOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-variants".
+ */
+export interface ProductVariant {
+  id: number;
+  product: number | Product;
+  /**
+   * Auto-generated from product name + color + size
+   */
+  displayName?: string | null;
+  /**
+   * Variant option values - must match parent product variant types
+   */
+  variantOptions?:
+    | {
+        /**
+         * Must match a variant option type defined in parent product
+         */
+        name: string;
+        /**
+         * The specific value for this variant (e.g., "Siva boja", "10×10")
+         */
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Unique SKU for this specific variant
+   */
+  variantSku: string;
+  /**
+   * Variant-specific price override
+   */
+  price?: number | null;
+  inStock?: boolean | null;
+  /**
+   * Variant-specific image (optional)
+   */
+  image?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TextBlock".
+ */
+export interface TextBlock {
+  template: 'default';
+  text?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  idHref?: string | null;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'text';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-pages".
+ */
+export interface ProjectPage {
+  id: number;
+  /**
+   * ID se generira samodejno iz naslova.
+   */
+  slug?: string | null;
+  title: string;
+  pageType?: 'project' | null;
+  /**
+   * Projekt, ki je povezan s to stranjo
+   */
+  relatedProject?: (number | null) | Project;
+  /**
+   * Dodaj odsek na strani projekta
+   */
+  layout?:
+    | (
+        | HeroBlock
+        | GalleryBlock
+        | FAQBlock
+        | ContactBlock
+        | AboutBlock
+        | TestimonialsBlock
+        | AboutProjectBlock
+        | RelatedProjectsBlock
+        | CtaBlock
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutProjectBlock".
+ */
+export interface AboutProjectBlock {
+  template: 'default' | 'variant1';
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  /**
+   * Izberi projekt, katerega podatke želiš prikazati
+   */
+  project: number | Project;
+  /**
+   * Prikaži galerijo slik projekta
+   */
+  showGallery?: boolean | null;
+  /**
+   * Prikaži podrobnosti kot so naročnik, datum zaključka itd.
+   */
+  showProjectDetails?: boolean | null;
+  /**
+   * Prikaži tabe z opisom projekta, izzivi in značilnostmi
+   */
+  showTabs?: boolean | null;
+  /**
+   * ID za navigacijo na ta odsek
+   */
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'aboutProject';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RelatedProjectsBlock".
+ */
+export interface RelatedProjectsBlock {
+  template: 'default' | 'variant1';
+  /**
+   * Naslov sekcije povezanih projektov
+   */
+  title?: string | null;
+  /**
+   * Kratek opis sekcije povezanih projektov
+   */
+  description?: string | null;
+  /**
+   * Projekt, za katerega iščemo povezane projekte (z istimi storitvami)
+   */
+  relatedProjects?: (number | Project)[] | null;
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  /**
+   * ID za navigacijo na ta odsek
+   */
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'relatedProjects';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-pages".
+ */
+export interface ProductPage {
+  id: number;
+  /**
+   * Izberi izdelek - naslov in slug se bosta avtomatsko generirala
+   */
+  products: number | Product;
+  /**
+   * Naslov se generira samodejno iz povezanega izdelka po shranjevanju.
+   */
+  title?: string | null;
+  /**
+   * Slug se generira samodejno iz povezanega izdelka po shranjevanju.
+   */
+  slug?: string | null;
+  pageType?: 'product' | null;
+  /**
+   * Dodaj odsek na strani izdelka
+   */
+  layout?:
+    | (ProductFormBlock | HeroBlock | FAQBlock | AboutBlock | TestimonialsBlock | GalleryBlock | CtaBlock)[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductFormBlock".
+ */
+export interface ProductFormBlock {
+  /**
+   * Izberite izdelek, ki se bo prikazal v tem bloku
+   */
+  product: number | Product;
+  /**
+   * Izberite način prikaza izdelka
+   */
+  template: 'default';
+  /**
+   * Specifična barva ozadja za ta blok. Če je "Privzeto", se uporabi barvna shema.
+   */
+  bgColor?:
+    | (
+        | 'inherit'
+        | 'white'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'muted'
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'accent'
+        | 'accent-30'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  /**
+   * Izberite barvno shemo za ta hero odsek. Vpliva na ozadje, besedilo in gumbove.
+   */
+  colourScheme?:
+    | (
+        | 'primary'
+        | 'primary-30'
+        | 'primary-50'
+        | 'primary-80'
+        | 'secondary'
+        | 'secondary-30'
+        | 'secondary-50'
+        | 'secondary-80'
+        | 'accent'
+        | 'accent-30'
+        | 'muted'
+        | 'muted-50'
+        | 'destructive'
+        | 'destructive-30'
+        | 'light'
+        | 'light-30'
+        | 'light-50'
+        | 'dark'
+        | 'dark-30'
+        | 'dark-50'
+        | 'dark-80'
+      )
+    | null;
+  isTransparent?: boolean | null;
+  showTitle?: boolean | null;
+  showSku?: boolean | null;
+  showManufacturer?: boolean | null;
+  showType?: boolean | null;
+  showShortDescription?: boolean | null;
+  showLongDescription?: boolean | null;
+  /**
+   * Prikaži orientacijske cene izdelka
+   */
+  showPricing?: boolean | null;
+  /**
+   * Prikaži status zaloge (Na voljo)
+   */
+  showAvailability?: boolean | null;
+  /**
+   * Prikaži ali je montaža vključena
+   */
+  showMountingInfo?: boolean | null;
+  /**
+   * Prikaži tehnične specifikacije
+   */
+  showTechnicalSpecs?: boolean | null;
+  /**
+   * Prikaži ključne lastnosti izdelka
+   */
+  showHighlights?: boolean | null;
+  showMainImage?: boolean | null;
+  /**
+   * Prikaži galerijo dodatnih slik
+   */
+  showGallery?: boolean | null;
+  /**
+   * Prikaži povprečne ocene in število ocen
+   */
+  showReviews?: boolean | null;
+  /**
+   * Prikaži povprečno oceno kot zvezde
+   */
+  showRating?: boolean | null;
+  /**
+   * Prikaži obrazec za naročilo
+   */
+  showOrderForm?: boolean | null;
+  ctaText?: string | null;
+  /**
+   * Unikaten ID za ta odsek (uporaben za sidra/povezave)
+   */
+  idHref?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'product_form';
 }
 /**
  * Upravljajte preusmeritve URL naslovov.
@@ -1381,6 +3052,10 @@ export interface Menu {
   id: number;
   tenant?: (number | null) | Tenant;
   /**
+   * ID se generira samodejno iz naslova.
+   */
+  slug?: string | null;
+  /**
    * Interno ime za lažje prepoznavanje menija (npr. Glavni meni, Meni za nogo).
    */
   title: string;
@@ -1405,11 +3080,23 @@ export interface Menu {
               /**
                * Kratek opis, ki se prikaže v spustnem meniju (neobvezno).
                */
-              description: string;
+              description?: string | null;
               /**
                * Izberite ikono, ki se prikaže ob elementu v spustnem meniju.
                */
-              icon?: ('Sparkles' | 'Zap' | 'Drop' | 'Hands' | 'Footprints' | 'Paintbrush') | null;
+              icon?:
+                | (
+                    | 'Sparkles'
+                    | 'Zap'
+                    | 'Drop'
+                    | 'Hands'
+                    | 'Footprints'
+                    | 'Paintbrush'
+                    | 'bager'
+                    | 'excavator'
+                    | 'wrecking-ball'
+                  )
+                | null;
               id?: string | null;
             }[]
           | null;
@@ -1418,6 +3105,145 @@ export interface Menu {
     | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  title: string;
+  heroImage?: (number | null) | Media;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  relatedPosts?: (number | Post)[] | null;
+  meta?: {
+    title?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Media;
+    description?: string | null;
+  };
+  publishedAt?: string | null;
+  authors?: (number | User)[] | null;
+  populatedAuthors?:
+    | {
+        id?: string | null;
+        name?: string | null;
+      }[]
+    | null;
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers".
+ */
+export interface Customer {
+  id: number;
+  firstName: string;
+  lastName: string;
+  fullName?: string | null;
+  email: string;
+  phone?: string | null;
+  address: {
+    streetAddress: string;
+    postalCode: string;
+    town: string;
+    country?: string | null;
+  };
+  /**
+   * Dodatne informacije o stranki ali posebne zahteve
+   */
+  customerNotes?: string | null;
+  /**
+   * Stranka je podala soglasje za obdelavo osebnih podatkov
+   */
+  gdprConsent?: boolean | null;
+  /**
+   * Stranka soglaša s prejemanjem marketinških sporočil
+   */
+  marketingConsent?: boolean | null;
+  customerType?: ('individual' | 'company') | null;
+  companyInfo?: {
+    companyName?: string | null;
+    taxNumber?: string | null;
+    registrationNumber?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Naročila kupcev za čistilne naprave.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  customerData?: {
+    firstName?: string | null;
+    lastName?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    streetAddress?: string | null;
+    postalCode?: string | null;
+    town?: string | null;
+    message?: string | null;
+  };
+  /**
+   * Avtomatsko generirano
+   */
+  orderNumber: string;
+  status: 'pending' | 'processing' | 'contacted' | 'quoted' | 'confirmed' | 'completed' | 'cancelled';
+  /**
+   * Izberi obstoječega kupca ali bo ustvarjen avtomatsko iz spletne forme
+   */
+  customer: number | Customer;
+  product: number | Product;
+  quantity: number;
+  /**
+   * Avtomatsko iz izdelka ali ročno vnesi
+   */
+  unitPrice?: number | null;
+  /**
+   * Količina × Cena na enoto
+   */
+  total?: number | null;
+  /**
+   * Sporočilo iz spletne forme
+   */
+  customerMessage?: string | null;
+  /**
+   * Interne opombe - ni vidno kupcu
+   */
+  adminNotes?: string | null;
+  /**
+   * Opombe vidne kupcu (npr. v potrditvenem emailu)
+   */
+  publicNotes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  /**
+   * Od koder je prišlo naročilo
+   */
+  source?: ('website' | 'phone' | 'email' | 'in-person' | 'other') | null;
 }
 /**
  * Osnovni podatki in nastavitve podjetja za vsakega najemnika.
@@ -1488,6 +3314,42 @@ export interface BusinessInfo {
   createdAt: string;
 }
 /**
+ * Nastavitve navigacijske vrstice za vsakega najemnika.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navbar".
+ */
+export interface Navbar {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * Ali naj se v navigaciji prikaže slika logotipa?
+   */
+  showLogoImage?: boolean | null;
+  /**
+   * Ali naj se v navigaciji prikaže besedilni naslov (če je logotip onemogočen ali ni naložen)?
+   */
+  showLogoText?: boolean | null;
+  /**
+   * Ali naj bo ozadje navigacije prozorno (običajno na vrhu strani)?
+   */
+  isTransparent?: boolean | null;
+  /**
+   * Ali naj bo navigacija pripeta na vrh zaslona med drsenjem?
+   */
+  isFixed?: boolean | null;
+  /**
+   * Izberite meni, ki bo uporabljen za glavno navigacijo.
+   */
+  mainMenu: number | Menu;
+  /**
+   * Izberite CTA gumb, ki bo prikazan v navigaciji.
+   */
+  mainCta?: (number | null) | Cta;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Nastavitve podnožja strani za vsakega najemnika.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1526,42 +3388,6 @@ export interface MenuSectionItem {
   id?: string | null;
   blockName?: string | null;
   blockType: 'menuSection';
-}
-/**
- * Nastavitve navigacijske vrstice za vsakega najemnika.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "navbar".
- */
-export interface Navbar {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  /**
-   * Ali naj se v navigaciji prikaže slika logotipa?
-   */
-  showLogoImage?: boolean | null;
-  /**
-   * Ali naj se v navigaciji prikaže besedilni naslov (če je logotip onemogočen ali ni naložen)?
-   */
-  showLogoText?: boolean | null;
-  /**
-   * Ali naj bo ozadje navigacije prozorno (običajno na vrhu strani)?
-   */
-  isTransparent?: boolean | null;
-  /**
-   * Ali naj bo navigacija pripeta na vrh zaslona med drsenjem?
-   */
-  isFixed?: boolean | null;
-  /**
-   * Izberite meni, ki bo uporabljen za glavno navigacijo.
-   */
-  mainMenu: number | Menu;
-  /**
-   * Izberite CTA gumb, ki bo prikazan v navigaciji.
-   */
-  mainCta?: (number | null) | Cta;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1681,10 +3507,6 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'tenants';
-        value: number | Tenant;
-      } | null)
-    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
@@ -1693,8 +3515,8 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'projects';
-        value: number | Project;
+        relationTo: 'machinery';
+        value: number | Machinery;
       } | null)
     | ({
         relationTo: 'services';
@@ -1713,12 +3535,16 @@ export interface PayloadLockedDocument {
         value: number | Cta;
       } | null)
     | ({
-        relationTo: 'machinery';
-        value: number | Machinery;
+        relationTo: 'projects';
+        value: number | Project;
       } | null)
     | ({
         relationTo: 'opening-hours';
         value: number | OpeningHour;
+      } | null)
+    | ({
+        relationTo: 'sub_services';
+        value: number | SubService;
       } | null)
     | ({
         relationTo: 'pages';
@@ -1727,6 +3553,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'service-pages';
         value: number | ServicePage;
+      } | null)
+    | ({
+        relationTo: 'project-pages';
+        value: number | ProjectPage;
+      } | null)
+    | ({
+        relationTo: 'product-pages';
+        value: number | ProductPage;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1753,20 +3587,44 @@ export interface PayloadLockedDocument {
         value: number | Menu;
       } | null)
     | ({
-        relationTo: 'sub_services';
-        value: number | SubService;
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'product-variants';
+        value: number | ProductVariant;
+      } | null)
+    | ({
+        relationTo: 'collections';
+        value: number | Collection;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
+      } | null)
+    | ({
+        relationTo: 'customers';
+        value: number | Customer;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: number | Order;
       } | null)
     | ({
         relationTo: 'business-info';
         value: number | BusinessInfo;
       } | null)
     | ({
+        relationTo: 'navbar';
+        value: number | Navbar;
+      } | null)
+    | ({
         relationTo: 'footer';
         value: number | Footer;
       } | null)
     | ({
-        relationTo: 'navbar';
-        value: number | Navbar;
+        relationTo: 'tenants';
+        value: number | Tenant;
       } | null)
     | ({
         relationTo: 'forms';
@@ -1824,69 +3682,6 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants_select".
- */
-export interface TenantsSelect<T extends boolean = true> {
-  name?: T;
-  domain?: T;
-  slug?: T;
-  allowPublicRead?: T;
-  colors?:
-    | T
-    | {
-        primary?: T;
-        primaryForeground?: T;
-        secondary?: T;
-        secondaryForeground?: T;
-        accent?: T;
-        accentForeground?: T;
-        background?: T;
-        foreground?: T;
-      };
-  radius?: T;
-  typography?:
-    | T
-    | {
-        headingFont?:
-          | T
-          | {
-              name?: T;
-              weights?:
-                | T
-                | {
-                    weight?: T;
-                    id?: T;
-                  };
-              subsets?:
-                | T
-                | {
-                    subset?: T;
-                    id?: T;
-                  };
-            };
-        bodyFont?:
-          | T
-          | {
-              name?: T;
-              weights?:
-                | T
-                | {
-                    weight?: T;
-                    id?: T;
-                  };
-              subsets?:
-                | T
-                | {
-                    subset?: T;
-                    id?: T;
-                  };
-            };
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -1932,6 +3727,8 @@ export interface UsersSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   tenant?: T;
   alt?: T;
+  source?: T;
+  facebookId?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1980,140 +3777,6 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "projects_select".
- */
-export interface ProjectsSelect<T extends boolean = true> {
-  tenant?: T;
-  title?: T;
-  slug?: T;
-  description?: T;
-  projectStatus?: T;
-  location?: T;
-  metadata?:
-    | T
-    | {
-        startDate?: T;
-        completionDate?: T;
-        client?: T;
-        budget?: T;
-      };
-  projectImages?:
-    | T
-    | {
-        image1?: T;
-        altText1?: T;
-        image2?: T;
-        altText2?: T;
-        pairDescription?: T;
-        id?: T;
-      };
-  tags?:
-    | T
-    | {
-        tag?: T;
-        id?: T;
-      };
-  servicesPerformed?: T;
-  relatedTestimonials?: T;
-  dedicatedPage?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "services_select".
- */
-export interface ServicesSelect<T extends boolean = true> {
-  tenant?: T;
-  serviceId?: T;
-  title?: T;
-  description?: T;
-  features?:
-    | T
-    | {
-        featureText?: T;
-        id?: T;
-      };
-  images?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
-  priceDisplay?: T;
-  relatedProjects?: T;
-  relatedTestimonials?: T;
-  dedicatedPage?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials_select".
- */
-export interface TestimonialsSelect<T extends boolean = true> {
-  tenant?: T;
-  name?: T;
-  testimonialDate?: T;
-  source?: T;
-  location?: T;
-  service?: T;
-  content?: T;
-  rating?: T;
-  relatedItems?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "faq-items_select".
- */
-export interface FaqItemsSelect<T extends boolean = true> {
-  tenant?: T;
-  category?: T;
-  question?: T;
-  answer?: T;
-  relatedService?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ctas_select".
- */
-export interface CtasSelect<T extends boolean = true> {
-  tenant?: T;
-  ctaText?: T;
-  link?:
-    | T
-    | {
-        type?: T;
-        internalLink?: T;
-        externalUrl?: T;
-        newTab?: T;
-      };
-  icon?: T;
-  ctaClassname?: T;
-  ctaType?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "machinery_select".
  */
 export interface MachinerySelect<T extends boolean = true> {
@@ -2140,10 +3803,143 @@ export interface MachinerySelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  title?: T;
+  excerpt?: T;
+  description?: T;
+  images?: T;
+  priceDisplay?: T;
+  showCta?: T;
+  ctaText?: T;
+  icon?: T;
+  features?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  relatedTestimonials?: T;
+  subServices?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  name?: T;
+  testimonialDate?: T;
+  source?: T;
+  title?: T;
+  content?: T;
+  location?: T;
+  rating?: T;
+  relatedItems?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq-items_select".
+ */
+export interface FaqItemsSelect<T extends boolean = true> {
+  tenant?: T;
+  category?: T;
+  question?: T;
+  answer?: T;
+  relatedService?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ctas_select".
+ */
+export interface CtasSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  ctaText?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        internalLink?: T;
+        externalUrl?: T;
+        newTab?: T;
+      };
+  icon?: T;
+  ctaClassname?: T;
+  ctaType?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  title?: T;
+  description?: T;
+  excerpt?: T;
+  projectStatus?: T;
+  location?: T;
+  metadata?:
+    | T
+    | {
+        startDate?: T;
+        completionDate?: T;
+        client?: T;
+        budget?: T;
+      };
+  projectImages?:
+    | T
+    | {
+        image1?: T;
+        altText1?: T;
+        image2?: T;
+        altText2?: T;
+        pairDescription?: T;
+        id?: T;
+      };
+  tags?: T;
+  servicesPerformed?: T;
+  relatedTestimonials?: T;
+  source?: T;
+  facebookPostId?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "opening-hours_select".
  */
 export interface OpeningHoursSelect<T extends boolean = true> {
   tenant?: T;
+  slug?: T;
   name?: T;
   startDate?: T;
   endDate?: T;
@@ -2167,27 +3963,59 @@ export interface OpeningHoursSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sub_services_select".
+ */
+export interface SubServicesSelect<T extends boolean = true> {
+  tenant?: T;
+  slug?: T;
+  title?: T;
+  description?: T;
+  images?: T;
+  price?: T;
+  parentService?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
   tenant?: T;
-  title?: T;
-  publishedAt?: T;
   slug?: T;
+  title?: T;
   pageType?: T;
   layout?:
     | T
     | {
         hero?: T | HeroBlockSelect<T>;
         services?: T | ServicesBlockSelect<T>;
-        machinery?: T | MachineryBlockSelect<T>;
         faq?: T | FAQBlockSelect<T>;
         contact?: T | ContactBlockSelect<T>;
-        projectHighlights?: T | ProjectHighlightsBlockSelect<T>;
         about?: T | AboutBlockSelect<T>;
         testimonials?: T | TestimonialsBlockSelect<T>;
         gallery?: T | GalleryBlockSelect<T>;
         serviceArea?: T | ServiceAreaBlockSelect<T>;
+        projectHighlights?: T | ProjectHighlightsBlockSelect<T>;
+        machinery?: T | MachineryBlockSelect<T>;
+        formBlock?:
+          | T
+          | {
+              form?: T;
+              enableIntro?: T;
+              introContent?: T;
+              bgColor?: T;
+              colourScheme?: T;
+              isTransparent?: T;
+              idHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        howto?: T | HowToBlockSelect<T>;
+        cta_block?: T | CtaBlockSelect<T>;
+        featured_products?: T | FeaturedProductsBlockSelect<T>;
+        text?: T | TextBlockSelect<T>;
       };
   meta?:
     | T
@@ -2206,12 +4034,16 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface HeroBlockSelect<T extends boolean = true> {
   template?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
   kicker?: T;
   title?: T;
   subtitle?: T;
   includeFollowersBadge?: T;
   ctas?: T;
   image?: T;
+  showFeatures?: T;
   features?:
     | T
     | {
@@ -2219,6 +4051,8 @@ export interface HeroBlockSelect<T extends boolean = true> {
         text?: T;
         id?: T;
       };
+  testimonials?: T;
+  idHref?: T;
   id?: T;
   blockName?: T;
 }
@@ -2230,20 +4064,11 @@ export interface ServicesBlockSelect<T extends boolean = true> {
   template?: T;
   title?: T;
   description?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
   selectedServices?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "MachineryBlock_select".
- */
-export interface MachineryBlockSelect<T extends boolean = true> {
-  title?: T;
-  description?: T;
-  selectedMachinery?: T;
-  template?: T;
-  callToAction?: T;
+  idHref?: T;
   id?: T;
   blockName?: T;
 }
@@ -2257,6 +4082,10 @@ export interface FAQBlockSelect<T extends boolean = true> {
   description?: T;
   selectedFaqs?: T;
   faqCta?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  idHref?: T;
   id?: T;
   blockName?: T;
 }
@@ -2272,20 +4101,10 @@ export interface ContactBlockSelect<T extends boolean = true> {
   form?: T;
   phoneNumber?: T;
   address?: T;
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProjectHighlightsBlock_select".
- */
-export interface ProjectHighlightsBlockSelect<T extends boolean = true> {
-  template?: T;
-  title?: T;
-  description?: T;
-  buttonText?: T;
-  buttonHref?: T;
-  highlightedProjects?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  idHref?: T;
   id?: T;
   blockName?: T;
 }
@@ -2300,7 +4119,11 @@ export interface AboutBlockSelect<T extends boolean = true> {
   description?: T;
   image?: T;
   isInverted?: T;
+  idHref?: T;
   ctas?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
   benefits?:
     | T
     | {
@@ -2320,8 +4143,12 @@ export interface TestimonialsBlockSelect<T extends boolean = true> {
   template?: T;
   title?: T;
   description?: T;
-  selectedTestimonials?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
   googleReviewCta?: T;
+  idHref?: T;
+  selectedTestimonials?: T;
   id?: T;
   blockName?: T;
 }
@@ -2331,16 +4158,15 @@ export interface TestimonialsBlockSelect<T extends boolean = true> {
  */
 export interface GalleryBlockSelect<T extends boolean = true> {
   template?: T;
+  autoSyncMedia?: T;
   title?: T;
   description?: T;
-  galleryImages?:
-    | T
-    | {
-        image?: T;
-        caption?: T;
-        id?: T;
-      };
+  images?: T;
   galleryCta?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  idHref?: T;
   id?: T;
   blockName?: T;
 }
@@ -2359,6 +4185,116 @@ export interface ServiceAreaBlockSelect<T extends boolean = true> {
         name?: T;
         id?: T;
       };
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  idHref?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProjectHighlightsBlock_select".
+ */
+export interface ProjectHighlightsBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  cta?: T;
+  highlightedProjects?: T;
+  autoSyncProjects?: T;
+  idHref?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MachineryBlock_select".
+ */
+export interface MachineryBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  selectedMachinery?: T;
+  template?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  callToAction?: T;
+  idHref?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HowToBlock_select".
+ */
+export interface HowToBlockSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  steps?:
+    | T
+    | {
+        useIcon?: T;
+        stepNumber?: T;
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  cta?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  template?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBlock_select".
+ */
+export interface CtaBlockSelect<T extends boolean = true> {
+  template?: T;
+  title?: T;
+  description?: T;
+  cta?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  idHref?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturedProductsBlock_select".
+ */
+export interface FeaturedProductsBlockSelect<T extends boolean = true> {
+  template?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  kicker?: T;
+  title?: T;
+  subtitle?: T;
+  ctas?: T;
+  products?: T;
+  idHref?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TextBlock_select".
+ */
+export interface TextBlockSelect<T extends boolean = true> {
+  template?: T;
+  text?: T;
+  idHref?: T;
+  bgColor?: T;
   id?: T;
   blockName?: T;
 }
@@ -2368,19 +4304,40 @@ export interface ServiceAreaBlockSelect<T extends boolean = true> {
  */
 export interface ServicePagesSelect<T extends boolean = true> {
   tenant?: T;
+  slug?: T;
   title?: T;
   pageType?: T;
-  publishedAt?: T;
-  slug?: T;
   layout?:
     | T
     | {
-        servicesHero?: T | ServicesHeroBlockSelect<T>;
-        sPresentation?: T | ServicesPresentationBlockSelect<T>;
-        servicesCta?: T | ServicesCtaBlockSelect<T>;
+        hero?: T | HeroBlockSelect<T>;
+        services?: T | ServicesBlockSelect<T>;
+        faq?: T | FAQBlockSelect<T>;
+        contact?: T | ContactBlockSelect<T>;
+        about?: T | AboutBlockSelect<T>;
+        testimonials?: T | TestimonialsBlockSelect<T>;
+        gallery?: T | GalleryBlockSelect<T>;
+        serviceArea?: T | ServiceAreaBlockSelect<T>;
+        projectHighlights?: T | ProjectHighlightsBlockSelect<T>;
+        machinery?: T | MachineryBlockSelect<T>;
+        formBlock?:
+          | T
+          | {
+              form?: T;
+              enableIntro?: T;
+              introContent?: T;
+              bgColor?: T;
+              colourScheme?: T;
+              isTransparent?: T;
+              idHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'sub-services'?: T | SubServicesBlockSelect<T>;
+        cta_block?: T | CtaBlockSelect<T>;
       };
-  sub_services?: T;
   services?: T;
+  sub_services?: T;
   meta?:
     | T
     | {
@@ -2394,54 +4351,131 @@ export interface ServicePagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ServicesHeroBlock_select".
+ * via the `definition` "SubServicesBlock_select".
  */
-export interface ServicesHeroBlockSelect<T extends boolean = true> {
+export interface SubServicesBlockSelect<T extends boolean = true> {
   template?: T;
   title?: T;
-  subtitle?: T;
-  ctas?: T;
+  description?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  selectedSubServices?: T;
+  idHref?: T;
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ServicesPresentationBlock_select".
+ * via the `definition` "project-pages_select".
  */
-export interface ServicesPresentationBlockSelect<T extends boolean = true> {
-  template?: T;
-  services?:
+export interface ProjectPagesSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  pageType?: T;
+  relatedProject?: T;
+  layout?:
     | T
     | {
-        title?: T;
-        description?: T;
-        order?: T;
-        points?:
-          | T
-          | {
-              point?: T;
-              id?: T;
-            };
-        images?:
-          | T
-          | {
-              image?: T;
-              alt?: T;
-              id?: T;
-            };
-        id?: T;
+        hero?: T | HeroBlockSelect<T>;
+        gallery?: T | GalleryBlockSelect<T>;
+        faq?: T | FAQBlockSelect<T>;
+        contact?: T | ContactBlockSelect<T>;
+        about?: T | AboutBlockSelect<T>;
+        testimonials?: T | TestimonialsBlockSelect<T>;
+        aboutProject?: T | AboutProjectBlockSelect<T>;
+        relatedProjects?: T | RelatedProjectsBlockSelect<T>;
+        cta_block?: T | CtaBlockSelect<T>;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AboutProjectBlock_select".
+ */
+export interface AboutProjectBlockSelect<T extends boolean = true> {
+  template?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  project?: T;
+  showGallery?: T;
+  showProjectDetails?: T;
+  showTabs?: T;
+  idHref?: T;
   id?: T;
   blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ServicesCtaBlock_select".
+ * via the `definition` "RelatedProjectsBlock_select".
  */
-export interface ServicesCtaBlockSelect<T extends boolean = true> {
+export interface RelatedProjectsBlockSelect<T extends boolean = true> {
   template?: T;
   title?: T;
-  cta?: T;
+  description?: T;
+  relatedProjects?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  idHref?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-pages_select".
+ */
+export interface ProductPagesSelect<T extends boolean = true> {
+  products?: T;
+  title?: T;
+  slug?: T;
+  pageType?: T;
+  layout?:
+    | T
+    | {
+        product_form?: T | ProductFormBlockSelect<T>;
+        hero?: T | HeroBlockSelect<T>;
+        faq?: T | FAQBlockSelect<T>;
+        about?: T | AboutBlockSelect<T>;
+        testimonials?: T | TestimonialsBlockSelect<T>;
+        gallery?: T | GalleryBlockSelect<T>;
+        cta_block?: T | CtaBlockSelect<T>;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProductFormBlock_select".
+ */
+export interface ProductFormBlockSelect<T extends boolean = true> {
+  product?: T;
+  template?: T;
+  bgColor?: T;
+  colourScheme?: T;
+  isTransparent?: T;
+  showTitle?: T;
+  showSku?: T;
+  showManufacturer?: T;
+  showType?: T;
+  showShortDescription?: T;
+  showLongDescription?: T;
+  showPricing?: T;
+  showAvailability?: T;
+  showMountingInfo?: T;
+  showTechnicalSpecs?: T;
+  showHighlights?: T;
+  showMainImage?: T;
+  showGallery?: T;
+  showReviews?: T;
+  showRating?: T;
+  showOrderForm?: T;
+  ctaText?: T;
+  idHref?: T;
   id?: T;
   blockName?: T;
 }
@@ -2517,6 +4551,7 @@ export interface BannersSelect<T extends boolean = true> {
  */
 export interface MenusSelect<T extends boolean = true> {
   tenant?: T;
+  slug?: T;
   title?: T;
   menuItems?:
     | T
@@ -2540,30 +4575,175 @@ export interface MenusSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sub_services_select".
+ * via the `definition` "products_select".
  */
-export interface SubServicesSelect<T extends boolean = true> {
-  tenant?: T;
+export interface ProductsSelect<T extends boolean = true> {
+  slug?: T;
+  collection?: T;
+  hasVariants?: T;
+  variantOptionTypes?:
+    | T
+    | {
+        name?: T;
+        label?: T;
+        id?: T;
+      };
   title?: T;
-  parentService?: T;
-  description?: T;
-  bulletPoints?:
-    | T
-    | {
-        point?: T;
-        id?: T;
-      };
-  images?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
+  sku?: T;
+  manufacturer?: T;
+  type?: T;
+  shortDescription?: T;
+  longDescription?: T;
+  productVariants?: T;
   price?: T;
+  inStock?: T;
+  mountingIncluded?: T;
+  technicalSpecs?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  image?: T;
+  gallery?: T;
+  highlights?:
+    | T
+    | {
+        highlight?: T;
+        id?: T;
+      };
+  rating?: T;
+  ratingCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-variants_select".
+ */
+export interface ProductVariantsSelect<T extends boolean = true> {
+  product?: T;
+  displayName?: T;
+  variantOptions?:
+    | T
+    | {
+        name?: T;
+        value?: T;
+        id?: T;
+      };
+  variantSku?: T;
+  price?: T;
+  inStock?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections_select".
+ */
+export interface CollectionsSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  description?: T;
+  image?: T;
+  isActive?: T;
+  sortOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  heroImage?: T;
+  content?: T;
+  relatedPosts?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        image?: T;
+        description?: T;
+      };
   publishedAt?: T;
+  authors?: T;
+  populatedAuthors?:
+    | T
+    | {
+        id?: T;
+        name?: T;
+      };
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers_select".
+ */
+export interface CustomersSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  fullName?: T;
+  email?: T;
+  phone?: T;
+  address?:
+    | T
+    | {
+        streetAddress?: T;
+        postalCode?: T;
+        town?: T;
+        country?: T;
+      };
+  customerNotes?: T;
+  gdprConsent?: T;
+  marketingConsent?: T;
+  customerType?: T;
+  companyInfo?:
+    | T
+    | {
+        companyName?: T;
+        taxNumber?: T;
+        registrationNumber?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  customerData?:
+    | T
+    | {
+        firstName?: T;
+        lastName?: T;
+        email?: T;
+        phone?: T;
+        streetAddress?: T;
+        postalCode?: T;
+        town?: T;
+        message?: T;
+      };
+  orderNumber?: T;
+  status?: T;
+  customer?: T;
+  product?: T;
+  quantity?: T;
+  unitPrice?: T;
+  total?: T;
+  customerMessage?: T;
+  adminNotes?: T;
+  publicNotes?: T;
+  createdAt?: T;
+  updatedAt?: T;
+  source?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2604,6 +4784,21 @@ export interface BusinessInfoSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navbar_select".
+ */
+export interface NavbarSelect<T extends boolean = true> {
+  tenant?: T;
+  showLogoImage?: T;
+  showLogoText?: T;
+  isTransparent?: T;
+  isFixed?: T;
+  mainMenu?: T;
+  mainCta?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
@@ -2632,16 +4827,64 @@ export interface MenuSectionItemSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "navbar_select".
+ * via the `definition` "tenants_select".
  */
-export interface NavbarSelect<T extends boolean = true> {
-  tenant?: T;
-  showLogoImage?: T;
-  showLogoText?: T;
-  isTransparent?: T;
-  isFixed?: T;
-  mainMenu?: T;
-  mainCta?: T;
+export interface TenantsSelect<T extends boolean = true> {
+  name?: T;
+  domain?: T;
+  slug?: T;
+  allowPublicRead?: T;
+  colors?:
+    | T
+    | {
+        primary?: T;
+        primaryForeground?: T;
+        secondary?: T;
+        secondaryForeground?: T;
+        accent?: T;
+        accentForeground?: T;
+        background?: T;
+        foreground?: T;
+      };
+  radius?: T;
+  typography?:
+    | T
+    | {
+        headingFont?:
+          | T
+          | {
+              name?: T;
+              weights?:
+                | T
+                | {
+                    weight?: T;
+                    id?: T;
+                  };
+              subsets?:
+                | T
+                | {
+                    subset?: T;
+                    id?: T;
+                  };
+            };
+        bodyFont?:
+          | T
+          | {
+              name?: T;
+              weights?:
+                | T
+                | {
+                    weight?: T;
+                    id?: T;
+                  };
+              subsets?:
+                | T
+                | {
+                    subset?: T;
+                    id?: T;
+                  };
+            };
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2877,11 +5120,69 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'service-pages';
           value: number | ServicePage;
+        } | null)
+      | ({
+          relationTo: 'project-pages';
+          value: number | ProjectPage;
+        } | null)
+      | ({
+          relationTo: 'product-pages';
+          value: number | ProductPage;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
         } | null);
     global?: string | null;
     user?: (number | null) | User;
   };
   output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock".
+ */
+export interface BannerBlock {
+  style: 'info' | 'warning' | 'error' | 'success';
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CodeBlock".
+ */
+export interface CodeBlock {
+  language?: ('typescript' | 'javascript' | 'css') | null;
+  code: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'code';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MediaBlock".
+ */
+export interface MediaBlock {
+  media: number | Media;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mediaBlock';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -1,7 +1,6 @@
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 import { CollectionConfig } from 'payload';
 import { slugField } from '@/fields/slug';
-import { syncProjectHighlightsBlocks } from './hooks/syncProjectHighlightsBlocks';
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -29,7 +28,7 @@ export const Projects: CollectionConfig = {
     // }
   },
   hooks: {
-    afterChange: [syncProjectHighlightsBlocks],
+
   },
   fields: [
     slugField('title', {

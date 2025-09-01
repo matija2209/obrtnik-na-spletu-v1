@@ -41,7 +41,7 @@ const afterChangeHook: CollectionAfterChangeHook<Tenant> = async ({ doc, req, pr
       
       if (oldDomain !== newDomain || !previousDoc) {
         req.payload.logger.info(`Updating Edge Config domain mapping for tenant: ${doc.slug}`);
-        await handleTenantDomainUpdate(newDomain, doc.slug, oldDomain);
+        await handleTenantDomainUpdate(newDomain || undefined, doc.slug, oldDomain || undefined);
         req.payload.logger.info(`Edge Config updated for tenant: ${doc.slug}`);
       }
     } catch (error) {

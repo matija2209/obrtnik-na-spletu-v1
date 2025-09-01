@@ -1,6 +1,5 @@
 import React from 'react';
 import { Star, Phone, Globe, MapPin, Clock, Share2, ChevronRight, Camera } from 'lucide-react';
-import Image from 'next/image';
 
 const galleryImages = [
   '/gallery/vrtanje-betona-s-strojem.jpeg',
@@ -21,13 +20,12 @@ export default function GoogleBusinessHighlight() {
       {/* Image Gallery Section */}
       <div className="grid grid-cols-2 gap-1">
         {galleryImages.map((src, index) => (
-          <div key={index} className="relative h-24 w-full">
-            <Image 
+          <div key={index} className="relative h-24 w-full overflow-hidden">
+            <img 
               src={src} 
               alt={`Gallery image ${index + 1}`} 
-              layout="fill"
-              objectFit="cover"
-              className="transition-transform duration-300 ease-in-out hover:scale-105"
+              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-105"
             />
           </div>
         ))}

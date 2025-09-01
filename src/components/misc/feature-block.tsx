@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import React from 'react';
 import VideoPlayer from './video-player';
 
@@ -45,7 +44,7 @@ const FeatureBlock: React.FC<FeatureBlockProps> = ({
   const renderMedia = () => {
     if (media.type === 'image') {
       return (
-        <Image
+        <img
           src={media.src}
           className="w-full h-auto rounded-lg shadow-md"
           alt={title as string}

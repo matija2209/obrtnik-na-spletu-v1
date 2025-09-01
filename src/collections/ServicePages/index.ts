@@ -59,9 +59,7 @@ export const ServicePages: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
     group: 'Strani', // Or a new group like 'Storitve'
-    components:{
-      beforeList:['/components/admin/CreateServicePageFromService']
-    },
+  
     livePreview: {
       url: async ({ data, req }) => {
         const slug = typeof data?.slug === 'string' ? `/storitve/${data.slug}` : ''

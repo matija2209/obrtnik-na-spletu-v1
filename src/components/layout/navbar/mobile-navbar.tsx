@@ -1,55 +1,29 @@
 "use client"
-import { Menu, X, Phone } from 'lucide-react';
+import { Menu, Phone } from 'lucide-react';
 import { Sheet, SheetClose, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import Logo from '@/components/common/logo';
 import { cn } from '@/lib/utils';
-import GoogleIcon from '@/components/common/icons/google-icon';
-import { Cta } from '@payload-types';
-import CtaButton from "@/components/common/cta-buttons";
-
-// Define the NavItem interface
-interface NavItem {
-  title: string;
-  href: string;
-  hasChildren?: boolean;
-  children?: {
-    title: string;
-    href: string;
-    description: string;
-    icon?: string | React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  }[];
-  description?: string;
-}
-
-const reviewLink = "https://search.google.com/local/writereview?placeid=ChIJq2Y3G3QyZUcRfDWJZ6f8-KI";
-
+import CtaButton from '@/components/ui/cta-button';
+import { getEffectiveScrolled } from '@/utils/navbar-helpers';
+import type { MobileNavProps } from './types';
 
 // Updated Mobile Navigation Component with nested links
 const MobileNav = ({ 
   isScrolled, 
   navItems,
-  currentLogoSrc,
+  currentLogo,
   mainCta,
-  // Add business info props
   companyName,
   phoneNumber,
   email,
-  location
-}: { 
-  isScrolled: boolean, 
-  navItems: NavItem[],
-  currentLogoSrc?: string,
-  mainCta?: Cta,
-  // Define types for new props
-  companyName?: string,
-  phoneNumber?: string,
-  email?: string,
-  location?: string
-}) => {
+  location,
+  showLogoImage = true,
+  showLogoText = true,
+  isTransparent = false
+}: MobileNavProps) => {
     // State for managing expanded submenus
     const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
     
@@ -59,6 +33,9 @@ const MobileNav = ({
         [title]: !prev[title]
       }));
     };
+
+    // Calculate effective scrolled state for menu button styling
+    const effectiveScrolled = getEffectiveScrolled(isScrolled, isTransparent);
     
     return (
       <div className="md:hidden">
@@ -67,7 +44,12 @@ const MobileNav = ({
             <Button
               variant="ghost"
               size="icon"
-              className={`fixed top-4 right-4 z-50 rounded-full w-10 h-10 flex items-center justify-center ${isScrolled ? 'bg-white text-gray-800 shadow-md' : 'text-white'}`}
+              className={cn(
+                "fixed top-4 right-4 z-50 rounded-full w-10 h-10 flex items-center justify-center transition-colors",
+                effectiveScrolled 
+                  ? 'bg-white text-gray-800 shadow-md hover:bg-gray-50' 
+                  : 'text-white bg-black/10 hover:bg-black/20 backdrop-blur-sm'
+              )}
             >
               <Menu className="h-5 w-5" />
               <span className="sr-only">Open menu</span>
@@ -78,11 +60,18 @@ const MobileNav = ({
               <SheetTitle className="sr-only">Glavni meni</SheetTitle>
             </SheetHeader>
             <div className="flex flex-col h-full">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                <div className="flex items-center">
-                  {currentLogoSrc && <Logo logoSrc={currentLogoSrc} location="mobile-menu" />}
+              {/* Logo section - conditionally render based on settings */}
+              {(showLogoImage || showLogoText) && (
+                <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                  <div className="flex items-center">
+                    <Logo 
+                      logo={showLogoImage ? currentLogo : null} 
+                      title={showLogoText ? companyName : ''}
+                      location="mobile-menu" 
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
   
               <nav className="flex-1 overflow-y-auto py-4">
                 <div className="space-y-1 px-2">
@@ -92,7 +81,7 @@ const MobileNav = ({
                         <>
                           <button 
                             onClick={() => toggleExpanded(item.title)}
-                            className="w-full flex items-center justify-between px-3 py-3 rounded-lg text-base font-medium transition-colors text-gray-700 hover:text-primary"
+                            className="w-full flex items-center justify-between px-3 py-3 rounded-lg text-base font-medium transition-colors text-gray-700 hover:text-primary hover:bg-gray-50"
                           >
                             {item.title}
                             <svg
@@ -105,33 +94,41 @@ const MobileNav = ({
                               strokeWidth="2"
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              className={`h-4 w-4 transition-transform ${expandedMenus[item.title] ? 'rotate-180' : ''}`}
+                              className={cn(
+                                "h-4 w-4 transition-transform duration-200",
+                                expandedMenus[item.title] ? 'rotate-180' : ''
+                              )}
                             >
                               <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                           </button>
                           
-                          {expandedMenus[item.title] && (
+                          <div className={cn(
+                            "overflow-hidden transition-all duration-200 ease-in-out",
+                            expandedMenus[item.title] 
+                              ? "max-h-96 opacity-100" 
+                              : "max-h-0 opacity-0"
+                          )}>
                             <div className="pl-4 mt-1 space-y-1 border-l-2 border-gray-100 ml-4">
                               {item.children?.map((child) => (
                                 <SheetClose asChild key={child.href}>
                                   <Link
                                     href={child.href}
-                                    className="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-600 hover:text-primary"
-                                    >
+                                    className="flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-600 hover:text-primary hover:bg-gray-50"
+                                  >
                                     {child.title}
                                   </Link>
                                 </SheetClose>
                               ))}
                             </div>
-                          )}
+                          </div>
                         </>
                       ) : (
                         <SheetClose asChild>
                           <Link
                             href={item.href}
-                            className="flex items-center px-3 py-3 rounded-lg text-base font-medium transition-colors relative group text-gray-700 hover:text-primary"
-                            >
+                            className="flex items-center px-3 py-3 rounded-lg text-base font-medium transition-colors relative group text-gray-700 hover:text-primary hover:bg-gray-50"
+                          >
                             {item.title}
                           </Link>
                         </SheetClose>
@@ -139,34 +136,49 @@ const MobileNav = ({
                     </div>
                   ))}
                   
-                  {/* Replace hardcoded buttons with dynamic CtaButton */}
+                  {/* CTA Button section */}
                   {mainCta && (
-                    <div className="mt-4 space-y-2 px-2">
-                       <SheetClose asChild>
-                          {/* Render the dynamic CtaButton */} 
-                          {/* Wrapping in a div to maintain structure, adjust as needed */} 
-                          <div className="w-full">
-                            <CtaButton mainCta={mainCta} />
-                          </div>
-                       </SheetClose>
+                    <div className="mt-6 px-2">
+                      <SheetClose asChild>
+                        <div className="w-full">
+                          <CtaButton mainCta={mainCta}/>
+                        </div>
+                      </SheetClose>
                     </div>
                   )}
                 </div>
               </nav>
   
-              {/* Divider and Contact Info - Use dynamic data */}
-              <div className="mt-auto border-t border-gray-100 px-4 py-4">
-                <div className="space-y-1 text-sm text-gray-600">
-                  {/* Use dynamic companyName */}
-                  <p className="font-semibold text-gray-700">{companyName}</p>
-                  {/* Use dynamic phoneNumber */}
-                  {phoneNumber && <a href={`tel:${phoneNumber.replace(/\s+/g, '')}`} className="block hover:text-primary">{phoneNumber}</a>}
-                  {/* Use dynamic email */}
-                  {email && <a href={`mailto:${email}`} className="block hover:text-primary">{email}</a>}
-                  {/* Use dynamic location */}
-                  {location && <p>{location}</p>}
+              {/* Contact Info Footer - conditionally render if data exists */}
+              {(companyName || phoneNumber || email || location) && (
+                <div className="mt-auto border-t border-gray-100 px-4 py-4">
+                  <div className="space-y-2 text-sm text-gray-600">
+                    {companyName && (
+                      <p className="font-semibold text-gray-700">{companyName}</p>
+                    )}
+                    {phoneNumber && (
+                      <a 
+                        href={`tel:${phoneNumber.replace(/\s+/g, '')}`} 
+                        className="hover:text-primary transition-colors flex items-center gap-2"
+                      >
+                        <Phone className="h-4 w-4" />
+                        {phoneNumber}
+                      </a>
+                    )}
+                    {email && (
+                      <a 
+                        href={`mailto:${email}`} 
+                        className="block hover:text-primary transition-colors"
+                      >
+                        {email}
+                      </a>
+                    )}
+                    {location && (
+                      <p className="text-gray-500">{location}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </SheetContent>
         </Sheet>

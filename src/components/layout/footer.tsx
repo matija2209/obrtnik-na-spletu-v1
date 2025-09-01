@@ -1,11 +1,11 @@
-import Image from 'next/image';
+
 import Link from 'next/link';
-import CurrentYear from '../misc/current-year';
 import Logo from '../common/logo';
 import { getLogoUrl } from '@/lib/payload';
 import type { BusinessInfo, Footer as FooterType, Navbar as NavbarType, Media, Menu, MenuSectionItem } from '@payload-types';
 import { Facebook, Instagram, Linkedin, Youtube, Twitter, LocateIcon, Phone, Mail } from 'lucide-react';
-import { getImageUrl } from '@/utilities/getImageUrl';
+import GoogleIcon from '../common/icons/google-icon';
+
 
 // Define the props for the Footer component
 interface FooterProps {
@@ -13,12 +13,6 @@ interface FooterProps {
   businessInfoData: BusinessInfo | null;
   navbarData: NavbarType | null;
 }
-
-// Legal links (consider moving to Footer global if needed)
-const legalLinks = [
-  { text: 'Zasebnost', href: '/zasebnost' },
-  { text: 'Pogoji uporabe', href: '/pogoji-uporabe' }
-];
 
 // Map social platform values to icons
 const socialIconMap: { [key: string]: React.ElementType } = {
@@ -36,6 +30,10 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
   // Removed footerData.logo logic, using only businessInfoData logo
   const footerLogoUrl = logoDarkUrl; // Use the dark logo by default for footer
 
+  if (typeof footerData === 'number') {
+    return null;
+  }
+
   // Format copyright text
   const copyrightText = footerData?.copyrightText
     ? footerData.copyrightText.replace('{{year}}', new Date().getFullYear().toString())
@@ -48,10 +46,10 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Logo & Basic Info */}
           <div className="flex flex-col items-start space-y-4">
-            {footerLogoUrl && businessInfoData && <Logo logoSrc={footerLogoUrl} location="footer" title={businessInfoData.companyName ?? undefined} />}
+            {(typeof businessInfoData?.logo === 'object' && businessInfoData.logo) && businessInfoData && <Logo logo={businessInfoData.logo} location="footer" title={businessInfoData.companyName ?? undefined} />}
             {businessInfoData && (
               <div className="text-sm space-y-1">
-                <p className="font-semibold">{businessInfoData.companyName}</p>
+                {footerData && footerData.showLogoText && <p className="font-semibold">{businessInfoData.companyName}</p>}
                 {businessInfoData.vatId && <p>Davčna št.: {businessInfoData.vatId}</p>}
                 {businessInfoData.businessId && <p>Matična št.: {businessInfoData.businessId}</p>}
               </div>
@@ -78,12 +76,22 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
                 <ul className="space-y-2">
                   {menuItems.map((item, itemIndex) => (
                     <li key={item.id || itemIndex}>
+                      <div className="flex items-center gap-2">
+
+                      {item.href?.includes("facebook") && <Facebook size={16} />}
+                      {item.href?.includes("instagram") && <Instagram size={16} />}
+                      {item.href?.includes("linkedin") && <Linkedin size={16} />}
+                      {item.href?.includes("youtube") && <Youtube size={16} />}
+                      {item.href?.includes("twitter") && <Twitter size={16} />}
+                      {item.href?.includes("google") && <GoogleIcon />}
+                      
                       <Link
                         href={item.href || '#'} // Use href directly from menu item
                         className="hover:text-blue-600 transition-colors"
-                      >
+                        >
                         {item.title} {/* Use title directly */}
                       </Link>
+                        </div>
                     </li>
                   ))}
                 </ul>
@@ -95,44 +103,23 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
           {footerData?.showContactInFooter !== false && (
             <div className="space-y-3 text-sm">
               <p className="font-semibold text-gray-900 mb-2">Kontakt</p>
-              <a
+              {footerData?.showContactInFooter && businessInfoData?.phoneNumber &&<a
                 href={`tel:${businessInfoData?.phoneNumber}`}
                 className="flex items-center gap-2 hover:text-blue-600 transition-colors"
               >
                 <Phone size={16} /> {businessInfoData?.phoneNumber}
-              </a>
-              <a
+              </a>}
+              {footerData?.showContactInFooter && businessInfoData?.email &&<a
                 href={`mailto:${businessInfoData?.email}`}
                 className="flex items-center gap-2 hover:text-blue-600 transition-colors"
               >
                 <Mail size={16} /> {businessInfoData?.email}
-              </a>
-              <p className="flex items-center gap-2">
+              </a>}
+              {footerData?.showContactInFooter && businessInfoData?.location &&<p className="flex items-center gap-2">
                 <LocateIcon size={16} /> {businessInfoData?.location}
-              </p>
+              </p>}
             </div>
           )}
-
-          {/* Social Links - derived from socialMenu */}
-          <div className="space-y-2 text-sm">
-            <p className="font-semibold text-gray-900 mb-2">Povežite se z nami</p>
-            <div className="flex space-x-4">
-              {/* Type assertion used here, ensure footerData includes a populated socialMenu */}
-              {(footerData as any)?.socialMenu?.menuItems?.map((link: any, index: number) => { // Added explicit types
-                // Use link.title (lowercase) as the key for socialIconMap
-                const platformKey = link.title?.toLowerCase();
-                const IconComponent = platformKey ? socialIconMap[platformKey] : null;
-                const url = link.href || '#'; // Use href for the link URL
-
-                return IconComponent ? (
-                  <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600">
-                    <IconComponent size={20} />
-                    <span className="sr-only">{link.title}</span> {/* Use title for screen reader */}
-                  </a>
-                ) : null;
-              })}
-            </div>
-          </div>
         </div>
 
         {/* Bottom section: Copyright and Legal */}

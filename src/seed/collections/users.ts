@@ -1,8 +1,8 @@
-import type { User } from '../../../payload-types';
+import type { Tenant, User } from '../../../payload-types';
 import type { SeedArgs } from '../utils';
 
-export const seedUsers = async (args: Pick<SeedArgs, 'payload' | 'tenantA1' | 'tenantMoj'>): Promise<{ userForGlobalUpdates: User }> => {
-  const { payload, tenantA1, tenantMoj } = args;
+export const seedUsers = async (args: Pick<SeedArgs, 'payload' > & { demoTenant: Tenant }): Promise<{ userForGlobalUpdates: User }> => {
+  const { payload, demoTenant } = args;
   payload.logger.info('--- Seeding Users ---');
 
   // --- Create Super Admin ---
@@ -10,10 +10,10 @@ export const seedUsers = async (args: Pick<SeedArgs, 'payload' | 'tenantA1' | 't
   await payload.create({
     collection: 'users',
     data: {
-      email: 'matija@obrtniknaspletu.si',
-      password: 'Matija113', // Use a secure default password
+      email: 'matija@we-hate-copy-pasting.com',
+      password: 'Matija113!', // Use a secure default password
       firstName: 'Matija',
-      lastName: 'Admin',
+      lastName: 'Ziberna',
       roles: ['super-admin'],
     },
   });
@@ -24,30 +24,27 @@ export const seedUsers = async (args: Pick<SeedArgs, 'payload' | 'tenantA1' | 't
   await payload.create({
     collection: 'users',
     data: {
-      email: 'info.a1instalacije@gmail.com',
+      email: 'demo-tenant-admin@we-hate-copy-pasting.com',
       password: 'gmb-2025', // Use a secure default password
-      firstName: 'Miralem',
-      lastName: 'Mehanović',
+      firstName: 'Demo Tenant Admin',
+      lastName: 'User',
       roles: ['user'],
-      tenants: [{ tenant: tenantA1.id, roles: ['tenant-admin'] }],
+      tenants: [{ tenant: demoTenant.id, roles: ['tenant-admin'] }],
+    },
+  });
+
+  await payload.create({
+    collection: 'users',
+    data: {
+      email: 'demo-user@we-hate-copy-pasting.com',
+      password: 'gmb-2025', // Use a secure default password
+      firstName: 'Demo User',
+      lastName: 'User',
+      roles: ['user'],
     },
   });
   payload.logger.info('Tenant user "miralem" created.');
 
-  // --- Create Tenant Moj User ---
-  payload.logger.info('Creating tenant user "Nihad Hotić" for Moj Mojster Gradnja...');
-  await payload.create({
-    collection: 'users',
-    data: {
-      email: 'makit1sp@gmail.com',
-      password: 'Nihad113', // Use a secure default password
-      firstName: 'Nihad',
-      lastName: 'Hotić',
-      roles: ['user'],
-      tenants: [{ tenant: tenantMoj.id, roles: ['tenant-admin'] }],
-    },
-  });
-  payload.logger.info('Tenant user "Nihad Hotić" for Moj Mojster Gradnja created.');
 
   // --- Fetch Tenant User for Global Updates ---
   // Using A1 user for seeding globals related to A1 tenant

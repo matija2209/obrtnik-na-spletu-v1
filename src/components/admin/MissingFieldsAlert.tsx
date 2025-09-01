@@ -21,7 +21,7 @@ export const MissingFieldsAlert = ({
       : "Please ensure all required fields for the selected template are filled."
 
   return (
-    <ContainedSection bgColor="bg-gray-100">
+    <ContainedSection overlayClassName="bg-gray-100">
       <div>
         <Alert variant="default">
           <AlertTitle>{title}</AlertTitle>

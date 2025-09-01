@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 // Define types for the sub-components
 type TitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
-  size?: 'big' | 'small';
+  size?: 'big' | 'small' | 'hero';
 };
 type DescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
 
@@ -43,7 +43,7 @@ function SectionHeading({
   return (
     <div
       className={cn(
-        "text-left md:text-center mb-8 space-y-4 max-w-4xl mx-auto",
+        "text-left md:text-center mb-12 mx-auto",
         className
       )}
       {...props}
@@ -64,15 +64,18 @@ function Title({
     <h2
       className={cn(
         // Base styles for all sizes
-        "font-semibold text-gray-900 dark:text-gray-100 tracking-tight leading-tight",
+        "font-semibold text-gray-900 dark:text-gray-100 tracking-tight leading-none",
         // Size-specific styles
-        size === 'big' 
-          ? "text-3xl md:text-4xl lg:text-5xl 2xl:text-6xl" 
-          : "text-2xl md:text-3xl lg:text-4xl 2xl:text-5xl",
+        size === 'hero' 
+          ? "text-5xl md:text-6xl lg:text-6xl xl:text-6xl 2xl:text-7xl" 
+          : size === 'big' 
+            ? "text-4xl md:text-4xl lg:text-4xl 2xl:text-4xl" 
+            : "text-xl md:text-2xl lg:text-3xl 2xl:text-3xl",
+          "mb-4",
         className
       )}
       style={{
-        textShadow: "1px 1px 3px rgba(0, 0, 0, 0.1)",
+        // textShadow: "1px 1px 3px rgba(0, 0, 0, 0.1)",
       }}
       {...props}
     >
@@ -90,7 +93,7 @@ function Description({
   return (
     <p
       className={cn(
-        "text-base opacity-90 text-gray-600",
+        "text-base text-dark/90",
         className
       )}
       {...props}

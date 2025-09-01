@@ -50,6 +50,7 @@ import { ServicePages } from '@/collections/ServicePages'; // Import the new Ser
 import SubServices from '@/collections/SubServices'
 import { Posts } from '@/collections/Posts'
 import { BusinessInfoCollection } from '@/collections/BusinessInfoCollection'
+import { seed } from '@/seed'
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -113,7 +114,7 @@ const addDeployHook = <T extends CollectionConfig | GlobalConfig>(config: T): T 
   };
 };
 const allCollections: CollectionConfig[] = [
-  Users,
+    Users,
   Media,
   Machinery,
   Services,
@@ -138,7 +139,11 @@ const allCollections: CollectionConfig[] = [
   Collections,
   Posts,
   Customers,
-  Orders
+  Orders,
+  BusinessInfoCollection,
+  NavbarCollection,
+  FooterCollection,
+  Tenants,
 ];
 
 
@@ -236,11 +241,11 @@ export default buildConfig({
     },
   },
   editor: lexicalEditor({}),
-  // onInit: async (args) => {
-  //   if (process.env.SEED === 'true') {
-  //     await seed(args)
-  //   }
-  // },
+  onInit: async (args) => {
+    await seed(args)
+    if (process.env.SEED === 'true') {
+    }
+  },
   i18n: {
     supportedLanguages: { en, sl },
     fallbackLanguage: 'sl',

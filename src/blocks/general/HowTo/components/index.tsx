@@ -1,8 +1,9 @@
 import type {  HowToBlock } from "@payload-types"
 import DefaultHowToBlock from "./default-howto-block"
 import { SearchParams } from "next/dist/server/request/search-params"
+import { Params } from "next/dist/server/request/params"
 
-const HowToBlockCoordinator = ({ searchParams, ...block }: HowToBlock  & { searchParams?: SearchParams }) => {
+const HowToBlockCoordinator = ({ searchParams,params, ...block }: HowToBlock  & { searchParams?: SearchParams ,params?:Params}) => {
   switch (block.template) {
     case "default":
       return <DefaultHowToBlock {...block} />

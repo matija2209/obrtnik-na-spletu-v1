@@ -21,16 +21,6 @@ export const Services: CollectionConfig = {
     description: 'Upravljajte seznam storitev, ki jih ponujate.',
     group: 'Dejavnost',
     defaultColumns: ['title', 'slug', 'updatedAt'],
-    components:{
-      beforeList:['/components/admin/CreateServicePageFromService']
-    }
-    // components:{
-    //   views:{
-    //     list: {
-    //       Component: "/components/admin/collections/services/services-list.tsx",
-    //     }
-    //   }
-    // }
   },
   access: {
     read: anyone,

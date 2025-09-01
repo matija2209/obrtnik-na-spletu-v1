@@ -4,7 +4,7 @@ import type { Field } from 'payload'
 
 type Slug = (fieldToUse?: string, overrides?: Partial<Field>) => Field
 
-export const slugField: Slug = (fieldToUse = 'title', overrides = {}) =>
+export const slugField: Slug = (fallbackField = 'title', overrides = {}) =>
   deepMerge<Field, Partial<Field>>(
     {
       name: 'slug',
@@ -13,7 +13,7 @@ export const slugField: Slug = (fieldToUse = 'title', overrides = {}) =>
         position: 'sidebar',
       },
       hooks: {
-        beforeValidate: [formatSlug(fieldToUse)],
+        beforeValidate: [formatSlug(fallbackField)],
       },
       index: true,
       label: 'Pot',

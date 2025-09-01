@@ -1,9 +1,9 @@
 import { SearchParams } from 'next/dist/server/request/search-params';
-import DefaultFAQSection from './default-faq-section'; // Corrected import path
+import { Params } from 'next/dist/server/request/params';import DefaultFAQSection from './default-faq-section'; // Corrected import path
 import type { FAQBlock as FaqBlockType, FaqItem as PayloadFaqItem } from '@payload-types'; // Corrected assumed type name and import Payload's FaqItem type
 
 
-const FAQBlock = async ({ searchParams, ...block }: FaqBlockType & { searchParams?: SearchParams }) => {
+const FAQBlock = async ({ searchParams,params, ...block }: FaqBlockType & { searchParams?: SearchParams ,params?:Params}) => {
   // Assuming a template field exists
   switch (block?.template) {
     case 'default':

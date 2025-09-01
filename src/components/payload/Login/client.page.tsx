@@ -61,7 +61,7 @@ export const Login = ({ tenantSlug, tenantDomain }: Props) => {
         if (tenantDomain) {
           router.push('/tenant-domains')
         } else {
-          router.push(`/tenant-slugs/${tenantSlug}`)
+          router.push(`/${tenantSlug}`)
         }
       }
     } else if (actionRes.status === 400 && json?.errors?.[0]?.message) {
@@ -77,7 +77,7 @@ export const Login = ({ tenantSlug, tenantDomain }: Props) => {
         <div className="flex justify-center py-4">
           <Image
             src="/obrtnik-na-spletu-transparent.png"
-            alt="Obrtnik na spletu Logo"
+            alt="Laneks Logo"
             width={100}
             height={100}
             className="h-auto"

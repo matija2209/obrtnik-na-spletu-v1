@@ -4,12 +4,13 @@ import { ContainedSection } from '@/components/layout/container-section';
 import SectionHeading from '@/components/layout/section-heading';
 
 import { Media, ServiceAreaBlock } from '@payload-types';
+import { Params } from 'next/dist/server/request/params';
 import MapWithCircleOverlay from '@/components/misc/map-with-circle-overlay';
 import { getBackgroundClass, getColorClasses, type ColorScheme } from '@/utilities/getColorClasses';
 import { cn } from '@/lib/utils';
-import { getBusinessInfo } from '@/lib/payload';
+import { getBusinessInfo, getTenantIdBySlug } from '@/lib/payload';
 
-export default async function DefaultServiceAreaSection(props: ServiceAreaBlock) {
+export default async function DefaultServiceAreaSection(props: ServiceAreaBlock & { params?: Params }) {
   const {
     title,
     description,
@@ -21,15 +22,17 @@ export default async function DefaultServiceAreaSection(props: ServiceAreaBlock)
     id,
     template,
     bgColor: backgroundColor,
-    isTransparent
+    isTransparent,
+    params
   } = props;
-
+  const { tenant } = params || {}
   // Get color classes and background styling
 
   const backgroundClass = getBackgroundClass( backgroundColor as any);
   const overlayClass = isTransparent ? 'bg-transparent' : backgroundClass;
 
-  const businessInfo = await getBusinessInfo()
+  const tenantId = tenant ? await getTenantIdBySlug(typeof tenant === 'string' ? tenant : tenant[0]) : null;
+  const businessInfo = tenantId ? await getBusinessInfo(tenantId) : null;
 
   // Process the image URL
   return (
@@ -47,7 +50,7 @@ export default async function DefaultServiceAreaSection(props: ServiceAreaBlock)
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start w-full mt-8">
           {/* Map Image */}
-          <MapWithCircleOverlay lat={businessInfo.coordinates.latitude} lng={businessInfo.coordinates.longitude} radius={businessInfo.radius} disableDefaultUI={true}></MapWithCircleOverlay>
+          {/* <MapWithCircleOverlay lat={businessInfo.coordinates.latitude} lng={businessInfo.coordinates.longitude} radius={businessInfo.radius} disableDefaultUI={true}></MapWithCircleOverlay> */}
 
           {/* Content */}
           <div className="flex flex-col gap-6">

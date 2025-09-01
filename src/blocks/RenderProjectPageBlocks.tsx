@@ -10,6 +10,7 @@ import RelatedProjectsBlock from '@/blocks/projects/RelatedProjects/components'
 import CtaBlock from './general/Cta/components'
 
 import { ProjectPage } from '@payload-types'
+import { Params } from 'next/dist/server/request/params'
 
 const blockComponents = {
   hero: HeroBlock,
@@ -27,8 +28,9 @@ export const RenderProjectPageBlocks: React.FC<{
   pageType: ProjectPage["pageType"],
   blocks: ProjectPage["layout"],
   searchParams?: Record<string, string | string[] | undefined>
+  params?: Params
 }> = (props) => {
-  const { blocks, pageType, searchParams } = props
+  const { blocks, pageType, searchParams, params } = props
 
   
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
@@ -44,7 +46,7 @@ export const RenderProjectPageBlocks: React.FC<{
               const blockContent = (
                 <React.Fragment key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} disableInnerContainer searchParams={searchParams} />
+                  <Block {...block} disableInnerContainer searchParams={searchParams} params={params} />
                 </React.Fragment>
               )
 

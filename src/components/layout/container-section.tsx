@@ -1,18 +1,26 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
 
+import { ImageInput } from '@/utilities/images/getImageUrl'
+import {  Media } from '@payload-types'
+import PayloadImage from '../ui/PayloadImage'
+
 interface ContainedSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode
   id?: string
   sectionClassName?: string
   containerClassName?: string
-  bgColor?: string
-  contentBgColor?: string
+  bgc?: string
+  contentbgc?: string
   showGridLines?: boolean
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none'
   padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl'
   verticalPadding?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
-  backgroundImage?: string
+  // Enhanced to support both optimized images and string URLs
+  backgroundImage?: string | ImageInput
+  backgroundImagePreferredSize?: keyof NonNullable<Media['sizes']>
+  backgroundImageSizes?: string
+  backgroundImagePriority?: boolean
   halfWidthImageOnDesktop?: boolean
   imagePosition?: 'left' | 'right'
   overlayClassName?: string
@@ -25,13 +33,16 @@ function ContainedSection({
   id,
   sectionClassName = '',
   containerClassName = '',
-  bgColor = 'bg-primary',
-  contentBgColor,
+  bgc = 'bg-primary',
+  contentbgc,
   showGridLines = false,
   maxWidth = '7xl',
-  padding = 'lg',
+  padding = 'sm',
   verticalPadding = 'xl',
   backgroundImage = '',
+  backgroundImagePreferredSize = 'tablet',
+  backgroundImageSizes = '100vw',
+  backgroundImagePriority = false,
   halfWidthImageOnDesktop = false,
   imagePosition = 'right',
   overlayClassName,
@@ -40,11 +51,11 @@ function ContainedSection({
 }: ContainedSectionProps) {
   // Map padding options to Tailwind classes
   const paddingMap = {
-    none: '',
-    sm: 'px-3 sm:px-4',
-    md: 'px-4 sm:px-6 lg:px-8',
-    lg: 'px-4 sm:px-6 lg:px-12',
-    xl: 'px-6 sm:px-8 lg:px-16'
+    none: 'px-2 ',
+    sm: 'px-2 sm:px-4',
+    md: 'px-2 sm:px-6 lg:px-8',
+    lg: 'px-2 sm:px-6 lg:px-12',
+    xl: 'px-2 sm:px-8 lg:px-16'
   }
 
   // Map vertical padding options to Tailwind classes
@@ -83,14 +94,53 @@ function ContainedSection({
   // Get the max width class safely
   const maxWidthClass = maxWidthMap[maxWidth] || maxWidthMap['6xl'];
   
-  // Create a pseudo-element for the background image when halfWidthImageOnDesktop is true
-  // This allows for more control over the background image
-  const hasHalfWidthImage = halfWidthImageOnDesktop && backgroundImage;
+  // Determine if we have a background image
+  const hasBackgroundImage = Boolean(backgroundImage);
+  const hasHalfWidthImage = halfWidthImageOnDesktop && hasBackgroundImage;
+  
+  // Determine if backgroundImage is a string URL or Media object
+  const isStringUrl = typeof backgroundImage === 'string';
+  const isMediaObject = backgroundImage && typeof backgroundImage === 'object';
 
-  // Combine explicit backgroundImage with other styles
+  // Remove backgroundImage from style since we'll handle it with components
   const combinedStyle = {
     ...style,
-    ...(backgroundImage && !halfWidthImageOnDesktop && { backgroundImage: `url(${backgroundImage})` }),
+  };
+
+  // Render background image component
+  const renderBackgroundImage = (additionalClassName?: string) => {
+    if (!hasBackgroundImage) return null;
+
+    if (isStringUrl && backgroundImage) {
+      // Fallback to CSS background for string URLs
+      return (
+        <div 
+          className={cn(
+            "absolute inset-0 bg-cover bg-center",
+            additionalClassName
+          )}
+          style={{ backgroundImage: `url(${backgroundImage})` }}
+        />
+      );
+    }
+
+    if (isMediaObject) {
+      // Use PayloadImage for Media objects
+      return (
+        <div className="absolute inset-0">
+          <PayloadImage
+            image={backgroundImage as Media}
+            className={cn("w-full h-full object-cover", additionalClassName)}
+            sizes={backgroundImageSizes}
+            context="background"
+            priority={backgroundImagePriority}
+            alt=""
+          />
+        </div>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -99,42 +149,55 @@ function ContainedSection({
       style={combinedStyle}
       className={cn(
         'relative overflow-hidden',
-        !halfWidthImageOnDesktop && 'bg-cover bg-center',
-        !contentBgColor && bgColor,
+        !contentbgc && bgc,
         verticalPaddingClass,
         sectionClassName
       )}
     >
+      {/* Full-width background image */}
+      {hasBackgroundImage && !halfWidthImageOnDesktop && (
+        <div className="absolute inset-0 z-0">
+          {renderBackgroundImage()}
+        </div>
+      )}
+
+      {/* Half-width background image for desktop */}
       {hasHalfWidthImage && (
         <div 
           className={cn(
-            "absolute inset-y-0 left-0 right-0 z-0 bg-cover bg-center",
+            "absolute inset-y-0 left-0 right-0 z-0",
             imagePosition === 'left' ? 'md:right-1/2' : 'md:left-1/2'
           )}
-          style={{ backgroundImage: `url(${backgroundImage})` }}
-        />
+        >
+          {renderBackgroundImage()}
+        </div>
       )}
-      {/* Content background color */}
-      {contentBgColor && hasHalfWidthImage && (
+
+      {/* Content background color overlay */}
+      {contentbgc && hasHalfWidthImage && (
         <div 
           className={cn(
-            "absolute inset-y-0 left-0 right-0 z-0",
+            "absolute inset-y-0 left-0 right-0 z-10",
             imagePosition === 'left' ? 'md:left-1/2' : 'md:right-1/2',
-            contentBgColor
+            contentbgc
           )}
         />
       )}
+
+      {/* Custom overlay */}
       {overlayClassName && (
         <div
           className={cn(
-            'absolute inset-0 z-0',
+            'absolute inset-0 z-5',
             overlayClassName
           )}
         />
       )}
+
+      {/* Content container - highest z-index */}
       <div
         className={cn(
-          "relative z-10 w-full mx-auto",
+          "relative z-30 w-full mx-auto",
           paddingClass,
           maxWidthClass,
           containerClassName,

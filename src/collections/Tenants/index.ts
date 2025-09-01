@@ -23,12 +23,7 @@ export const Tenants: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'Struktura',
-    components:{
-      // beforeList: ['/components/admin/collections/tenants/populate-with-ai.tsx'],
-      edit:{
-        beforeDocumentControls:['/components/admin/collections/tenants/populate-with-ai.tsx'],
-      }
-    },
+   
     defaultColumns:["name","domain","updatedAt"],
   },
   hooks: {

@@ -16,6 +16,7 @@ import { Page } from '@payload-types'
 import FeaturedProductsCoordinator from './general/FeaturedProducts/components'
 import TextBlockCoordinator from './general/Text/components'
 import { SearchParams } from 'next/dist/server/request/search-params'
+import { Params } from 'next/dist/server/request/params'
 
 const blockComponents = {
   about: AboutBlock,
@@ -39,8 +40,9 @@ export const RenderGeneralPageBlocks: React.FC<{
   pageType: Page["pageType"],
   blocks: Page["layout"],
   searchParams?: SearchParams
+  params?: Params
 }> = (props) => {
-  const { blocks, pageType, searchParams } = props
+  const { blocks, pageType, searchParams, params } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
@@ -57,7 +59,7 @@ export const RenderGeneralPageBlocks: React.FC<{
               const blockContent = (
                 <React.Fragment key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} searchParams={searchParams} />
+                  <Block {...block} searchParams={searchParams} params={params} />
                 </React.Fragment>
               )
 

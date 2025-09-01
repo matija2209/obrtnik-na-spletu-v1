@@ -16,9 +16,7 @@ export const Products: CollectionConfig = {
     description: 'Čistilne naprave za prikaz na spletni strani.',
     group: 'Prodaja',
     listSearchableFields: ['title', 'sku', 'manufacturer', 'type'],
-    components: {
-      beforeList: ['/components/admin/ImportPavingProducts']
-    },
+   
   },
   
   access: {

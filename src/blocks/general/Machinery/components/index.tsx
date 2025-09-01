@@ -2,8 +2,8 @@ import type { MachineryBlock as MachineryBlockType } from '@payload-types';
 import { ContainedSection } from '@/components/layout/container-section';
 import { getBackgroundClass, getColorClasses, type ColorScheme } from '@/utilities/getColorClasses';
 import { SearchParams } from 'next/dist/server/request/search-params';
-
-const MachineryBlock = ({ searchParams, ...block }: MachineryBlockType  & { searchParams?: SearchParams }) => {
+import { Params } from 'next/dist/server/request/params';
+const MachineryBlock = ({ searchParams,params, ...block }: MachineryBlockType  & { searchParams?: SearchParams ,params?:Params}) => {
   const { 
     title, 
     description, 

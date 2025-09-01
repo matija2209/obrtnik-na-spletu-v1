@@ -1,9 +1,9 @@
 import { SearchParams } from 'next/dist/server/request/search-params';
-import ProjectHighlightsSectionVariant2 from './ProjectHighlightsSectionVariant2';
+import { Params } from 'next/dist/server/request/params';import ProjectHighlightsSectionVariant2 from './ProjectHighlightsSectionVariant2';
 import type { ProjectHighlightsBlock } from '@payload-types';
 import { Suspense } from 'react';
 
-const ProjectHighlightsBlockComponent = async ({ searchParams, ...block }: ProjectHighlightsBlock  & { searchParams?: SearchParams }) => {
+const ProjectHighlightsBlockComponent = async ({ searchParams,params, ...block }: ProjectHighlightsBlock  & { searchParams?: SearchParams ,params?:Params}) => {
   switch (block?.template) {
     case 'default':
     case 'variant1':

@@ -3,7 +3,7 @@
 import type { ListViewClientProps } from 'payload'
 import { useListQuery, useTranslation } from '@payloadcms/ui'
 import React from 'react'
-import Image from 'next/image'
+import PayloadImage from '@/components/ui/PayloadImage'
 import { Media, Media as MediaType } from '@payload-types'
 
 // ShadCN UI components
@@ -133,13 +133,12 @@ function MediaList(props: ListViewClientProps) {
                 <TableCell className="py-2 px-2">
                   {(mediaItem.thumbnailURL || mediaItem.url) && (
                     <div className="relative h-12 w-16 bg-gray-100 rounded overflow-hidden">
-                      <Image
+                      <img
                         src={mediaItem.thumbnailURL || mediaItem.url || ''} 
                         alt={mediaItem.alt || mediaItem.filename || ''}
-                        fill
-                        sizes="64px"
-                        className="object-contain"
-                        priority={false}
+                        className="absolute inset-0 w-full h-full object-contain"
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                   )}

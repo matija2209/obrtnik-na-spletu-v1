@@ -1,57 +1,49 @@
 import React from 'react';
 import Link from 'next/link';
 import { Cta } from '@payload-types';
-import CtaButton from "@/components/common/cta-buttons";
+
+import CtaButtons from '../common/cta-buttons';
+import { ColorScheme, getColorClasses } from '@/utilities/getColorClasses';
+import { cn } from '@/lib/utils';
+import SectionHeading from '../layout/section-heading';
 
 interface TitleSubtitleProps {
   preTitle?: React.ReactNode;
   title: React.ReactNode;
   subtitle?: React.ReactNode;
   ctas?: Cta[]
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
 }
 
 const TitleSubtitle: React.FC<TitleSubtitleProps> = ({
   preTitle,
   title,
   subtitle,
-  ctas
+  ctas,
+  variant
 }) => {
   return (
     <div className="">
       {preTitle && (
-        <p className="text-primary font-bold text-sm sm:text-base md:text-lg mb-2 tracking-wider">
+        <p className={cn("text-sm sm:text-base md:text-lg  tracking-wider",
+        )}>
           {preTitle}
         </p>
       )}
-      <h1 className="
-        text-4xl     // Base (mobile) size
-        sm:text-4xl  // Small screens
-        md:text-5xl  // Medium screens
-        lg:text-5xl  // Large screens
-        xl:text-6xl  // Extra-large screens
-        2xl:text-7xl // 2X large screens
-        font-bold 
-        mb-4
-      ">{title}</h1>
-      {subtitle && (
-        <p className="
-          text-lg     // Base (mobile) size
-          sm:text-xl  // Small screens
-          md:text-xl  // Medium screens
-          lg:text-2xl // Large screens
-          xl:text-2xl // Extra-large screens
-          2xl:text-3xl // 2X large screens
-          mb-8
-        ">
-          {subtitle}
-        </p>
-      )}
+      <SectionHeading
+      />
+      <SectionHeading.Title>
+        {title}
+      </SectionHeading.Title>
+      <SectionHeading.Description>
+        {subtitle}
+      </SectionHeading.Description>
+      
       {ctas && ctas.length > 0 && (
-        <div className="flex flex-col sm:flex-row gap-4 mt-8">
-          {ctas.map((cta) => (
-            <CtaButton key={cta.id} mainCta={cta} />
-          ))}
-        </div>
+        <CtaButtons
+        variant={variant}
+          ctas={ctas as Cta[]}
+        />
       )}
     </div>
   );

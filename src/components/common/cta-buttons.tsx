@@ -1,84 +1,193 @@
-'use client';
 import React from 'react';
 import Link from 'next/link';
-import { Button } from "@/components/ui/button";
-import { Phone, Mail, LucideProps } from 'lucide-react';
-import FacebookIcon from '@/components/common/icons/facebook-icon';
-import GoogleIcon from '@/components/common/icons/google-icon';
-import { Cta } from "@payload-types";
-import type { VariantProps } from 'class-variance-authority';
-import { buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Cta } from '@payload-types';
+import * as LucideIcons from 'lucide-react';
+import { type ColorScheme } from '@/utilities/getColorClasses';
 
-// Define a type that can hold both Lucide icons and our custom icon component
-type IconType = React.ForwardRefExoticComponent<Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>> | React.FC<React.SVGProps<SVGSVGElement>>;
+// Type for button variants matching shadcn/ui button variants
+type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
 
-// Define the button variant type based on the actual variants used by the Button component
-type ButtonVariant = VariantProps<typeof buttonVariants>['variant'];
-
-interface CtaButtonProps {
-  // Use the original Cta type, we will handle the mapping inside the component
-  mainCta?: Cta; 
+interface CtaComponentProps {
+  ctas: Cta | Cta[] | null | undefined | number | (number | Cta)[];
+  className?: string;
+  variant?: ButtonVariant;
+  size?: 'default' | 'sm' | 'lg' | 'icon';
+  containerClassName?: string;
+  colorScheme?: ColorScheme; // New prop for color scheme support
 }
 
-const CtaButton: React.FC<CtaButtonProps> = ({ mainCta }) => {
-  if (!mainCta) {
-    return null;
+// Helper function to get Lucide icon component
+const getLucideIcon = (iconName: string) => {
+  if (!iconName) return null;
+  
+  // Convert iconName to PascalCase if needed
+  const formattedIconName = iconName.charAt(0).toUpperCase() + iconName.slice(1);
+  
+  // @ts-ignore - Dynamic icon access
+  const IconComponent = LucideIcons[formattedIconName] || LucideIcons[iconName];
+  
+  return IconComponent || null;
+};
+
+// Helper function to get the link URL from CTA
+const getCtaUrl = (cta: Cta): string => {
+  if (cta.link?.type === 'external' && cta.link.externalUrl) {
+    return cta.link.externalUrl;
   }
-
-  // Determine href and target from the link object
-  const linkData = mainCta.link;
-  let href = '#'; // Default href
-  if (linkData) {
-    if (linkData.type === 'external') {
-      href = linkData.externalUrl || '#';
-    } else if (linkData.type === 'internal') {
-      // Handle potential object or ID for internalLink
-      const internalLink = linkData.internalLink;
-      if (typeof internalLink === 'object' && internalLink?.slug) {
-        href = `/${internalLink.slug}`;
-      } else {
-        // Fallback if internalLink is just an ID or slug is missing (might need adjustment based on actual data)
-        href = '/'; 
-      }
-    }
+  
+  if (cta.link?.type === 'internal' && cta.link.internalLink) {
+    // Assuming the page has a slug field
+    const page = cta.link.internalLink as any;
+    return `/${page.slug || page.id}`;
   }
-  const target = linkData?.newTab ? '_blank' : '_self';
+  
+  return '#';
+};
 
-  // Map Cta type to Button variant
-  let buttonVariant: ButtonVariant = 'default'; // Default to 'default'
-  if (mainCta.ctaType && mainCta.ctaType !== 'primary' && mainCta.ctaType !== 'icon') {
-    // Assign if it's a valid ButtonVariant (excluding 'primary' and 'icon')
-    buttonVariant = mainCta.ctaType as ButtonVariant;
-  } else if (mainCta.ctaType === 'primary') {
-    // Map 'primary' from Cta to 'default' for Button
-    buttonVariant = 'default';
-  }
-  // Note: 'icon' type from Cta is not directly mapped to a Button variant style here,
-  // it defaults to 'default'. If specific 'icon' styling is needed, Button component variants would need update.
-
-  let IconComponent: IconType = Phone;
-
-  // Update icon logic to use the derived href
-  if (href.startsWith('mailto:')) {
-    IconComponent = Mail;
-  } else if (href.includes('facebook.com')) {
-    IconComponent = FacebookIcon;
-  } else if (href.includes('google.com')) {
-    IconComponent = GoogleIcon;
-  } else if (href.startsWith('tel:')) {
-    IconComponent = Phone;
-  }
-  // TODO: Add logic for selecting icon based on mainCta.icon field if needed
-
-  return (
-    <Link href={href} target={target} passHref>
-      {/* Use the mapped buttonVariant */}
-      <Button className="flex items-center gap-1 w-full sm:w-auto" variant={buttonVariant}> 
-        <IconComponent className="mr-2 h-4 w-4" />
-        {mainCta.ctaText}
+// Single CTA renderer
+const SingleCta: React.FC<{
+  cta: Cta;
+  variant?: ButtonVariant;
+  size?: 'default' | 'sm' | 'lg' | 'icon';
+  className?: string;
+  colorScheme?: ColorScheme;
+  ctaIndex?: number;
+}> = ({ cta, variant, size = 'default', className, colorScheme, ctaIndex }) => {
+  const url = getCtaUrl(cta);
+  const shouldOpenInNewTab = cta.link?.newTab || false;
+  const isExternal = cta.link?.type === 'external';
+  
+  // Determine the button variant with color scheme awareness
+  
+  // Get the icon component if specified
+  const IconComponent = cta.icon ? getLucideIcon(cta.icon) : null;
+  
+  // Determine if this is an icon-only button
+  const isIconOnly = cta.ctaType === 'icon' || size === 'icon';
+  
+  const buttonContent = (
+    <>
+      {IconComponent && (
+        <IconComponent 
+          className={cn(
+            "h-4 w-4",
+            !isIconOnly && cta.ctaText && "mr-2"
+          )} 
+        />
+      )}
+      {!isIconOnly && cta.ctaText}
+    </>
+  );
+  
+  const buttonClassName = cn(
+    cta.ctaClassname,
+    className
+  );
+  
+  // For external links or links that should open in new tab
+  if (isExternal || shouldOpenInNewTab) {
+    return (
+      <Button
+        variant={variant}
+        size={size}
+        className={buttonClassName}
+        asChild
+      >
+        <a
+          href={url}
+          target={shouldOpenInNewTab ? '_blank' : '_self'}
+          rel={isExternal ? 'noopener noreferrer' : undefined}
+        >
+          {buttonContent}
+        </a>
       </Button>
-    </Link>
+    );
+  }
+  
+  // For internal links
+  return (
+    <Button
+      variant={variant}
+      size={size}
+      className={buttonClassName}
+      asChild
+    >
+      <Link href={url}>
+        {buttonContent}
+      </Link>
+    </Button>
   );
 };
 
-export default CtaButton; 
+// Main CTA Component
+export const CtaButtons: React.FC<CtaComponentProps> = ({
+  ctas,
+  className,
+  variant,
+  size = 'default',
+  containerClassName,
+  colorScheme
+}) => {
+  // Handle single CTA
+  if (!ctas || typeof ctas === 'number' || typeof ctas === 'string') {
+    return null;
+  }
+
+  if (!Array.isArray(ctas)) {
+    return (
+      <SingleCta 
+        cta={ctas} 
+        variant={variant} 
+        size={size} 
+        className={className} 
+        colorScheme={colorScheme}
+        ctaIndex={0}
+      />
+    );
+  }
+  
+  // Handle multiple CTAs
+  if (ctas.length === 0) {
+    return null;
+  }
+  
+  if (ctas.length === 1 && typeof ctas[0] === 'object') {
+    return (
+      <SingleCta 
+        cta={ctas[0]} 
+        variant={variant} 
+        size={size} 
+        className={className} 
+        colorScheme={colorScheme}
+        ctaIndex={0}
+      />
+    );
+  }
+  
+  // Multiple CTAs - render in a container with index-aware variants
+  return (
+    <div className={cn("flex flex-wrap gap-2", containerClassName)}>
+      {ctas.map((cta, index) => {
+        if (typeof cta === 'number') {
+          return null;
+        }
+        return (
+          <SingleCta
+            key={cta.id || `cta-${index}`}
+            cta={cta}
+            variant={variant}
+            size={size}
+            className={className}
+            colorScheme={colorScheme}
+            ctaIndex={index}
+          />
+        )
+      })}
+    </div>
+  );
+};
+
+// Export default
+export default CtaButtons;

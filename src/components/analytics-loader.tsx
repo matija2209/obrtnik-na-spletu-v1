@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { GoogleAnalytics } from '@next/third-parties/google'
 
 // You can keep the GA ID here or pass it as a prop
-const GA_MEASUREMENT_ID = "G-55LCBJRWCW"; 
+const GA_MEASUREMENT_ID = "G-QB0V12YPZ1"; 
 
 export default function AnalyticsLoader() {
   const [consentGiven, setConsentGiven] = useState(false);

@@ -16,6 +16,7 @@ import { Page, ProductPage } from '@payload-types'
 import FeaturedProductsCoordinator from './general/FeaturedProducts/components'
 import ProductFormBlockCoordinator from './shop/ProductForm/components'
 import { SearchParams } from 'next/dist/server/request/search-params'
+import { Params } from 'next/dist/server/request/params'
 
 const blockComponents = {
   product_form: ProductFormBlockCoordinator,
@@ -39,8 +40,9 @@ export const RenderProductPageBlocks: React.FC<{
   pageType: ProductPage["pageType"],
   blocks: ProductPage["layout"],
   searchParams?: SearchParams
+  params?: Params
 }> = (props) => {
-  const { blocks, pageType, searchParams } = props
+  const { blocks, pageType, searchParams, params } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
@@ -56,7 +58,7 @@ export const RenderProductPageBlocks: React.FC<{
               const blockContent = (
                 <React.Fragment key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} disableInnerContainer searchParams={searchParams} />
+                  <Block {...block} disableInnerContainer searchParams={searchParams} params={params} />
                 </React.Fragment>
               )
 

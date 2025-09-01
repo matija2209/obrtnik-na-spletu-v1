@@ -6,6 +6,7 @@ import HeroBlock from '@/blocks/general/Hero/components'
 import ProjectHighlightsBlockComponent from './general/ProjectHighlights/components'
 
 import { ServicePage } from '@payload-types'
+import { Params } from 'next/dist/server/request/params'
 import AboutProjectBlock from './projects/About/components'
 import AboutBlock from './general/About/components'
 import RelatedProjectsBlock from './projects/RelatedProjects/components'
@@ -34,8 +35,9 @@ export const RenderServicesPageBlocks: React.FC<{
   pageType: ServicePage["pageType"],
   blocks: ServicePage["layout"],
   searchParams?: Record<string, string | string[] | undefined>
+  params?: Params
 }> = (props) => {
-  const { blocks, pageType, searchParams } = props
+  const { blocks, pageType, searchParams, params } = props
 
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
 
@@ -50,7 +52,7 @@ export const RenderServicesPageBlocks: React.FC<{
               const blockContent = (
                 <React.Fragment key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
-                  <Block {...block} disableInnerContainer searchParams={searchParams} />
+                  <Block {...block} disableInnerContainer searchParams={searchParams} params={params} />
                 </React.Fragment>
               )
 

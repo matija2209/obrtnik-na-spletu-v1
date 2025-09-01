@@ -1,22 +1,22 @@
 'use client';
-import Image from 'next/image';
 import Link from 'next/link';
+import PayloadImage from '@/components/ui/PayloadImage';
+import type { Media } from '@payload-types';
 // Remove BusinessInfo import if no longer needed elsewhere in the file
 // import type { BusinessInfo } from '@payload-types'; 
 // Remove getLogoUrl import
 // import { getLogoUrl } from '@/lib/payload';
 
-// Define props interface - remove businessData, add logoSrc
+// Define props interface
 interface LogoProps {
   isScrolled?: boolean;
   location?: 'navbar' | 'footer' | 'mobile-menu';
-  logoSrc?: string; // Add this prop
+  logo?: Media | null; // Changed from logoSrc to logo (Media object)
   title?: string;
-  // businessData?: BusinessInfo; // Remove this prop
 }
 
-// Logo Component - update props destructuring
-const Logo = ({ title,isScrolled = false, location, logoSrc }: LogoProps) => {
+// Logo Component
+const Logo = ({ title, isScrolled = false, location, logo }: LogoProps) => {
   // Determine text color based on location and scroll state
   const getTextColor = () => {
     if (location === 'footer') {
@@ -29,22 +29,51 @@ const Logo = ({ title,isScrolled = false, location, logoSrc }: LogoProps) => {
     return isScrolled ? 'text-secondary' : 'text-primary-foreground';
   };
 
-  // Remove the logic for determining logoVariant and calling getLogoUrl
-  // const logoVariant = location === 'footer' || location === 'mobile-menu' || (isScrolled && location === 'navbar') 
-  //   ? 'dark' 
-  //   : 'light';
-  // const logoSrc = getLogoUrl(businessData, logoVariant as 'dark' | 'light');
+  // Define size constraints based on location
+  const getSizeConstraints = () => {
+    switch (location) {
+      case 'navbar':
+        return {
+          className: 'h-8 w-auto max-w-[120px] sm:h-10 sm:max-w-[150px]',
+          context: 'thumbnail' as const
+        };
+      case 'footer':
+        return {
+          className: 'h-12 w-auto max-w-[180px]',
+          context: 'card' as const
+        };
+      case 'mobile-menu':
+        return {
+          className: 'h-8 w-auto max-w-[120px]',
+          context: 'thumbnail' as const
+        };
+      default:
+        return {
+          className: 'h-10 w-auto max-w-[150px]',
+          context: 'thumbnail' as const
+        };
+    }
+  };
+
+  const sizeConstraints = getSizeConstraints();
 
   return (
-    <Link href="/" className="flex items-center">
-      {logoSrc && <Image
-        src={logoSrc} // Use the passed prop directly
-        alt="Rezanje in vrtanje betona Logo"
-        width={55}
-        height={20}
-        className="h-auto w-auto mr-2"
-      />}
-      {title && <span className={`hidden md:block text-2xl font-bold ${getTextColor()}`}>{title}</span>}
+    <Link href="/" className="flex items-center space-x-2">
+      {logo && (
+        <PayloadImage
+          image={logo}
+          alt={title ? `${title} Logo` : 'Logo'}
+          className={`${sizeConstraints.className} object-contain`}
+          context={sizeConstraints.context}
+          objectFit="contain"
+          priority={location === 'navbar'} // Priority for navbar logos
+        />
+      )}
+      {title && (
+        <span className={`text-lg font-bold ${getTextColor()} hidden sm:block truncate max-w-[200px]`}>
+          {title}
+        </span>
+      )}
     </Link>
   );
 };

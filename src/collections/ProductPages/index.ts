@@ -38,9 +38,7 @@ export const ProductPages: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'products', 'updatedAt'],
     group: 'Strani',
-    components: {
-      beforeList: ['/components/admin/CreateProductPagesFromProducts']
-    },
+   
     livePreview: {
       url: async ({ data, req }) => {
         const slug = typeof data?.slug === 'string' ? `/izdelki/${data.slug}` : ''

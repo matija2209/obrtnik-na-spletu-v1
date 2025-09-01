@@ -3,8 +3,9 @@ import DefaultHeroBlock from "./default-hero-block"
 
 import HeroSectionVariant7 from "./HeroSectionVariant7"
 import { SearchParams } from "next/dist/server/request/search-params"
+import { Params } from "next/dist/server/request/params"
 
-const HeroBlockComponent = async ({ searchParams, ...block }: HeroBlock  & { searchParams?: SearchParams }) => {
+const HeroBlockComponent = async ({ searchParams,params, ...block }: HeroBlock  & { searchParams?: SearchParams ,params?:Params}) => {
   switch (block.template) {
     case "default":
       return <DefaultHeroBlock {...block} />

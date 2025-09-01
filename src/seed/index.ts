@@ -5,8 +5,6 @@ import {
   seedTenants,
   seedUsers,
   // seedOpeningHours,
-  seedCtas,
-  seedMenus,
   // seedServices,
   // seedSubServices,
   // seedServicePages,
@@ -16,13 +14,7 @@ import {
   // seedForms,
   // seedMedia,
   // updateCollectionsWithMedia,
-  seedPages,
 } from './collections';
-import {
-  seedBusinessInfo,
-  seedNavbar,
-  seedFooter,
-} from './globals';
 
 // Assume payload.config is available and provides the generated config type
 // You might need to pass the config explicitly if it's not globally available
@@ -36,8 +28,8 @@ export const seed = async (payload: Payload): Promise<void> => {
     // const config = payload.config as Config;
 
     // --- Seed Tenants and Users (Prerequisites) ---
-    const { tenantA1, tenantMoj } = await seedTenants({ payload });
-    const { userForGlobalUpdates } = await seedUsers({ payload, tenantA1, tenantMoj });
+    const { demoTenant } = await seedTenants({ payload });
+    const { userForGlobalUpdates } = await seedUsers({ payload, demoTenant });
 
     // --- Create Simulated Request (Needed for Tenant-Specific Operations) ---
     const simulatedReq = createSimulatedRequest(payload, userForGlobalUpdates);
@@ -49,16 +41,14 @@ export const seed = async (payload: Payload): Promise<void> => {
     // Note: We don't include imageAltMap here as it's used internally by seedMedia
     const baseSeedArgs: {
       payload: Payload;
-      tenantA1: Tenant;
-      tenantMoj: Tenant;
+      demoTenant: Tenant;
       userForGlobalUpdates: User;
       simulatedReq: PayloadRequest;
       // seededImageIds: { [key: string]: number };
       // Optional properties are NOT defined here
     } = {
       payload,
-      tenantA1,
-      tenantMoj,
+      demoTenant,
       userForGlobalUpdates,
       simulatedReq,
       // seededImageIds,
@@ -67,8 +57,8 @@ export const seed = async (payload: Payload): Promise<void> => {
 
     // --- Seed Collections (in logical order of dependency) ---
     // const { regularHours } = await seedOpeningHours(baseSeedArgs);
-    const { ctaKontakt,ctaVseStoritve } = await seedCtas(baseSeedArgs);
-    const { mainMenu, footerMenu, socialMenu } = await seedMenus(baseSeedArgs);
+    // const { ctaKontakt,ctaVseStoritve } = await seedCtas(baseSeedArgs);
+    // const { mainMenu, footerMenu, socialMenu } = await seedMenus(baseSeedArgs);
     // const { serviceVodoinstalacije, serviceMontaza } = await seedServices(baseSeedArgs);
     // const subServiceArgs = { ...baseSeedArgs, serviceVodoinstalacije, serviceMontaza };
     // const { subServiceOdtok, subServicePipe, subServiceWC, subServiceShower } = await seedSubServices(subServiceArgs);
@@ -82,12 +72,11 @@ export const seed = async (payload: Payload): Promise<void> => {
     // const { contactForm, defaultSiteContactForm } = await seedForms(formArgs);
 
     // --- Seed Globals (depend on some collections) ---
-    const businessInfoArgs = { ...baseSeedArgs };
-    await seedBusinessInfo(businessInfoArgs);
-    const navbarArgs = { ...baseSeedArgs, mainMenu, ctaKontakt };
-    await seedNavbar(navbarArgs);
-    const footerArgs = { ...baseSeedArgs, footerMenu, socialMenu };
-    await seedFooter(footerArgs);
+
+    // const navbarArgs = { ...baseSeedArgs, mainMenu, ctaKontakt };
+    // await seedNavbar(navbarArgs);
+    // const footerArgs = { ...baseSeedArgs, footerMenu, socialMenu };
+    // await seedFooter(footerArgs);
 
     // --- Update Collections with Media (after media and collections are seeded) ---
     // const updateMediaArgs = { ...baseSeedArgs, serviceVodoinstalacije, serviceMontaza, projectAdaptacija, projectNovogradnja };
@@ -111,11 +100,11 @@ export const seed = async (payload: Payload): Promise<void> => {
       // faq3,
       // regularHours,
       // defaultSiteContactForm,
-      ctaKontakt,
+      // ctaKontakt,
       // ctaVseStoritve,
       // mainMenu,
     };
-    await seedPages(pageArgs);
+    // await seedPages(pageArgs);
 
     payload.logger.info('Database seed completed successfully.');
 

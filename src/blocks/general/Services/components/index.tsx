@@ -2,8 +2,8 @@ import type { ServicesBlock as ServicesBlockType, Service as PayloadService } fr
 import ServicesSectionVariant8 from './ServicesSectionVariant8';
 import DefaultServicesSection from './default-services-section';
 import { SearchParams } from 'next/dist/server/request/search-params';
-
-const ServicesBlock = async ({ searchParams, ...block }: ServicesBlockType  & { searchParams?: SearchParams }) => {
+import { Params } from 'next/dist/server/request/params';
+const ServicesBlock = async ({ searchParams,params, ...block }: ServicesBlockType  & { searchParams?: SearchParams ,params?:Params}) => {
   switch (block.template) {
     
     case 'variant-8':

@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import PayloadImage from '@/components/ui/PayloadImage';
 import React from 'react';
 
 interface FeatureBlockProps {
@@ -33,12 +33,12 @@ const FeatureBlock: React.FC<FeatureBlockProps> = ({
       {/* Add the animation class here */}
       <div className={`flex flex-col ${inverted ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 items-center animate-fade-in`}>
         <div className={`w-full md:w-1/2 ${imageClassName}`}>
-          <Image
+          <img
             src={image}
             className="w-full h-auto rounded-lg shadow-md"
             alt={title as string}
-            width={500}
-            height={500}
+            loading="lazy"
+            decoding="async"
           />
         </div>
 

@@ -1,10 +1,10 @@
 import { SearchParams } from 'next/dist/server/request/search-params';
-import DefaultGallerySection from './default-gallery-section';
+import { Params } from 'next/dist/server/request/params';import DefaultGallerySection from './default-gallery-section';
 
 import type { GalleryBlock as GalleryBlockType } from '@payload-types'; // Assuming GalleryBlock is the type name
 import { Suspense } from 'react';
 
-const GalleryBlock = ({ searchParams, ...block }: GalleryBlockType & { searchParams?: SearchParams }) => {
+const GalleryBlock = ({ searchParams,params, ...block }: GalleryBlockType & { searchParams?: SearchParams ,params?:Params}) => {
   // Assuming a template field might exist
   switch (block?.template) {
     case 'variant1':

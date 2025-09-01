@@ -4,8 +4,9 @@ import AboutSectionVariant3 from "./AboutSectionVariant3"
 import type { AboutBlock } from "@payload-types"
 import DefaultAboutMeSection from "./default-about-section"
 import { SearchParams } from "next/dist/server/request/search-params"
+import { Params } from "next/dist/server/request/params"
 
-const AboutBlockComponent = async ({ searchParams,...block }: AboutBlock & { searchParams?: SearchParams }) => {
+const AboutBlockComponent = async ({ searchParams,...block }: AboutBlock & { searchParams?: SearchParams ,params?:Params}) => {
   switch (block?.template) {
     case "default":
       return <DefaultAboutMeSection {...block}/>

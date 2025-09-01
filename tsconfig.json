@@ -19,6 +19,9 @@
       }
     ],
     "paths": {
+      "@cssVariables": [
+        "./cssVariables.js"
+      ],
       "@/*": ["./src/*"],
       "@payload-config": [
         "./payload.config.ts"
