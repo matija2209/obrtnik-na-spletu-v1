@@ -51,14 +51,14 @@ export const seedUsers = async (args: Pick<SeedArgs, 'payload' > & { demoTenant:
   payload.logger.info('Fetching tenant user for global updates...');
   const tenantUserResult = await payload.find({
     collection: 'users',
-    where: { email: { equals: 'info.a1instalacije@gmail.com' } },
+    where: { email: { equals: 'demo-tenant-admin@we-hate-copy-pasting.com' } },
     limit: 1,
     depth: 1, // Populate relationships like tenants
   });
 
   if (!tenantUserResult.docs[0]) {
     payload.logger.error('Could not find tenant user to perform global updates.');
-    throw new Error('Tenant user info.a1instalacije@gmail.com not found for seeding globals.');
+    throw new Error('Tenant user demo-tenant-admin@we-hate-copy-pasting.com not found for seeding globals.');
   }
   const userForGlobalUpdates = tenantUserResult.docs[0] as User; // Cast to User type
   payload.logger.info(`Using user ${userForGlobalUpdates.email} for subsequent global seeds.`);

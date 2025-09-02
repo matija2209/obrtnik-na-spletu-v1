@@ -12,6 +12,7 @@ import { RenderProjectPageBlocks } from '@/blocks/RenderProjectPageBlocks'
 import { RenderProductPageBlocks } from '@/blocks/RenderProductPageBlocks'
 import { generatePageSEOMetadata } from '@/utilities/seo'
 import { getOgParamsFromPage, getOgImageUrl } from '@/lib/og-image'
+import { LivePreviewListener } from '@/components/admin/live-preview-listener'
 
 // Route configuration constants
 const ROUTE_CONFIGS = {
@@ -191,6 +192,7 @@ export default async function SlugPage({
   // Render the page layout blocks
   return (
     <>
+      {draft && <LivePreviewListener/>}
       {renderPageBlocks(page, searchParams, params)}
     </>
   )

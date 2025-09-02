@@ -3,12 +3,17 @@ import { getPayload } from 'payload'
 
 import { draftMode } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { NextRequest } from 'next/server'
 
 import configPromise from '@payload-config'
 
 export async function GET(
-  req: NextRequest,
+  req: {
+    cookies: {
+      get: (name: string) => {
+        value: string
+      }
+    }
+  } & Request,
 ): Promise<Response> {
   const payload = await getPayload({ config: configPromise })
 
@@ -18,13 +23,13 @@ export async function GET(
   const collection = searchParams.get('collection') as CollectionSlug
   const slug = searchParams.get('slug')
   const previewSecret = searchParams.get('previewSecret')
-  const tenantSlug = searchParams.get('tenantSlug')
+  // const tenantSlug = searchParams.get('tenantSlug')
 
   if (previewSecret !== process.env.PREVIEW_SECRET) {
     return new Response('You are not allowed to preview this page', { status: 403 })
   }
 
-  if (!path || !collection || !slug || !tenantSlug) {
+  if (!path || !collection || !slug ) {
     return new Response('Insufficient search params', { status: 404 })
   }
 
@@ -52,6 +57,28 @@ export async function GET(
   }
 
   // You can add additional checks here to see if the user is allowed to preview this page
+
+  // Extract tenant slug from authenticated user
+  // DEV NOTE: Currently using first tenant only. In the future, consider adding
+  // a dropdown selector or context-aware tenant detection for users with multiple tenants.
+  let tenantSlug = 'default' // fallback
+  
+  if (user.user?.tenants && user.user.tenants.length > 0) {
+    try {
+      const firstTenant = user.user.tenants[0].tenant
+      const tenantId = typeof firstTenant === 'object' ? firstTenant.id : firstTenant
+      
+      const tenantDoc = await payload.findByID({
+        collection: 'tenants',
+        id: tenantId,
+      })
+      
+      tenantSlug = tenantDoc.slug
+    } catch (error) {
+      payload.logger.error({ err: error }, 'Error fetching tenant for preview')
+      // tenantSlug remains 'default'
+    }
+  }
 
   draft.enable()
 

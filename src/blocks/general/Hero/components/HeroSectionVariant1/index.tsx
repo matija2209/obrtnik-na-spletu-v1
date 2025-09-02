@@ -15,7 +15,7 @@ import SectionHeading from '@/components/layout/section-heading';
 import { extractIdsFromNullable } from '@/utilities/extractIds';
 import { getImage } from '@/lib/payload';
 
-const HeroSectionVariant7: React.FC<HeroBlock> = async (props) => {
+const HeroSectionVariant1: React.FC<HeroBlock> = async (props) => {
   const {
     kicker,
     title,
@@ -143,4 +143,4 @@ const HeroSectionVariant7: React.FC<HeroBlock> = async (props) => {
   );
 };
 
-export default HeroSectionVariant7;
+export default HeroSectionVariant1;
