@@ -1,4 +1,3 @@
-"use cache"
 import './globals.css'
 import { headers, draftMode } from 'next/headers';
 import { AdminBar } from '@/components/admin/admin-bar'

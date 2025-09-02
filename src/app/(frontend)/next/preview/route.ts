@@ -5,16 +5,10 @@ import { draftMode } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 import configPromise from '@payload-config'
+import { NextRequest } from 'next/server'
 
 export async function GET(
-  req: {
-    cookies: {
-      get: (name: string) => {
-        value: string
-      }
-    }
-  } & Request,
-): Promise<Response> {
+  req: NextRequest) {
   const payload = await getPayload({ config: configPromise })
 
   const { searchParams } = new URL(req.url)
@@ -58,26 +52,17 @@ export async function GET(
 
   // You can add additional checks here to see if the user is allowed to preview this page
 
-  // Extract tenant slug from authenticated user
-  // DEV NOTE: Currently using first tenant only. In the future, consider adding
-  // a dropdown selector or context-aware tenant detection for users with multiple tenants.
+  // Extract active tenant slug using the new utility
+  // This respects user's active tenant selection via cookies
   let tenantSlug = 'default' // fallback
   
-  if (user.user?.tenants && user.user.tenants.length > 0) {
-    try {
-      const firstTenant = user.user.tenants[0].tenant
-      const tenantId = typeof firstTenant === 'object' ? firstTenant.id : firstTenant
-      
-      const tenantDoc = await payload.findByID({
-        collection: 'tenants',
-        id: tenantId,
-      })
-      
-      tenantSlug = tenantDoc.slug
-    } catch (error) {
-      payload.logger.error({ err: error }, 'Error fetching tenant for preview')
-      // tenantSlug remains 'default'
-    }
+  try {
+    // Import here to avoid circular dependencies 
+    const { getActiveTenantSlug } = await import('@/utilities/getActiveTenant')
+    tenantSlug = await getActiveTenantSlug(req as unknown as PayloadRequest)
+  } catch (error) {
+    payload.logger.error({ err: error }, 'Error fetching active tenant for preview')
+    // tenantSlug remains 'default'
   }
 
   draft.enable()

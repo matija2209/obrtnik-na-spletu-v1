@@ -19,210 +19,168 @@ export const BusinessInfoCollection: CollectionConfig = {
     useAsTitle: 'companyName', // Makes sense if super admin views a list
   },
   fields: [
+    // Basic Info Fields
     {
-      type: 'tabs',
-      tabs: [
+      name: 'companyName',
+      label: 'Ime podjetja',
+      type: 'text',
+      required: true,
+      admin: {
+        description: 'Polno ime podjetja.',
+      },
+    },
+    {
+      name: "companyAbout",
+      label: "O podjetju",
+      type: "textarea",
+      required: false,
+    },
+    {
+      name: 'vatId',
+      label: 'Davčna številka (ID za DDV)',
+      type: 'text',
+      required: false,
+    },
+    {
+      name: 'businessId',
+      label: 'Matična številka',
+      type: 'text',
+      required: false,
+    },
+    {
+      name: 'registryDate',
+      label: 'Datum vpisa v register',
+      type: 'date',
+      required: false,
+      admin: {
+        date: {
+          pickerAppearance: 'dayOnly',
+          displayFormat: 'dd.MM.yyyy',
+        },
+      },
+    },
+    {
+      name: 'address',
+      label: 'Naslov / Lokacija',
+      type: 'text',
+      required: false,
+    },
+    {
+      name: 'phone',
+      label: 'Telefonska številka',
+      type: 'text',
+      required: false,
+      admin: {
+        description: 'Telefonska številka, ki jo želite prikazati na strani.',
+        position: "sidebar"
+      },
+    },
+    {
+      name: 'email',
+      label: 'E-poštni naslov',
+      admin: {
+        description: 'E-poštni naslov, ki se uporablja za obveščanje.',
+        position: "sidebar"
+      },
+      type: 'email',
+      required: false,
+    },
+    // Logos and Links Fields
+    {
+      name: 'logo',
+      label: 'Logotip (Temna varianta)',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      admin: {
+        description: 'Temna varianta logotipa, ki se uporablja na svetlih ozadjih.',
+      },
+    },
+    {
+      name: 'logoLight',
+      label: 'Logotip (Svetla varianta)',
+      type: 'upload',
+      relationTo: 'media',
+      required: false,
+      admin: {
+        description: 'Svetla varianta logotipa, ki se uporablja na temnih ozadjih. Če ni izbrana, se uporabi temna varianta.',
+      },
+    },
+    {
+      name: 'platforms',
+      label: 'Povezave do platform',
+      type: 'array',
+      fields: [
         {
-          label: 'Osnovni podatki',
-          fields: [
+          name: 'platform',
+          label: 'Ime platforme',
+          type: 'select',
+          options: [
             {
-              name: 'companyName',
-              label: 'Ime podjetja',
-              type: 'text',
-              required: false,
-              admin: {
-                description: 'Polno ime podjetja.',
-              },
+              label: 'Primerjam.si',
+              value: 'Primerjam.si',
             },
             {
-              name: "companyAbout",
-              label: "O podjetju",
-              type: "textarea",
-              required: false,
+              label: 'Omisli.si',
+              value: 'Omisli.si',
             },
             {
-              name: 'vatId',
-              label: 'Davčna številka (ID za DDV)',
-              type: 'text',
-              required: false,
-            },
-            {
-              name: 'businessId',
-              label: 'Matična številka',
-              type: 'text',
-              required: false,
-            },
-            {
-              name: 'registryDate',
-              label: 'Datum vpisa v register',
-              type: 'date',
-              required: false,
-              admin: {
-                date: {
-                  pickerAppearance: 'dayOnly',
-                  displayFormat: 'dd.MM.yyyy',
-                },
-              },
-            },
-            {
-              name: 'location',
-              label: 'Naslov / Lokacija',
-              type: 'text',
-              required: false,
-            },
-            {
-              name: 'phoneNumber',
-              label: 'Telefonska številka',
-              type: 'text',
-              required: false,
-            },
-            {
-              name: 'email',
-              label: 'E-poštni naslov',
-              type: 'email',
-              required: false,
+              label: 'MojMojster.net',
+              value: 'MojMojster.net',
             },
           ],
+          required: true,
         },
         {
-          label: 'Logotipi in Povezave',
-          fields: [
-            {
-              name: 'logo',
-              label: 'Logotip (Temna varianta)',
-              type: 'upload',
-              relationTo: 'media',
-              required: false,
-              admin: {
-                description: 'Temna varianta logotipa, ki se uporablja na svetlih ozadjih.',
-              },
-            },
-            {
-              name: 'logoLight',
-              label: 'Logotip (Svetla varianta)',
-              type: 'upload',
-              relationTo: 'media',
-              required: false,
-              admin: {
-                description: 'Svetla varianta logotipa, ki se uporablja na temnih ozadjih. Če ni izbrana, se uporabi temna varianta.',
-              },
-            },
-            {
-              name: 'facebookUrl',
-              label: 'Facebook URL',
-              type: 'text',
-            },
-            {
-              name: 'googleReviewUrl',
-              label: 'Povezava za Google oceno',
-              type: 'text',
-            },
-            {
-              name: 'leadGenPlatformUrls',
-              label: 'Povezave do platform',
-              type: 'array',
-              fields: [
-                {
-                  name: 'platformName',
-                  label: 'Ime platforme',
-                  type: 'select',
-                  options: [
-                    {
-                      label: 'Primerjam.si',
-                      value: 'Primerjam.si',
-                    },
-                    {
-                      label: 'Omisli.si',
-                      value: 'Omisli.si',
-                    },
-                    {
-                      label: 'MojMojster.net',
-                      value: 'MojMojster.net',
-                    },
-                  ],
-                  required: false,
-                },
-                {
-                  name: 'url',
-                  label: 'URL povezava do profila',
-                  type: 'text',
-                  required: false,
-                },
-              ],
-              admin: {
-                description: 'Dodajte povezave do vaših profilov na platformah za pridobivanje strank.',
-              },
-            },
-          ]
+          name: 'url',
+          label: 'URL povezava do profila',
+          type: 'text',
+          required: true,
+        },
+      ],
+      admin: {
+        description: 'Dodajte povezave do vaših profilov na platformah za pridobivanje strank.',
+      },
+    },
+    // Location Fields
+    {
+      name: 'coordinates',
+      label: 'Koordinate sedeža',
+      type: 'group',
+      fields: [
+        {
+          name: 'latitude',
+          label: 'Latitude',
+          type: 'number',
+          required: true,
+          defaultValue: 46.2191697,
+          admin: {
+            description: 'Geografska širina lokacije podjetja.',
+          },
         },
         {
-          label: "Lokacija",
-          fields: [
-            {
-              name: 'coordinates',
-              label: 'Koordinate sedeža',
-              type: 'group',
-              fields: [
-                {
-                  name: 'latitude',
-                  label: 'Latitude',
-                  type: 'number',
-                  required: false,
-                  defaultValue: 46.2191697,
-                  admin: {
-                    description: 'Geografska širina lokacije podjetja.',
-                  },
-                },
-                {
-                  name: 'longitude',
-                  label: 'Longitude',
-                  type: 'number',
-                  required: false,
-                  defaultValue: 15.4705641,
-                  admin: {
-                    description: 'Geografska dolžina lokacije podjetja.',
-                  },
-                },
-              ],
-              admin: {
-                description: 'Koordinate lokacije podjetja za prikaz na zemljevidu.',
-              },
-            },
-            {
-              name: 'serviceRadius',
-              label: 'Območje storitev (v metrih)',
-              type: 'number',
-              required: false,
-              admin: {
-                description: 'Radius v metrih, ki označuje območje kjer podjetje nudi svoje storitve.',
-              },
-            },
-          ]
+          name: 'longitude',
+          label: 'Longitude',
+          type: 'number',
+          required: true,
+          defaultValue: 15.4705641,
+          admin: {
+            description: 'Geografska dolžina lokacije podjetja.',
+          },
         },
-        {
-          label: "SEO",
-          fields: [
-            {
-              name: 'metaTitle',
-              label: 'SEO Meta naslov',
-              type: 'text',
-              required: false,
-              admin: {
-                description: 'Naslov, ki se prikaže v zavihku brskalnika in rezultatih iskanja.',
-              },
-            },
-            {
-              name: 'metaDescription',
-              label: 'SEO Meta opis',
-              type: 'textarea',
-              required: false,
-              admin: {
-                description: 'Kratek opis strani za rezultate iskanja (približno 155-160 znakov).',
-              },
-            },
-          ]
-        },
-      ]
-    }
+      ],
+      admin: {
+        description: 'Koordinate lokacije podjetja za prikaz na zemljevidu.',
+      },
+    },
+    {
+      name: 'radius',
+      label: 'Območje storitev (v metrih)',
+      type: 'number',
+      required: false,
+      admin: {
+        description: 'Radius v metrih, ki označuje območje kjer podjetje nudi svoje storitve.',
+      },
+    },
   ],
 }; 

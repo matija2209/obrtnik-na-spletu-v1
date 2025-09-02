@@ -6,6 +6,7 @@ import { isSuperAdminAccess, isSuperAdmin } from '@/access/isSuperAdminAccess'
 import afterChangeHook from './hooks/afterChange'
 import afterOperationHook from './hooks/afterOperation'
 import afterDeleteHook from './hooks/afterDelete'
+import { setActiveTenant } from './endpoints/setActiveTenant'
 
 
 export const Tenants: CollectionConfig = {
@@ -23,9 +24,10 @@ export const Tenants: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     group: 'Struktura',
-   
     defaultColumns:["name","domain","updatedAt"],
+    // components will be added to a specific field
   },
+  endpoints: [setActiveTenant],
   hooks: {
     afterOperation: [afterOperationHook],
     afterChange: [afterChangeHook],
@@ -82,6 +84,16 @@ export const Tenants: CollectionConfig = {
               },
               defaultValue: false,
               index: true,
+            },
+            {
+              name: 'activeTenantActions',
+              type: 'ui',
+              admin: {
+                position: 'sidebar',
+                components: {
+                  Field: '@/collections/Tenants/components/ActiveTenantSelector#default',
+                },
+              },
             },
           ],
         },

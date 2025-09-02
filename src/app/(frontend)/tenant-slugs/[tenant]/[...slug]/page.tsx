@@ -2,9 +2,7 @@ import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import React from 'react'
 import type { Metadata } from 'next'
-
 import { queryPageBySlug, queryServicePageBySlug,  queryProductPageBySlug, getStaticPaths, queryProjectPageBySlug, getTenantIdBySlug } from '@/lib/payload'
-
 import { Page, ProductPage, ProjectPage, ServicePage } from '@payload-types'
 import { RenderServicesPageBlocks } from '@/blocks/RenderServicesPageBlocks'
 import { RenderGeneralPageBlocks } from '@/blocks/RenderGeneralPageBlocks'
