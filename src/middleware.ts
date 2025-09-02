@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { get } from '@vercel/edge-config'
+import { cookies } from 'next/headers';
 
 export async function middleware(req: NextRequest) {
   const hostname = req.headers.get('host') || '';
   const url = req.nextUrl.clone();
   const pathname = url.pathname; // Original pathname
+  const cookieStore = await cookies()
 
   // Log the hostname and pathname for every request the middleware handles
   console.log(`Middleware processing: Host=${hostname}, Path=${pathname}`);
@@ -100,6 +102,12 @@ export async function middleware(req: NextRequest) {
   }
 
   // 5. Otherwise, just continue with potentially modified headers
+  cookieStore.set({
+    name: 'current-tenant',
+    value: tenantSlug || 'default',
+    httpOnly: true,
+    path: '/',
+  })
   return NextResponse.next({ request: { headers: requestHeaders } });
 }
 

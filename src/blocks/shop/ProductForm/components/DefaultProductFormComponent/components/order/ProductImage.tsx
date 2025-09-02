@@ -1,7 +1,8 @@
 import React from 'react';
-import PayloadImage from '@/components/ui/PayloadImage';
+
 import { getImageUrl } from '@/utilities/images/getImageUrl';
 import { Product } from '@payload-types';
+import PayloadImage from '@/components/PayloadImage';
 
 interface ProductImageProps {
   product: Product;

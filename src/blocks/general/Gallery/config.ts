@@ -1,5 +1,5 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
+import textColour from '@/fields/textColour';
 import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
@@ -7,51 +7,81 @@ const GalleryBlock: Block = {
   slug: 'gallery',
   interfaceName: 'GalleryBlock',
   labels: {
-    singular: 'Galerija (Splošni)',
-    plural: 'Galerije (Splošni)',
+    singular: {
+      sl: 'Galerija (Splošni)',
+      de: 'Galerie (Allgemein)',
+      en: 'Gallery (General)',
+    },
+    plural: {
+      sl: 'Galerije (Splošni)',
+      de: 'Galerien (Allgemein)',
+      en: 'Galleries (General)',
+    },
   },
 
   fields: [
     {
       name: 'template',
-      label: 'Template',
+      label: {
+        sl: 'Predloga',
+        de: 'Vorlage',
+        en: 'Template',
+      },
       type: 'select',
       required: true,
       defaultValue: 'default',
       options: [
         {
-          label: 'Default Layout',
+          label: {
+            sl: 'Privzeti način',
+            de: 'Standard-Layout',
+            en: 'Default Layout',
+          },
           value: 'default',
         },
-        {
-          label: 'Carousel Layout',
-          value: 'variant1',
-        },
-        // Add more template options here
       ],
     },
     {
       name: 'autoSyncMedia',
       type: 'checkbox',
-      label: 'Samodejno dodaj nove slike iz mape',
+      label: {
+        sl: 'Samodejno dodaj nove slike iz mape',
+        de: 'Neue Bilder aus der Map automatisch hinzufügen',
+        en: 'Automatically add new images from the map',
+      },
       defaultValue: false,
       admin: {
         description: 'Ko je omogočeno, se bodo nove naložene slike samodejno dodale v to galerijo',
       },
     },
     {
-      name: 'title',
+      name: 'kicker',
       type: 'text',
-      label: 'Naslov',
-      required: false,
-      localized: true,
+      label: {
+        sl: 'Kicker',
+        de: 'Kicker',
+        en: 'Kicker',
+      },
       defaultValue: '',
     },
     {
-      name: 'description',
-      type: 'textarea',
-      label: 'Opis',
-      localized: true,
+      name: 'title',
+      type: 'text',
+      label: {
+        sl: 'Naslov',
+        de: 'Titel',
+        en: 'Title',
+      },
+      defaultValue: '',
+    },
+    {
+      name: 'subtitle',
+      type: 'text',
+      label: {
+        sl: 'Podnaslov',
+        de: 'Untertitel',
+        en: 'Subtitle',
+      },
       defaultValue: '',
     },
     {
@@ -59,6 +89,11 @@ const GalleryBlock: Block = {
       type: 'upload',
       relationTo: 'media',
       hasMany: true,
+      label: {
+        sl: 'Slike',
+        de: 'Bilder',
+        en: 'Images',
+      },
     },
     {
       name: 'galleryCta',
@@ -66,10 +101,17 @@ const GalleryBlock: Block = {
       relationTo: 'ctas',
       hasMany: false,
       required: false,
-      label: 'CTA gumb galerije',
+        label: {
+        sl: 'CTA gumb galerije',
+        de: 'CTA Button der Galerie',
+        en: 'CTA button of gallery',
+      },
     },
-    backgroundColour(),
-    colourSchema(),
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
+    
     isTransparent(),
     {
       name:"idHref",

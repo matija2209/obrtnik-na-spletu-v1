@@ -3,7 +3,7 @@
 import type { ListViewClientProps } from 'payload'
 import { useListQuery, useTranslation } from '@payloadcms/ui'
 import React from 'react'
-import PayloadImage from '@/components/ui/PayloadImage'
+import PayloadImage from '@/components/PayloadImage'
 import { Media, Media as MediaType } from '@payload-types'
 
 // ShadCN UI components

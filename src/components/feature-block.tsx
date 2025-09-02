@@ -1,4 +1,4 @@
-import PayloadImage from '@/components/ui/PayloadImage';
+import PayloadImage from '@/components/PayloadImage';
 import React from 'react';
 
 interface FeatureBlockProps {

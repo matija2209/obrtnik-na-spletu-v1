@@ -11,6 +11,7 @@ import CtaButtons from "@/components/common/cta-buttons";
 import { getEffectiveScrolled } from "@/utils/navbar-helpers";
 import type { DesktopNavProps } from "./types";
 import { ListItem, NavLink, CustomNavigationMenuTrigger } from "./components";
+import { Cta } from "@payload-types";
 
 
 // Desktop Navigation Component with nested menu
@@ -69,7 +70,11 @@ const DesktopNav = ({
         </NavigationMenuList>
       </NavigationMenu>
       {/* Use the new CtaButton component */}
-      <CtaButtons ctas={mainCta} />
+      {
+        mainCta && (
+          <CtaButtons ctas={[mainCta] as Cta[]} />
+        )
+      }
 
     </div>
   );

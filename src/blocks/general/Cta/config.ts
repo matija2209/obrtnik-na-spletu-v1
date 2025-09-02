@@ -1,5 +1,5 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
+import textColour from '@/fields/textColour';
 import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
@@ -7,36 +7,73 @@ const CtaBlock: Block = {
   slug: 'cta_block',
   interfaceName: 'CtaBlock',
   labels: {
-    singular: 'CTA odsek (Splošni)',
-    plural: 'CTA odseki (Splošni)',
+    singular: {
+      sl: 'CTA odsek (Splošni)',
+      de: 'CTA Abschnitt (Allgemein)',
+      en: 'CTA Section (General)',
+    },
+    plural: {
+      sl: 'CTA odseki (Splošni)',
+      de: 'CTA Abschnitte (Allgemein)',
+      en: 'CTA Sections (General)',
+    },
   },
   imageURL: '/images/blocks/cta.png',
   fields: [
     {
       name: 'template',
-      label: 'Template',
+      label: {
+        sl: 'Predloga',
+        de: 'Vorlage',
+        en: 'Template',
+      },
       type: 'select',
       required: true,
       defaultValue: 'default',
       options: [
         {
-          label: 'Default',
+          label: {
+            sl: 'Privzeti način',
+            de: 'Standard-Layout',
+            en: 'Default Layout',
+          },
           value: 'default',
         },
       ],
     },
     {
-      name: 'title',
+      name: 'kicker',
       type: 'text',
-      label: 'Naslov',
-      required: true,
-      localized: true,
+      label: {
+        sl: 'Kicker',
+        de: 'Kicker',
+        en: 'Kicker',
+      },
+      defaultValue: '',
     },
     {
-      name:"description",
-      type:"richText",
-      label:"Opis",
-      required:false,
+      name: 'title',
+      type: 'text',
+      label: {
+        sl: 'Naslov',
+        de: 'Titel',
+        en: 'Title',
+      },
+    },
+    {
+      name:"images",
+      relationTo:"media",
+      type:"upload",
+      hasMany:true,
+    },
+    {
+      name:"subtitle",
+      type:"text",
+      label: {
+        sl: 'Podnaslov',
+        de: 'Untertitel',
+        en: 'Subtitle',
+      },
     },
     {
       name: 'cta',
@@ -44,10 +81,17 @@ const CtaBlock: Block = {
       relationTo: 'ctas',
       hasMany: false,
       required: true,
-      label: 'CTA gumb',
+      label: {
+        sl: 'CTA gumb',
+        de: 'CTA Button',
+        en: 'CTA Button',
+      },
     },
-    backgroundColour(),
-    colourSchema(),
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
+    
     isTransparent(),
     {
       name:"idHref",

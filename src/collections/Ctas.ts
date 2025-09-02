@@ -1,21 +1,41 @@
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
+import backgroundColour from '@/fields/backgroundColour';
+import buttonVariantField from '@/fields/buttonVariantField';
+import iconField from '@/fields/iconsField';
 import { slugField } from '@/fields/slug';
+import textColour from '@/fields/textColour';
 import { CollectionConfig, Access } from 'payload';
-
+import priorityField from "@/fields/priorityField"
 // Define access control
 const anyone: Access = () => true;
 
 export const Ctas: CollectionConfig = {
   slug: 'ctas',
   labels: {
-    singular: 'Poziv k dejanju (CTA)',
-    plural: 'Pozivi k dejanju (CTA)',
+    singular: {
+      en: 'CTA',
+      sl: 'Poziv k dejanju (CTA)',
+      de: 'CTA',
+    },
+    plural: {
+      en: 'CTAs',
+      sl: 'Pozivi k dejanju (CTA)',
+      de: 'CTAs',
+    },
   },
   admin: {
     useAsTitle: 'ctaText', // Use ctaText as the title in the admin UI
     defaultColumns: ['ctaText', 'link.type', 'ctaType', 'updatedAt'],
-    description: 'Upravljajte pozive k dejanju, ki jih lahko vključite na različnih mestih.',
-    group: 'Vsebina',
+    description: {
+      sl: 'Upravljajte pozive k dejanju, ki jih lahko vključite na različnih mestih.',
+      de: 'Verwalten Sie Aktionen, die Sie auf verschiedenen Plätzen einsetzen können.',
+      en: 'Manage actions that you can include on various places.',
+    },
+    group: {
+      sl: 'Vsebina',
+      de: 'Inhalt',
+      en: 'Content',
+    },
   },
   access: {
     read: anyone,
@@ -25,11 +45,19 @@ export const Ctas: CollectionConfig = {
   },
   fields: [
     slugField('ctaText', {
-      label: 'Pot / Unikatni ID',
+      label: {
+        sl: 'Pot / Unikatni ID',
+        de: 'Pfad / Eindeutige ID',
+        en: 'Path / Unique ID',
+      },
       unique: true,
       index: true,
       admin: {
-        description: 'ID se generira samodejno iz naslova.',
+        description: {
+          sl: 'ID se generira samodejno iz naslova.',
+          de: 'ID wird automatisch aus dem Titel generiert.',
+          en: 'ID is automatically generated from the title.',
+        },
         readOnly: false,
         position: 'sidebar',
       }
@@ -37,105 +65,58 @@ export const Ctas: CollectionConfig = {
     {
       name: 'ctaText',
       type: 'text',
-      label: 'Besedilo gumba',
-      required: true,
-      localized: true,
+      label: {
+        sl: 'Besedilo gumba',
+        de: 'Text des Buttons',
+        en: 'Button Text',
+      },
+      required: false,
+      
       admin: {
-        description: 'Besedilo, ki bo prikazano na gumbu.'
+        description: {
+          sl: 'Besedilo, ki bo prikazano na gumbu.',
+          de: 'Text, der auf dem Button angezeigt wird.',
+          en: 'Text that will be displayed on the button.',
+        }
       }
     },
     {
       name: 'link',
       type: 'group',
-      label: 'Povezava gumba',
+      label: {
+        sl: 'Povezava gumba',
+        de: 'Button-Link',
+        en: 'Button Link',
+      },
       fields: [
         {
-          name: 'type',
-          type: 'radio',
-          label: 'Tip povezave',
-          options: [
-            { label: 'Notranja stran', value: 'internal' },
-            { label: 'Zunanji URL', value: 'external' },
-          ],
-          defaultValue: 'internal',
-          required: true,
-          admin: {
-            layout: 'horizontal',
+          name: 'url',
+          label: {
+            sl: 'Vnesi URL',
+            de: 'URL eingeben',
+            en: 'Enter URL',
           },
-        },
-        {
-          name: 'internalLink',
-          label: 'Izberi stran',
-          type: 'relationship',
-          relationTo: 'pages', // Link primarily to Pages, could add more relations if needed
-          required: true,
-          admin: {
-            condition: (_, siblingData) => siblingData?.type === 'internal',
-          }
-        },
-        {
-          name: 'externalUrl',
-          label: 'Vnesi URL',
           type: 'text',
-          required: true,
-          admin: {
-            condition: (_, siblingData) => siblingData?.type === 'external',
-          },
-          validate: (value: string | null | undefined, { siblingData }: { siblingData: { type?: string } }) => {
-            if (siblingData?.type === 'external' && !value) {
-              return 'URL je obvezen za zunanje povezave.';
-            }
-            // Basic URL validation (optional but recommended)
-            // if (siblingData?.type === 'external' && value && !value.startsWith('http')) {
-            //   return 'URL se mora začeti s http:// ali https://';
-            // }
-            return true;
-          },
+          required: false,
         },
         {
           name: 'newTab',
-          label: 'Odpri v novem zavihku?',
+          label: {
+            sl: 'Odpri v novem zavihku?',
+            de: 'In neuem Tab öffnen?',
+            en: 'Open in new tab?',
+          },
           type: 'checkbox',
           defaultValue: false,
         }
       ]
     },
-    {
-      name: 'icon',
-      label: 'Ikona (Lucide ime, neobvezno)',
-      type: 'text',
-      required: false,
-      admin: {
-        description: 'Vnesite ime ikone iz knjižnice Lucide React (npr. ArrowRight, CheckCircle).',
-      }
-    },
-    {
-      name: 'ctaClassname',
-      type: 'text',
-      label: 'CSS Razred (neobvezno)',
-      required: false,
-      admin: {
-        description: 'Dodaten CSS razred za stilsko oblikovanje gumba na spletni strani (npr. primary-button, secondary-button).'
-      }
-    },
-    {
-      name: 'ctaType',
-      type: 'select',
-      label: 'Tip Gumba (Stil)',
-      required: false,
-      options: [
-        { label: 'Primary', value: 'primary' },
-        { label: 'Secondary', value: 'secondary' },
-        { label: 'Destructive', value: 'destructive' },
-        { label: 'Outline', value: 'outline' },
-        { label: 'Ghost', value: 'ghost' },
-        { label: 'Link', value: 'link' },
-        { label: 'Icon', value: 'icon' },
-      ],
-      admin: {
-        description: 'Izberite stil gumba (npr. Primary, Secondary). To lahko vpliva na izgled gumba na spletni strani.',
-      },
-      defaultValue: 'primary', // Optional: Set a default value
-    },
+    textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+    backgroundColour(),
+    iconField(),
+    buttonVariantField(),
+    priorityField()
   ],
 }; 

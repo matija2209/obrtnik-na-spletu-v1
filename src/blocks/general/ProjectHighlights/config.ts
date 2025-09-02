@@ -1,5 +1,5 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
+import textColour from '@/fields/textColour';
 import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
@@ -8,57 +8,88 @@ const ProjectHighlightsBlock: Block = {
   slug: 'projectHighlights',
   interfaceName: 'ProjectHighlightsBlock',
   labels: {
-    singular: 'Projekti odsek (Splošni)',
-    plural: 'Projekti odseki (Splošni)',
+    singular: {
+      sl: 'Projekti odsek (Splošni)',
+      de: 'Projekt Abschnitt (Allgemein)',
+      en: 'Project Section (General)',
+    },
+    plural: {
+      sl: 'Projekti odseki (Splošni)',
+      de: 'Projekt Abschnitte (Allgemein)',
+      en: 'Project Sections (General)',
+    },
   },
   fields: [
     {
       name: 'template',
-      label: 'Template',
+      label: {
+        sl: 'Predloga',
+        de: 'Vorlage',
+        en: 'Template',
+      },
       type: 'select',
       required: true,
       defaultValue: 'default',
       options: [
         {
-          label: 'Default Layout',
+          label: {
+            sl: 'Privzeti način',
+            de: 'Standard-Layout',
+            en: 'Default Layout',
+          },
           value: 'default',
         },
-        {
-          label: 'Variant 1',
-          value: 'variant1',
-        },
-        {
-          label: 'Variant 2',
-          value: 'variant2',
-        },
-
-        // Add more template options here
       ],
+    },
+    {
+      name: 'kicker',
+      type: 'text',
+      label: {
+        sl: 'Kicker',
+        de: 'Kicker',
+        en: 'Kicker',
+      },
+      defaultValue: '',
     },
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov sekcije projektov',
+      label: {
+        sl: 'Naslov sekcije projektov',
+        de: 'Titel der Projektsektion',
+        en: 'Title of project section',
+      },
       required: false,
-      localized: true,
+      
       defaultValue: '',
     },
     {
       name: 'description',
       type: 'textarea',
-      label: 'Opis sekcije projektov',
-      localized: true,
+      label: {
+        sl: 'Opis sekcije projektov',
+        de: 'Beschreibung der Projektsektion',
+        en: 'Description of project section',
+      },
+      
       defaultValue: '',
     },
-    backgroundColour(),
-    colourSchema(),
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
+    
     isTransparent(),
     
     {
       name:"cta",
       relationTo:"ctas",
       hasMany:true,
-      label:"CTA",
+      label: {
+        sl: 'CTA',
+        de: 'CTA',
+        en: 'CTA',
+      },
       required:false,
       type:"relationship",
     },
@@ -67,13 +98,21 @@ const ProjectHighlightsBlock: Block = {
       type: 'relationship',
       relationTo: 'projects',
       hasMany: true,
-      label: 'Izbrani projekti za prikaz',
+      label: {
+        sl: 'Izbrani projekti za prikaz',
+        de: 'Ausgewählte Projekte für die Anzeige',
+        en: 'Highlighted projects for display',
+      },
       required: false,
     },
     {
       name: 'autoSyncProjects',
       type: 'checkbox',
-      label: 'Samodejno dodaj nove projekte',
+      label: {
+        sl: 'Samodejno dodaj nove projekte',
+        de: 'Neue Projekte automatisch hinzufügen',
+        en: 'Automatically add new projects',
+      },
       defaultValue: false,
       admin: {
         description: 'Ko je omogočeno, se bodo nove naložene slike samodejno dodale v to galerijo',

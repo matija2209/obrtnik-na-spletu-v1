@@ -1,9 +1,8 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
-
+import OptimizedImage from '@/components/OptimizedImage'
 import { ImageInput } from '@/utilities/images/getImageUrl'
-import {  Media } from '@payload-types'
-import PayloadImage from '../ui/PayloadImage'
+import { HighQualityMedia, Media } from '@payload-types'
 
 interface ContainedSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode
@@ -18,7 +17,7 @@ interface ContainedSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   verticalPadding?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
   // Enhanced to support both optimized images and string URLs
   backgroundImage?: string | ImageInput
-  backgroundImagePreferredSize?: keyof NonNullable<Media['sizes']>
+  backgroundImagePreferredSize?: keyof NonNullable<Media['sizes']> | keyof NonNullable<HighQualityMedia['sizes']>
   backgroundImageSizes?: string
   backgroundImagePriority?: boolean
   halfWidthImageOnDesktop?: boolean
@@ -125,18 +124,17 @@ function ContainedSection({
     }
 
     if (isMediaObject) {
-      // Use PayloadImage for Media objects
+      // Use OptimizedImage for Media objects
       return (
-        <div className="absolute inset-0">
-          <PayloadImage
-            image={backgroundImage as Media}
-            className={cn("w-full h-full object-cover", additionalClassName)}
-            sizes={backgroundImageSizes}
-            context="background"
-            priority={backgroundImagePriority}
-            alt=""
-          />
-        </div>
+        <OptimizedImage
+          image={backgroundImage as ImageInput}
+          fill={true}
+          className={cn("object-cover", additionalClassName)}
+          sizes={backgroundImageSizes}
+          preferredSize={backgroundImagePreferredSize}
+          priority={backgroundImagePriority}
+          alt=""
+        />
       );
     }
 

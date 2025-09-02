@@ -1,12 +1,12 @@
+
 import type { CtaBlock } from '@payload-types';
-import DefaultServiceCtaSection from './default-cta-section';
-import { SearchParams } from 'next/dist/server/request/search-params';
-import { Params } from 'next/dist/server/request/params';
-const CtaBlockComponent = async ({ searchParams,params, ...block }: CtaBlock & { searchParams?: SearchParams ,params?:Params}) => {
+import CtaBlockVariant1 from './CtaBlockVariant1';
+
+const CtaBlockComponent = ({ ...block }: CtaBlock) => {
   switch (block?.template) {
     case 'default':
     default:
-      return <DefaultServiceCtaSection {...block} />
+      return <CtaBlockVariant1 {...block} />
   }
 };
 

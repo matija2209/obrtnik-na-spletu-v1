@@ -4,15 +4,32 @@ import { CollectionConfig } from 'payload';
 export const Orders: CollectionConfig = {
   slug: 'orders',
   labels: {
-    singular: 'Naročilo',
-    plural: 'Naročila',
+    singular: {
+      en: 'Order',
+      sl: 'Naročilo',
+      de: 'Bestellung',
+    },
+    plural: {
+      en: 'Orders',
+      sl: 'Naročila',
+      de: 'Bestellungen',
+    },
   },
   
   admin: {
     useAsTitle: 'orderNumber',
+    hidden: true,
     defaultColumns: ['orderNumber', 'customer', 'product', 'total', 'status', 'createdAt'],
-    description: 'Naročila kupcev za čistilne naprave.',
-    group: 'Prodaja',
+    description: {
+      sl: 'Naročila kupcev za čistilne naprave.',
+      de: 'Bestellungen von Kunden für Reinigungsmaschinen.',
+      en: 'Orders from customers for cleaning machines.',
+    },
+    group: {
+      sl: 'Prodaja',
+      de: 'Verkauf',
+      en: 'Sales',
+    },
     listSearchableFields: ['orderNumber'],
   },
   
@@ -184,19 +201,31 @@ export const Orders: CollectionConfig = {
                 {
                   name: 'orderNumber',
                   type: 'text',
-                  label: 'Številka naročila',
+                  label: {
+                    sl: 'Številka naročila',
+                    de: 'Bestellnummer',
+                    en: 'Order Number',
+                  },
                   required: true,
                   unique: true,
                   admin: {
                     width: '50%',
                     readOnly: true,
-                    description: 'Avtomatsko generirano',
+                    description: {
+                      sl: 'Avtomatsko generirano',
+                      de: 'Automatisch generiert',
+                      en: 'Automatically generated',
+                    },
                   },
                 },
                 {
                   name: 'status',
                   type: 'select',
-                  label: 'Status',
+                  label: {
+                    sl: 'Status',
+                    de: 'Status',
+                    en: 'Status',
+                  },
                   required: true,
                   defaultValue: 'pending',
                   options: [
@@ -222,7 +251,11 @@ export const Orders: CollectionConfig = {
               relationTo: 'customers',
               required: true,
               admin: {
-                description: 'Izberi obstoječega kupca ali bo ustvarjen avtomatsko iz spletne forme',
+                description: {
+                  sl: 'Izberi obstoječega kupca ali bo ustvarjen avtomatsko iz spletne forme',
+                  de: 'Wählen Sie einen bestehenden Kunden oder erstellen Sie einen aus der Webformular-Eingabe.',
+                  en: 'Select an existing customer or create one from the web form input.',
+                },
               },
             },
             
@@ -239,7 +272,11 @@ export const Orders: CollectionConfig = {
                     {
                       name: 'product',
                       type: 'relationship',
-                      label: 'Izdelek',
+                      label: {
+                        sl: 'Izdelek',
+                        de: 'Produkt',
+                        en: 'Product',
+                      },
                       relationTo: 'products',
                       required: true,
                       admin: {
@@ -249,7 +286,11 @@ export const Orders: CollectionConfig = {
                     {
                       name: 'quantity',
                       type: 'number',
-                      label: 'Količina',
+                      label: {
+                        sl: 'Količina',
+                        de: 'Menge',
+                        en: 'Quantity',
+                      },
                       required: true,
                       min: 1,
                       defaultValue: 1,
@@ -266,21 +307,37 @@ export const Orders: CollectionConfig = {
                     {
                       name: 'unitPrice',
                       type: 'number',
-                      label: 'Cena na enoto (EUR)',
+                        label: {
+                        sl: 'Cena na enoto (EUR)',
+                        de: 'Preis pro Einheit (EUR)',
+                        en: 'Price per unit (EUR)',
+                      },
                       admin: {
                         width: '50%',
                         step: 0.01,
-                        description: 'Avtomatsko iz izdelka ali ročno vnesi',
+                        description: {
+                          sl: 'Avtomatsko iz izdelka ali ročno vnesi',
+                          de: 'Preis pro Einheit (EUR)',
+                          en: 'Price per unit (EUR)',
+                        },
                       },
                     },
                     {
                       name: 'total',
                       type: 'number',
-                      label: 'Skupna cena (EUR)',
+                      label: {
+                        sl: 'Skupna cena (EUR)',
+                        de: 'Gesamtkosten (EUR)',
+                        en: 'Total price (EUR)',
+                      },
                       admin: {
                         width: '50%',
                         step: 0.01,
-                        description: 'Količina × Cena na enoto',
+                        description: {
+                          sl: 'Količina × Cena na enoto',
+                          de: 'Menge × Preis pro Einheit',
+                          en: 'Quantity × Price per unit',
+                        },
                       },
                     },
                   ],
@@ -296,32 +353,64 @@ export const Orders: CollectionConfig = {
             {
               name: 'customerMessage',
               type: 'textarea',
-              label: 'Sporočilo kupca',
+              label: {
+                sl: 'Sporočilo kupca',
+                de: 'Kunden-Nachricht',
+                en: 'Customer Message',
+              },
               required: false,
               admin: {
                 readOnly: true,
-                description: 'Sporočilo iz spletne forme',
+                description: {
+                  sl: 'Sporočilo iz spletne forme',
+                  de: 'Nachricht aus dem Webformular',
+                  en: 'Message from the web form',
+                },
                 condition: (data) => !!data.customerMessage,
               },
             },
             {
               name: 'adminNotes',
               type: 'textarea',
-              label: 'Opombe (interno)',
+              label: {
+                sl: 'Opombe (interno)',
+                de: 'Interne Notizen',
+                en: 'Internal Notes',
+              },
               required: false,
               admin: {
-                description: 'Interne opombe - ni vidno kupcu',
-                placeholder: 'Interne opombe za obdelavo naročila...',
+                description: {
+                  sl: 'Interne opombe - ni vidno kupcu',
+                  de: 'Interne Notizen - nicht für den Kunden sichtbar',
+                  en: 'Internal notes - not visible to the customer',
+                },
+                placeholder: {
+                  sl: 'Interne opombe za obdelavo naročila...',
+                  de: 'Interne Notizen für die Bestellbearbeitung...',
+                  en: 'Internal notes for order processing...',
+                },
               },
             },
             {
               name: 'publicNotes',
               type: 'textarea',
-              label: 'Javne opombe',
+              label: {
+                sl: 'Javne opombe',
+                de: 'Öffentliche Notizen',
+                en: 'Public Notes',
+              },
               required: false,
               admin: {
-                description: 'Opombe vidne kupcu (npr. v potrditvenem emailu)',
-                placeholder: 'Dodatne informacije za kupca...',
+                description: {
+                  sl: 'Opombe vidne kupcu (npr. v potrditvenem emailu)',
+                  de: 'Öffentliche Notizen für den Kunden (z.B. im Bestätigungs-E-Mail)',
+                  en: 'Public notes for the customer (e.g. in the confirmation email)',
+                },
+                placeholder: {
+                  sl: 'Dodatne informacije za kupca...',
+                  de: 'Zusätzliche Informationen für den Kunden...',
+                  en: 'Additional information for the customer...',
+                },
               },
             },
           ],
@@ -336,7 +425,11 @@ export const Orders: CollectionConfig = {
                 {
                   name: 'createdAt',
                   type: 'date',
-                  label: 'Datum naročila',
+                  label: {
+                    sl: 'Datum naročila',
+                    de: 'Bestelldatum',
+                    en: 'Order Date',
+                  },
                   admin: {
                     width: '50%',
                     readOnly: true,
@@ -348,7 +441,11 @@ export const Orders: CollectionConfig = {
                 {
                   name: 'updatedAt',
                   type: 'date',
-                  label: 'Zadnja sprememba',
+                  label: {
+                    sl: 'Zadnja sprememba',
+                    de: 'Letzte Änderung',
+                    en: 'Last Change',
+                  },
                   admin: {
                     width: '50%',
                     readOnly: true,
@@ -365,7 +462,11 @@ export const Orders: CollectionConfig = {
                 {
                   name: 'source',
                   type: 'select',
-                  label: 'Vir naročila',
+                  label: {
+                    sl: 'Vir naročila',
+                    de: 'Bestellquelle',
+                    en: 'Order Source',
+                  },
                   defaultValue: 'website',
                   options: [
                     { label: 'Spletna stran', value: 'website' },
@@ -376,7 +477,11 @@ export const Orders: CollectionConfig = {
                   ],
                   admin: {
                     width: '50%',
-                    description: 'Od koder je prišlo naročilo',
+                      description: {
+                      sl: 'Od koder je prišlo naročilo',
+                      de: 'Von wo die Bestellung kam',
+                      en: 'From where the order came',
+                    },
                   },
                 },
               ],

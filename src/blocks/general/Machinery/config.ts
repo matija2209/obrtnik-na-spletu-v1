@@ -1,5 +1,5 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
+import textColour from '@/fields/textColour';
 import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
@@ -11,13 +11,16 @@ const MachineryBlock: Block = {
     plural: 'Strojni parki odseki (Splošni)',
   },
   fields: [
-   
+    {
+      name: 'kicker',
+      type: 'text',
+      label: 'Kicker',
+      defaultValue: '',
+    },
     {
       name: 'title',
       type: 'text',
       label: 'Naslov sekcije strojnega parka',
-      required: false,
-      localized: true,
       defaultValue: 'Naš Vozni Park',
     
     },
@@ -25,7 +28,6 @@ const MachineryBlock: Block = {
       name: 'description',
       type: 'textarea',
       label: 'Opis sekcije strojnega parka (neobvezno)',
-      localized: true,
       defaultValue: 'Ponudba gradbene mehanizacije za najem',
       
     },
@@ -52,12 +54,15 @@ const MachineryBlock: Block = {
         // Add more template options here
       ],
     },
-    backgroundColour(),
-    colourSchema(),
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
+    
     isTransparent(),
     {
-      name: 'callToAction',
-      label: 'Call to Action (Neobvezno)',
+      name: 'cta',
+      label: 'CTA',
       type: 'relationship',
       relationTo: 'ctas',
       hasMany: false,

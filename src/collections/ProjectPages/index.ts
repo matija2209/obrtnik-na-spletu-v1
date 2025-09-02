@@ -15,9 +15,9 @@ import CtaBlock from '../../blocks/general/Cta/config';
 // Import hooks from the Pages collection
 import { populatePublishedAt } from '../Pages/hooks/populatePublishedAt';
 
-import { revalidateProjectPagesCache, revalidateProjectPagesCacheDelete } from './hooks/revalidateProjectPagesCache';
 import { generatePreviewPath } from '@/utilities/generatePreviewPath';
 import { slugField } from '@/fields/slug';
+import { revalidateDelete, revalidateProjectPage } from './hooks/revalidateProjectPage';
 
 // Define access control
 const anyone: Access = () => true;
@@ -39,13 +39,29 @@ const projectPageBlocks: Block[] = [
 export const ProjectPages: CollectionConfig = {
   slug: 'project-pages',
   labels: {
-    singular: 'Stran projekta',
-    plural: 'Strani projektov',
+    singular: {
+      en: 'Project Page',
+      sl: 'Stran projekta',
+      de: 'Projekt-Seite',
+    },
+    plural: {
+      en: 'Project Pages',
+      sl: 'Strani projektov',
+      de: 'Projekt-Seiten',
+    },
   },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
-    group: 'Strani',
+    hidden: true,
+    group: {
+      sl: 'Strani',
+      de: 'Seiten',
+      en: 'Pages',
+    },
+    components:{
+      beforeList:['/components/admin/CreateProjectPageFromProject']
+    },
     livePreview: {
       url: async ({ data, req }) => {
         const slug = typeof data?.slug === 'string' ? `/projekti/${data.slug}` : ''
@@ -81,17 +97,25 @@ export const ProjectPages: CollectionConfig = {
     delete: superAdminOrTenantAdminAccess,
   },
   hooks: {
-    afterChange: [ revalidateProjectPagesCache],
+    afterChange: [revalidateProjectPage],
     beforeChange: [populatePublishedAt],
-    afterDelete: [ revalidateProjectPagesCacheDelete],
+    afterDelete: [revalidateDelete],
   },
   fields: [
     slugField('title', {
-      label: 'Pot / Unikatni ID',
+      label: {
+        sl: 'Pot / Unikatni ID',
+        de: 'Pfad / Eindeutige ID',
+        en: 'Path / Unique ID',
+      },
       unique: true,
       index: true,
       admin: {
-        description: 'ID se generira samodejno iz naslova.',
+        description: {
+          sl: 'ID se generira samodejno iz naslova.',
+          de: 'ID wird automatisch aus dem Titel generiert.',
+          en: 'ID is automatically generated from the title.',
+        },
         readOnly: false,
         position: 'sidebar',
       }
@@ -99,43 +123,66 @@ export const ProjectPages: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov strani projekta',
-      required: true,
-      localized: true,
-    },
-    {
-      name:"pageType",
-      type:"select",
-      label:"Tip strani",
-      options:["project"],
-      defaultValue:"project",
-      admin:{
-        position:"sidebar",
-        hidden: true,
+      label: {
+        sl: 'Naslov strani projekta',
+        de: 'Titel der Projektseite',
+        en: 'Project Page Title',
       },
+      required: true,
+      
     },
     {
       name: 'relatedProject',
       type: 'relationship',
       relationTo: 'projects',
-      label: 'Povezan projekt',
+      label: {
+        sl: 'Povezan projekt',
+        de: 'Verknüpfter Projekt',
+        en: 'Related Project',
+      },
       required: false,
       admin: {
-        description: 'Projekt, ki je povezan s to stranjo',
+        description: {
+          sl: 'Projekt, ki je povezan s to stranjo',
+          de: 'Projekt, der mit dieser Seite verknüpft ist',
+          en: 'Project associated with this page',
+        },
         position: 'sidebar',
       },
     },
     {
       name: 'layout',
-      label: 'Postavitev strani projekta',
+      label: {
+        sl: 'Postavitev strani projekta',
+        de: 'Seitenlayout der Projektseite',
+        en: 'Project Page Layout',
+      },
       type: 'blocks',
       admin: {
-        description:"Dodaj odsek na strani projekta",
-        initCollapsed: true,
+        description: {
+          sl: "Dodaj odsek na strani projekta",
+          de: "Fügen Sie einen Abschnitt auf der Projektseite hinzu",
+          en: "Add a section to the project page",
+        },
+          initCollapsed: true,
       },
       minRows: 1,
       blocks: projectPageBlocks,
     },
+    {
+      name:"pageType",
+      type:"text",
+      defaultValue:"project",
+      admin:{
+        readOnly:true,
+        position:"sidebar",
+        description: {
+          sl: 'Typ strani projekta',
+          de: 'Typ der Projektseite',
+          en: 'Project Page Type',
+        },
+      }
+    }
   ],
 };
 

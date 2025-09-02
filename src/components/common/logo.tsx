@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import PayloadImage from '@/components/ui/PayloadImage';
+import PayloadImage from '@/components/PayloadImage';
 import type { Media } from '@payload-types';
 // Remove BusinessInfo import if no longer needed elsewhere in the file
 // import type { BusinessInfo } from '@payload-types'; 

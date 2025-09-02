@@ -8,7 +8,7 @@ import { ContainedSection } from '@/components/layout/container-section'
 import { getBackgroundClass, getColorClasses, type ColorScheme } from '@/utilities/getColorClasses'
 
 // Import product display components from existing folders
-import ProductGallery from './components/product-components/ProductGallery'
+
 import ProductInfo from './components/product-components/ProductInfo'
 import { ProductSpecifications } from './components/order/ProductSpecifications'
 import ProductFeatures from './components/product-components/ProductFeatures'
@@ -17,9 +17,12 @@ import ProductFeatures from './components/product-components/ProductFeatures'
 import OrderForm from './components/order/OrderForm'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import BreadcrumbComponent from '@/blocks/general/Hero/components/HeroSectionVariant1/breadcrumb'
+import { getImageUrl } from '@/utilities/images/getImageUrl'
+
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { ChevronDown } from 'lucide-react'
 import RichText from '@/components/payload/RichText'
 import { extractId } from '@/utilities/extractIds'
 import { getProductById } from '@/lib/payload'
@@ -32,11 +35,12 @@ import {
 } from '@/lib/variants'
 import { getProductVariants } from '@/lib/payload'
 import ProductVariantSelector from './components/ProductVariantSelector'
+import BreadcrumbComponent from './components/breadcrumb';
+import ProductGallery from './components/product-components/ProductGallery';
 
 async function DefaultProductFormComponent(block: ProductFormBlock & { searchParams?: Record<string, string | string[] | undefined> }) {
   const { 
     product,
-    colourScheme = 'primary',
     showTitle = true,
     showSku = false,
     showManufacturer = true,
@@ -54,7 +58,7 @@ async function DefaultProductFormComponent(block: ProductFormBlock & { searchPar
     showReviews = true,
     showRating = true,
     showOrderForm = true,
-    bgColor,
+    bgc:bgColor,
     ctaText = 'Pošljite povpraševanje',
     idHref,
     searchParams,
@@ -110,7 +114,6 @@ async function DefaultProductFormComponent(block: ProductFormBlock & { searchPar
     )
   }
 
-  const colorClasses = getColorClasses((colourScheme as ColorScheme) || 'primary')
   const backgroundClass = isTransparent ? "bg-transparent" : getBackgroundClass(bgColor as any)
 
   return (
@@ -132,7 +135,7 @@ async function DefaultProductFormComponent(block: ProductFormBlock & { searchPar
         {/* Product Images Section */}
         <div className="space-y-6">
           {showMainImage && (
-            <ProductGallery 
+            <ProductGallery
               product={mergedProductData}
               variants={variants}
               selectedVariant={selectedVariant}
@@ -168,7 +171,6 @@ async function DefaultProductFormComponent(block: ProductFormBlock & { searchPar
                 <Button 
                   className={cn(
                     "w-full",
-                    colorClasses.primaryButtonClass
                   )}
                 >
                   {ctaText ?? "Naroči"}

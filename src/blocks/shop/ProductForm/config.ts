@@ -1,7 +1,8 @@
 
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
+
 import isTransparent from '@/fields/isTransperant';
+import textColour from '@/fields/textColour';
 import type { Block } from 'payload';
 
 
@@ -43,8 +44,10 @@ const ProductFormBlock: Block = {
       },
     },
     
+    textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
     backgroundColour(),
-    colourSchema(),
     isTransparent(),
     
     // Display Controls

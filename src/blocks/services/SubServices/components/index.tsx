@@ -1,17 +1,16 @@
 import React from 'react';
 
-import DefaultSubServicePresentationSection from './default-sub-service-presentation-section';
+import SubServicesBlockVariant1 from './SubServicesBlockVariant1';
 import { SubServicesBlock } from '@payload-types';
-import { SearchParams } from 'next/dist/server/request/search-params';
-import { Params } from 'next/dist/server/request/params';
 
-const SubServicesBlockComponent = async ({ searchParams,params, ...block }: SubServicesBlock & { searchParams?: SearchParams ,params?:Params}) => {
+
+const SubServicesBlockComponent = ({ ...block }: SubServicesBlock) => {
 
   switch (block.template) {
     case 'default':
     default:
       return (
-        <DefaultSubServicePresentationSection 
+        <SubServicesBlockVariant1 
           {...block}
         />
       );

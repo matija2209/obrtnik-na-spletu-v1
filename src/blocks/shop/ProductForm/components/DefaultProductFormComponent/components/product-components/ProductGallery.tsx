@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useMemo, useEffect } from 'react';
-import PayloadImage from '@/components/ui/PayloadImage';
+import PayloadImage from '@/components/PayloadImage';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Product, ProductVariant } from '@payload-types';

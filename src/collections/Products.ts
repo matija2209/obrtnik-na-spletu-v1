@@ -6,17 +6,33 @@ import { CollectionConfig } from 'payload';
 export const Products: CollectionConfig = {
   slug: 'products',
   labels: {
-    singular: 'Izdelek',
-    plural: 'Izdelki',
+    singular: {
+      en: 'Product',
+      sl: 'Izdelek',
+      de: 'Produkt',
+    },
+    plural: {
+      en: 'Products',
+      sl: 'Izdelki',
+      de: 'Produkte',
+    },
   },
   
   admin: {
     useAsTitle: 'title',
+    hidden: true,
     defaultColumns: ['title', 'sku', 'type', 'manufacturer'],
-    description: 'Čistilne naprave za prikaz na spletni strani.',
-    group: 'Prodaja',
+    description: {
+      sl: 'Čistilne naprave za prikaz na spletni strani.',
+      de: 'Reinigungsmaschinen für die Anzeige auf der Website.',
+      en: 'Cleaning machines for display on the website.',
+    },
+    group: {
+      sl: 'Prodaja',
+      de: 'Verkauf',
+      en: 'Sales',
+    },
     listSearchableFields: ['title', 'sku', 'manufacturer', 'type'],
-   
   },
   
   access: {

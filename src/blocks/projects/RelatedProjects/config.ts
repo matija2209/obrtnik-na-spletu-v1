@@ -1,5 +1,5 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
+import textColour from '@/fields/textColour';
 import isTransparent from '@/fields/isTransperant';
 import { Block } from 'payload';
 
@@ -12,21 +12,10 @@ const RelatedProjectsBlock: Block = {
   },
   fields: [
     {
-      name: 'template',
-      label: 'Template',
-      type: 'select',
-      required: true,
-      defaultValue: 'default',
-      options: [
-        {
-          label: 'Default Layout',
-          value: 'default',
-        },
-        {
-          label: "Variant 1",
-          value: "variant1",
-        },        
-      ],
+      name: 'kicker',
+      type: 'text',
+      label: 'Kicker',
+      defaultValue: '',
     },
     {
       name: 'title',
@@ -38,9 +27,9 @@ const RelatedProjectsBlock: Block = {
       },
     },
     {
-      name: 'description',
-      type: 'textarea',
-      label: 'Opis',
+      name: 'subtitle',
+      type: 'text',
+      label: 'Podnaslov',
       admin: {
         description: 'Kratek opis sekcije povezanih projektov',
       },
@@ -56,8 +45,24 @@ const RelatedProjectsBlock: Block = {
         description: 'Projekt, za katerega iščemo povezane projekte (z istimi storitvami)',
       },
     },
-    backgroundColour(),
-    colourSchema(),
+    {
+      name: 'template',
+      label: 'Template',
+      type: 'select',
+      required: true,
+      defaultValue: 'default',
+      options: [
+        {
+          label: 'Default Layout',
+          value: 'default',
+        },    
+      ],
+    },
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
+    
     isTransparent(),
     {
       name: 'idHref',

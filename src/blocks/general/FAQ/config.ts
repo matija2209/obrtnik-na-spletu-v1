@@ -1,5 +1,5 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
+import textColour from '@/fields/textColour';
 import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
@@ -7,37 +7,70 @@ const FaqBlock: Block = {
   slug: 'faq',
   interfaceName: 'FAQBlock',
   labels: {
-    singular: 'FAQ odsek (Splošni)',
-    plural: 'FAQ odseki (Splošni)',
+    singular: {
+      sl: 'FAQ odsek (Splošni)',
+      de: 'FAQ Abschnitt (Allgemein)',
+      en: 'FAQ Section (General)',
+    },
+    plural: {
+      sl: 'FAQ odseki (Splošni)',
+      de: 'FAQ Abschnitte (Allgemein)',
+      en: 'FAQ Sections (General)',
+    },
   },
   fields: [
     {
       name: 'template',
-      label: 'Template',
+      label: {
+        sl: 'Predloga',
+        de: 'Vorlage',
+        en: 'Template',
+      },
       type: 'select',
       required: true,
       defaultValue: 'default',
       options: [
         {
-          label: 'Default Layout',
+          label: {
+            sl: 'Privzeti način',
+            de: 'Standard-Layout',
+            en: 'Default Layout',
+          },
           value: 'default',
         },
         // Add more template options here
       ],
     },
     {
-      name: 'title',
+      name: 'kicker',
       type: 'text',
-      label: 'Naslov',
-      required: false,
-      localized: true,
+      label: {
+        sl: 'Kicker',
+        de: 'Kicker',
+        en: 'Kicker',
+      },
       defaultValue: '',
     },
     {
-      name: 'description',
-      type: 'textarea',
-      label: 'Opis',
-      localized: true,
+      name: 'title',
+      type: 'text',
+      label: {
+        sl: 'Naslov',
+        de: 'Titel',
+        en: 'Title',
+      },
+      required: false,
+      
+      defaultValue: '',
+    },
+    {
+      name: 'subtitle',
+      type: 'text',
+      label: {
+        sl: 'Podnaslov',
+        de: 'Untertitel',
+        en: 'Subtitle',
+      },
       defaultValue: '',
     },
     {
@@ -45,7 +78,11 @@ const FaqBlock: Block = {
       type: 'relationship',
       relationTo: 'faq-items',
       hasMany: true,
-      label: 'Izbrana vprašanja',
+      label: {
+        sl: 'Izbrana vprašanja',
+        de: 'Ausgewählte Fragen',
+        en: 'Selected Questions',
+      },
       required: false,
     },
     {
@@ -56,8 +93,11 @@ const FaqBlock: Block = {
       required: false,
       label: 'CTA gumb sekcije FAQ',
     },
-    backgroundColour(),
-    colourSchema(),
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
+    
     isTransparent(),
     {
       name:"idHref",

@@ -12,14 +12,14 @@ const DefaultHowToBlock: React.FC<HowToBlock> = (props) => {
     subtitle, 
     steps, 
     cta, 
-    bgColor:backgroundColor,
+    bgc:backgroundColor,
     isTransparent,
     template,
-    colourScheme
+
   } = props;
 
   // Process color classes
-  const colorClasses = getColorClasses(colourScheme as ColorScheme);
+  
   const backgroundClass = getBackgroundClass( backgroundColor as any);
   const overlayClass = isTransparent ? 'bg-transparent' : backgroundClass;
 
@@ -59,7 +59,7 @@ const DefaultHowToBlock: React.FC<HowToBlock> = (props) => {
                       <i className={`${step.icon} text-lg`} />
                     </div>
                   ) : (
-                    <div className={cn("w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg", colorClasses.textClass)}>
+                    <div className={cn("w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg")}>
                       {step.stepNumber || index + 1}
                     </div>
                   )}
@@ -68,14 +68,14 @@ const DefaultHowToBlock: React.FC<HowToBlock> = (props) => {
                 {/* Step Content */}
                 <div className="max-w-sm mx-auto">
                   {step.title && (
-                    <h3 className={cn("text-xl font-semibold mb-4", colorClasses.textClass)}>
+                    <h3 className={cn("text-xl font-semibold mb-4")}>
                       {step.title}
                     </h3>
                   )}
                   
                   {step.description && (
-                    <div className={colorClasses.textClass}>
-                      <RichText data={step.description} className={colorClasses.textClass} />
+                    <div >
+                      <RichText data={step.description}  />
                     </div>
                   )}
                 </div>

@@ -8,9 +8,9 @@ import type { BusinessInfoData } from '../types';
 export const useBusinessInfo = (businessInfoData: BusinessInfo): BusinessInfoData => {
   return useMemo(() => {
     const companyName = businessInfoData?.companyName || '';
-    const phoneNumber = businessInfoData?.phoneNumber || '';
+    const phoneNumber = businessInfoData?.phone || '';
     const email = businessInfoData?.email || '';
-    const location = businessInfoData?.location || '';
+    const location = businessInfoData?.address || '';
 
     // Extract logo Media objects from business info
     const logoDark = typeof businessInfoData?.logo === 'object' && businessInfoData?.logo

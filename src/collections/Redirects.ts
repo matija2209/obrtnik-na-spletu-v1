@@ -16,13 +16,29 @@ const anyone = () => true
 export const Redirects: CollectionConfig = {
   slug: 'redirects',
   labels: {
-    singular: 'Preusmeritev',
-    plural: 'Preusmeritve',
+    singular: {
+      en: 'Redirect',
+      sl: 'Preusmeritev',
+      de: 'Weiterleitung',
+    },  
+    plural: {
+      en: 'Redirects',
+      sl: 'Preusmeritve',
+      de: 'Weiterleitungen',
+    },
   },
   admin: {
     useAsTitle: 'from',
-    description: 'Upravljajte preusmeritve URL naslovov.',
-    group: 'Nastavitve',
+    description: {
+      sl: 'Upravljajte preusmeritve URL naslovov.',
+      de: 'Weiterleitungen für URL-Adressen verwalten.',
+      en: 'Manage redirects for URL addresses.',
+    },
+    group: {
+      sl: 'Nastavitve',
+      de: 'Einstellungen',
+      en: 'Settings',
+    },
     defaultColumns: ['from', 'to.type', 'updatedAt'],
   },
   access: {
@@ -34,14 +50,22 @@ export const Redirects: CollectionConfig = {
   fields: [
     {
       name: 'from',
-      label: 'From Path',
+      label: {
+        sl: 'Izvirni naslov',
+        de: 'Ursprünglicher Pfad',
+        en: 'Original Path',
+      },
       type: 'text',
       required: true,
       unique: true, // NOTE: For multi-tenant, uniqueness should ideally be scoped per tenant.
                  // The multi-tenant plugin might handle this, or you might need a custom hook/validation.
       index: true,
       admin: {
-        description: 'The path to redirect from (e.g., /old-page). Must start with /.',
+        description: {
+          sl: 'Naslov, iz katerega se preusmerja (npr. /star-stran). Morajo začeti z /.',
+          de: 'Pfad, von dem umgeleitet wird (z.B. /alte-seite). Muss mit / beginnen.',
+          en: 'Path to redirect from (e.g., /old-page). Must start with /.',
+        },
       },
       validate: (value: unknown): true | string => {
         if (typeof value !== 'string' || !value.startsWith('/')) {
@@ -56,11 +80,19 @@ export const Redirects: CollectionConfig = {
     },
     {
       name: 'to',
-      label: 'To Path or URL',
+      label: {
+        sl: 'Ciljni naslov',
+        de: 'Ziel-Pfad oder URL',
+        en: 'Target Path or URL',
+      },
       type: 'text',
       required: true,
       admin: {
-        description: 'The path or URL to redirect to (e.g., /new-page or https://example.com). Must start with / or http(s)://.',
+            description: {
+          sl: 'Naslov, na katerega se preusmerja (npr. /nova-stran ali https://primer.com). Morajo začeti z / ali http(s)://.',
+          de: 'Pfad oder URL, auf die umgeleitet wird (z.B. /neue-seite oder https://beispiel.com). Muss mit / oder http(s):// beginnen.',
+          en: 'Path or URL to redirect to (e.g., /new-page or https://example.com). Must start with / or http(s)://.',
+        },
       },
       validate: (value: unknown): true | string => {
         if (typeof value !== 'string') {

@@ -4,15 +4,31 @@ import { CollectionConfig, Access } from 'payload';
 export const Machinery: CollectionConfig = {
   slug: 'machinery',
   labels: {
-    singular: 'Stroj',
-    plural: 'Stroji',
+    singular: {
+      en: 'Machine',
+      sl: 'Stroj',
+      de: 'Maschine',
+    },
+    plural: {
+      en: 'Machines',
+      sl: 'Stroji',
+      de: 'Maschinen',
+    },
   },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'type', 'updatedAt'],
     hidden: true,
-    description: 'Podatki o gradbeni mehanizaciji.',
-    group: 'Dejavnost',
+    description: {
+      sl: 'Podatki o gradbeni mehanizaciji.',
+      de: 'Daten zur Bau-Mechanisierung.',
+      en: 'Data on construction machinery.',
+    },
+    group: {
+      sl: 'Dejavnost',
+      de: 'Projekte',
+      en: 'Projects',
+    },
   },
   access: {
     read: () => true,
@@ -23,53 +39,89 @@ export const Machinery: CollectionConfig = {
   fields: [
     {
       name: 'tabName',
-      label: 'Ime zavihka',
+      label: {
+        sl: 'Ime zavihka',
+        de: 'Tabellenname',
+        en: 'Tab Name',
+      },
       type: 'text',
       required: true,
     },
     {
       name: 'name',
-      label: 'Ime stroja (Model)',
+      label: {
+        sl: 'Ime stroja (Model)',
+        de: 'Maschinenname (Modell)',
+        en: 'Machine Name (Model)',
+      },
       type: 'text',
       required: true,
       admin: {
-        description: 'Npr. Volvo EL70, Komatsu PC210',
+        description: {
+          sl: 'Npr. Volvo EL70, Komatsu PC210',
+          de: 'z.B. Volvo EL70, Komatsu PC210',
+          en: 'e.g. Volvo EL70, Komatsu PC210',
+        },
       },
     },
     {
       name: 'description',
-      label: 'Splošni opis stroja',
+      label: {
+        sl: 'Splošni opis stroja',
+        de: 'Allgemeiner Maschinenbeschreibung',
+        en: 'General machine description',
+      },
       type: 'richText',
       required: false,
     },
     {
       name: 'image',
-      label: 'Slika stroja',
+      label: {
+        sl: 'Slika stroja',
+        de: 'Maschinenbild',
+        en: 'Machine Image',
+      },
       type: 'upload',
       relationTo: 'media',
       required: false,
     },
     {
       name: 'specifications',
-      label: 'Specifikacije / Poudarki',
+      label: {
+        sl: 'Specifikacije / Poudarki',
+        de: 'Spezifikationen / Highlights',
+        en: 'Specifications / Highlights',
+      },
       type: 'array',
       minRows: 0,
       fields: [
         {
           name: 'specName',
-          label: 'Naziv specifikacije',
+            label: {
+            sl: 'Naziv specifikacije',
+            de: 'Spezifikationsname',
+            en: 'Specification Name',
+          },
           type: 'text',
           required: true,
         },
         {
           name: 'specDetails',
-          label: 'Podrobnosti',
+          label: {
+            sl: 'Podrobnosti',
+            de: 'Details',
+            en: 'Details',
+          },
           type: 'array',
           minRows: 0,
           fields: [
             {
               name: 'detail',
-              label: 'Podrobnost',
+              label: {
+                sl: 'Podrobnost',
+                de: 'Detail',
+                en: 'Detail',
+              },
               type: 'text',
               required: true,
             }
@@ -78,16 +130,28 @@ export const Machinery: CollectionConfig = {
         },
       ],
       admin: {
-        description: 'Dodajte ključne specifikacije.',
+        description: {
+          sl: 'Dodajte ključne specifikacije.',
+          de: 'Fügen Sie wichtige Spezifikationen hinzu.',
+          en: 'Add important specifications.',
+        },
       }
     },
     {
       name: 'notes',
-      label: 'Dodatne opombe',
+      label: {
+        sl: 'Dodatne opombe',
+        de: 'Zusätzliche Notizen',
+        en: 'Additional Notes',
+      },
       type: 'textarea',
       required: false,
       admin: {
-        description: 'Npr. Premik stroja na kolesih za krajše razdalje (do 40km)',
+        description: {
+          sl: 'Npr. Premik stroja na kolesih za krajše razdalje (do 40km)',
+          de: 'z.B. Verschieben des Maschinen auf Räder für kürzere Entfernungen (bis 40km)',
+          en: 'e.g. Moving the machine on wheels for shorter distances (up to 40km)',
+        },
       }
     },
   ],

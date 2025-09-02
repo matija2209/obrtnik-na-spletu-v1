@@ -4,22 +4,41 @@ import type { CollectionConfig } from 'payload';
 export const OpeningHours: CollectionConfig = {
   slug: 'opening-hours',
   labels: {
-    singular: 'Urnik',
-    plural: 'Urniki',
+    singular: {
+      en: 'Opening Hours',
+      sl: 'Urnik',
+      de: 'Öffnungszeiten',
+    },
+    plural: {
+      en: 'Opening Hours',
+      sl: 'Urniki',
+      de: 'Öffnungszeiten',
+    },
   },
   admin: {
     useAsTitle: 'name',
-    description: 'Določite različne urnike odpiralnega časa (npr. redni, sezonski, nujni).',
+    description: {
+      sl: 'Določite različne urnike odpiralnega časa (npr. redni, sezonski, nujni).',
+      de: 'Legen Sie verschiedene Öffnungszeiten fest (z.B. regulär, saisonal, notwendig).',
+      en: 'Specify different opening hours (e.g. regular, seasonal, necessary).',
+    },
     defaultColumns: ['name', 'startDate', 'endDate', 'updatedAt'],
-    group: 'Nastavitve', // Grouping in admin UI
-    hidden: true,
+    group: {
+      sl: 'Nastavitve',
+      de: 'Einstellungen',
+      en: 'Settings',
+    }, // Grouping in admin UI
   },
   access: {
     read: () => true, // Allow public read access
   },
   fields: [
     slugField('name', {
-      label: 'Pot / Unikatni ID',
+      label: {
+        sl: 'Pot / Unikatni ID',
+        de: 'Pfad / Eindeutige ID',
+        en: 'Path / Unique ID',
+      },
       unique: true,
       index: true,
       admin: {
@@ -34,7 +53,11 @@ export const OpeningHours: CollectionConfig = {
       label: 'Ime Urnika',
       required: true,
       admin: {
-        description: 'Npr. "Redni urnik", "Poletni urnik", "Dežurstvo"',
+        description: {
+          sl: 'Npr. "Redni urnik", "Poletni urnik", "Dežurstvo"',
+          de: 'Z.B. "Regulärer Urnik", "Saisonaler Urnik", "Notwendig"',
+          en: 'E.g. "Summer timetable", "Winter timetable", "Emergency"',
+        },
       },
     },
     {
@@ -45,7 +68,11 @@ export const OpeningHours: CollectionConfig = {
           type: 'date',
           label: 'Velja Od',
           admin: {
-            description: 'Neobvezno. Urnik velja od tega datuma dalje.',
+            description: {
+              sl: 'Neobvezno. Urnik velja od tega datuma dalje.',
+              de: 'Optional. Der Urnik gilt ab diesem Datum.',
+              en: 'Optional. The timetable is valid from this date onwards.',
+            },
             date: {
               pickerAppearance: 'dayOnly',
               displayFormat: 'dd.MM.yyyy',
@@ -58,7 +85,11 @@ export const OpeningHours: CollectionConfig = {
           type: 'date',
           label: 'Velja Do',
           admin: {
-            description: 'Neobvezno. Urnik velja do tega datuma.',
+            description: {
+              sl: 'Neobvezno. Urnik velja do tega datuma.',
+              de: 'Optional. Der Urnik gilt bis zu diesem Datum.',
+              en: 'Optional. The timetable is valid until this date.',
+            },
             date: {
               pickerAppearance: 'dayOnly',
               displayFormat: 'dd.MM.yyyy',
@@ -71,29 +102,61 @@ export const OpeningHours: CollectionConfig = {
     {
       name: 'dailyHours',
       type: 'array',
-      label: 'Pravila Dnevnega Urnika',
+      label: {
+        sl: 'Pravila Dnevnega Urnika',
+        de: 'Regeln für den täglichen Urnik',
+        en: 'Rules for the daily timetable',
+      },
       minRows: 1,
       fields: [
         {
           name: 'days',
           type: 'select',
-          label: 'Dnevi v Tednu',
+          label: {
+            sl: 'Dnevi v Tednu',
+            de: 'Tage im Woche',
+            en: 'Days of the Week',
+          },
           hasMany: true,
           required: true,
           options: [
-            { label: 'Ponedeljek', value: 'monday' },
+            { label: {
+              sl: 'Ponedeljek',
+              de: 'Montag',
+              en: 'Monday',
+            }, value: 'monday' },
             { label: 'Torek', value: 'tuesday' },
             { label: 'Sreda', value: 'wednesday' },
-            { label: 'Četrtek', value: 'thursday' },
-            { label: 'Petek', value: 'friday' },
-            { label: 'Sobota', value: 'saturday' },
-            { label: 'Nedelja', value: 'sunday' },
+            { label: {
+              sl: 'Četrtek',
+              de: 'Donnerstag',
+              en: 'Thursday',
+            }, value: 'thursday' },
+            { label: {
+              sl: 'Petek',
+              de: 'Freitag',
+              en: 'Friday',
+            }, value: 'friday' },
+            { label: {
+              sl: 'Sobota',
+              de: 'Samstag',
+              en: 'Saturday',
+            }, value: 'saturday' },
+            { label: {
+              sl: 'Nedelja',
+              de: 'Sonntag',
+              en: 'Sunday',
+            }, value: 'sunday' },
           ],
         },
         {
           name: 'timeSlots',
           type: 'array',
-          label: 'Časovni Termini',
+          label: {
+            sl: 'Časovni Termini',
+            de: 'Zeitfenster',
+            en: 'Time Slots',
+          },
           required: true,
           minRows: 1,
           fields: [
@@ -104,7 +167,11 @@ export const OpeningHours: CollectionConfig = {
                   name: 'startTime',
                   type: 'date',
                   required: true,
-                  label: 'Začetni Čas',
+                  label: {
+                    sl: 'Začetni Čas',
+                    de: 'Startzeit',
+                    en: 'Start Time',
+                  },
                   admin: {
                     date: {
                       pickerAppearance: 'timeOnly',
@@ -118,7 +185,11 @@ export const OpeningHours: CollectionConfig = {
                   name: 'endTime',
                   type: 'date',
                   required: true,
-                  label: 'Končni Čas',
+                  label: {
+                    sl: 'Končni Čas',
+                    de: 'Endzeit',
+                    en: 'End Time',
+                  },
                   admin: {
                     date: {
                       pickerAppearance: 'timeOnly',
@@ -133,9 +204,17 @@ export const OpeningHours: CollectionConfig = {
             {
               name: 'notes',
               type: 'textarea',
-              label: 'Opombe',
+              label: {
+                sl: 'Opombe',
+                de: 'Notizen',
+                en: 'Notes',
+              },
               admin: {
-                description: 'Neobvezne opombe za ta specifični časovni termin (npr. "Samo po naročilu")',
+                description: {
+                  sl: 'Neobvezne opombe za ta specifični časovni termin (npr. "Samo po naročilu")',
+                  de: 'Optionale Notizen für dieses Zeitfenster (z.B. "Nur auf Bestellung")',
+                  en: 'Optional notes for this specific time slot (e.g. "Only on order")',
+                },
               },
             },
           ],
@@ -145,9 +224,17 @@ export const OpeningHours: CollectionConfig = {
     {
       name: 'notes',
       type: 'textarea',
-      label: 'Splošne Opombe',
+      label: {
+        sl: 'Splošne Opombe',
+        de: 'Allgemeine Notizen',
+        en: 'General Notes',
+      },
       admin: {
-        description: 'Neobvezne splošne opombe za celoten urnik.',
+        description: {
+          sl: 'Neobvezne splošne opombe za celoten urnik.',
+          de: 'Optionale allgemeine Notizen für den gesamten Urnik.',
+          en: 'Optional general notes for the entire timetable.',
+        },
       },
     },
   ],

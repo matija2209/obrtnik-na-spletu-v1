@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ShoppingCart, Eye, Wrench } from 'lucide-react'
 import { getImageUrl } from '@/utilities/images/getImageUrl'
 import getImageAlt from '@/utilities/images/getImageAlt'
-import PayloadImage from '@/components/ui/PayloadImage'
+import PayloadImage from '@/components/PayloadImage'
 import Link from 'next/link'
 import { 
   getCollectionType,

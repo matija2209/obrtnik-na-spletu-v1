@@ -1,5 +1,5 @@
 import React from 'react';
-import PayloadImage from '@/components/ui/PayloadImage';
+import PayloadImage from '@/components/PayloadImage';
 import Link from 'next/link';
 
 interface ServiceCardProps {

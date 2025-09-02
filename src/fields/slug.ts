@@ -15,6 +15,7 @@ export const slugField: Slug = (fallbackField = 'title', overrides = {}) =>
       hooks: {
         beforeValidate: [formatSlug(fallbackField)],
       },
+      required: true,
       index: true,
       label: 'Pot',
     },

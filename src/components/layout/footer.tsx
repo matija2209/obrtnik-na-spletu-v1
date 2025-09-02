@@ -46,7 +46,7 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Logo & Basic Info */}
           <div className="flex flex-col items-start space-y-4">
-            {(typeof businessInfoData?.logo === 'object' && businessInfoData.logo) && businessInfoData && <Logo logo={businessInfoData.logo} location="footer" title={businessInfoData.companyName ?? undefined} />}
+            {(typeof businessInfoData?.logo === 'object' && businessInfoData.logo) && businessInfoData && <Logo logo={businessInfoData.logo} title={businessInfoData.companyName ?? undefined} />}
             {businessInfoData && (
               <div className="text-sm space-y-1">
                 {footerData && footerData.showLogoText && <p className="font-semibold">{businessInfoData.companyName}</p>}
@@ -103,11 +103,11 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
           {footerData?.showContactInFooter !== false && (
             <div className="space-y-3 text-sm">
               <p className="font-semibold text-gray-900 mb-2">Kontakt</p>
-              {footerData?.showContactInFooter && businessInfoData?.phoneNumber &&<a
-                href={`tel:${businessInfoData?.phoneNumber}`}
+              {footerData?.showContactInFooter && businessInfoData?.phone &&<a
+                href={`tel:${businessInfoData?.phone}`}
                 className="flex items-center gap-2 hover:text-blue-600 transition-colors"
               >
-                <Phone size={16} /> {businessInfoData?.phoneNumber}
+                <Phone size={16} /> {businessInfoData?.phone}
               </a>}
               {footerData?.showContactInFooter && businessInfoData?.email &&<a
                 href={`mailto:${businessInfoData?.email}`}
@@ -115,8 +115,8 @@ async function Footer({ footerData, businessInfoData, navbarData }: FooterProps)
               >
                 <Mail size={16} /> {businessInfoData?.email}
               </a>}
-              {footerData?.showContactInFooter && businessInfoData?.location &&<p className="flex items-center gap-2">
-                <LocateIcon size={16} /> {businessInfoData?.location}
+              {footerData?.showContactInFooter && businessInfoData?.address &&<p className="flex items-center gap-2">
+                <LocateIcon size={16} /> {businessInfoData?.address}
               </p>}
             </div>
           )}

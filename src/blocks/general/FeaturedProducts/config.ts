@@ -1,5 +1,5 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
+import textColour from '@/fields/textColour';
 import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
@@ -7,48 +7,77 @@ const FeaturedProductsBlock: Block = {
   slug: 'featured_products',
   interfaceName: 'FeaturedProductsBlock',
   labels: {
-    singular: 'Izbrane izdelke',
-    plural: 'Izbrane izdelke',
+    singular: {
+      sl: 'Izbrane izdelke',
+      de: 'Ausgewählte Produkte',
+      en: 'Featured Products',
+    },
+    plural: {
+      sl: 'Izbrane izdelke',
+      de: 'Ausgewählte Produkte',
+      en: 'Featured Products',
+    },
   },
   fields: [
     {
       name: 'template',
-      label: 'Template',
+      label: {
+        sl: 'Predloga',
+        de: 'Vorlage',
+        en: 'Template',
+      },
       type: 'select',
       required: true,
       defaultValue: 'default',
       options: [
         {
-          label: 'Privzeti',
+          label: {
+            sl: 'Privzeti',
+            de: 'Standard',
+            en: 'Default',
+          },
           value: 'default',
         },
       ],
     },
-    backgroundColour(),
-    colourSchema(),
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
+    
     isTransparent(),
     
     {
       name: 'kicker',
       type: 'text',
-      label: 'Kicker',
-      required: false,
-      localized: true,
+      label: {
+        sl: 'Kicker',
+        de: 'Kicker',
+        en: 'Kicker',
+      },
       defaultValue: '',
     },
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov',
+      label: {
+        sl: 'Naslov',
+        de: 'Titel',
+        en: 'Title',
+      },
       required: false,
-      localized: true,
+      
       defaultValue: '',
     },
     {
       name: 'subtitle',
       type: 'textarea',
-      label: 'Podnaslov',
-      localized: true,
+      label: {
+        sl: 'Podnaslov',
+        de: 'Untertitel',
+        en: 'Subtitle',
+      },
+      
       defaultValue: '',
     },
     {
@@ -57,7 +86,11 @@ const FeaturedProductsBlock: Block = {
       relationTo: 'ctas',
       hasMany: true,
       required: false,
-      label: 'CTA gumbe',
+      label: {
+        sl: 'CTA gumbe',
+        de: 'CTA Buttons',
+        en: 'CTA Buttons',
+      },
       minRows: 0,
       maxRows: 2,
  
@@ -68,7 +101,11 @@ const FeaturedProductsBlock: Block = {
         relationTo:"products",
         hasMany:true,
         required:true,
-        label:"Izdelki"
+        label: {
+          sl: 'Izdelki',
+          de: 'Produkte',
+          en: 'Products',
+        },
     },
     {
       name:"idHref",

@@ -1,5 +1,4 @@
-import { SearchParams } from 'next/dist/server/request/search-params';
-import { Params } from 'next/dist/server/request/params';import DefaultServiceAreaSection from './default-service-area-section';
+import DefaultServiceAreaSection from './default-service-area-section';
 import type { ServiceAreaBlock as ServiceAreaBlockType, Media } from '@payload-types'; // Assuming ServiceAreaBlock is the type name
 
 // Define LocationItem type if not directly available or needs adjustment
@@ -13,7 +12,7 @@ interface LocationItem {
 const isLocationItem = (item: any): item is LocationItem => 
   item !== null && typeof item === 'object' && typeof item.name === 'string';
 
-const ServiceAreaBlock = ({ searchParams,params, ...block }: ServiceAreaBlockType  & { searchParams?: SearchParams ,params?:Params}) => {
+const ServiceAreaBlock = ({ ...block }: ServiceAreaBlockType) => {
   // Assuming a template field might exist
   switch (block?.template) {
     case 'default':

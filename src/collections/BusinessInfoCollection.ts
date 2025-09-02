@@ -22,34 +22,58 @@ export const BusinessInfoCollection: CollectionConfig = {
     // Basic Info Fields
     {
       name: 'companyName',
-      label: 'Ime podjetja',
+      label: {
+        sl: 'Ime podjetja',
+        de: 'Firmenname',
+        en: 'Company Name',
+      },
       type: 'text',
       required: true,
       admin: {
-        description: 'Polno ime podjetja.',
+        description: {
+          sl: 'Polno ime podjetja.',
+          de: 'Vollständiger Firmenname.',
+          en: 'Full company name.',
+        },
       },
     },
     {
       name: "companyAbout",
-      label: "O podjetju",
+      label: {
+        sl: "O podjetju",
+        de: "Über das Unternehmen",
+        en: "About the Company",
+      },
       type: "textarea",
       required: false,
     },
     {
       name: 'vatId',
-      label: 'Davčna številka (ID za DDV)',
+      label: {
+        sl: 'Davčna številka (ID za DDV)',
+        de: 'Steuer-ID (ID für Umsatzsteuer)',
+        en: 'VAT ID (ID for VAT)',
+      },
       type: 'text',
       required: false,
     },
     {
       name: 'businessId',
-      label: 'Matična številka',
+      label: {
+        sl: 'Matična številka',
+        de: 'Firmenregister-Nummer',
+        en: 'Business ID',
+      },
       type: 'text',
       required: false,
     },
     {
       name: 'registryDate',
-      label: 'Datum vpisa v register',
+      label: {
+        sl: 'Datum vpisa v register',
+        de: 'Eintragungsdatum im Register',
+        en: 'Registration Date',
+      },
       type: 'date',
       required: false,
       admin: {
@@ -61,25 +85,45 @@ export const BusinessInfoCollection: CollectionConfig = {
     },
     {
       name: 'address',
-      label: 'Naslov / Lokacija',
+      label: {
+        sl: 'Naslov / Lokacija',
+        de: 'Adresse / Standort',
+        en: 'Address / Location',
+      },
       type: 'text',
       required: false,
     },
     {
       name: 'phone',
-      label: 'Telefonska številka',
+      label: {
+        sl: 'Telefonska številka',
+        de: 'Telefonnummer',
+        en: 'Phone Number',
+      },
       type: 'text',
       required: false,
       admin: {
-        description: 'Telefonska številka, ki jo želite prikazati na strani.',
+        description: {
+          sl: 'Telefonska številka, ki jo želite prikazati na strani.',
+          de: 'Telefonnummer, die auf der Website angezeigt werden soll.',
+          en: 'Phone number to display on the website.',
+        },
         position: "sidebar"
       },
     },
     {
       name: 'email',
-      label: 'E-poštni naslov',
+      label: {
+        sl: 'E-poštni naslov',
+        de: 'E-Mail-Adresse',
+        en: 'Email Address',
+      },
       admin: {
-        description: 'E-poštni naslov, ki se uporablja za obveščanje.',
+        description: {
+          sl: 'E-poštni naslov, ki se uporablja za obveščanje.',
+          de: 'E-Mail-Adresse, die für Kontaktaufnahme verwendet wird.',
+          en: 'Email address used for contact.',
+        },
         position: "sidebar"
       },
       type: 'email',
@@ -88,32 +132,56 @@ export const BusinessInfoCollection: CollectionConfig = {
     // Logos and Links Fields
     {
       name: 'logo',
-      label: 'Logotip (Temna varianta)',
+      label: {
+        sl: 'Logotip (Temna varianta)',
+        de: 'Logo (Dunkle Variante)',
+        en: 'Logo (Dark Variant)',
+      },
       type: 'upload',
       relationTo: 'media',
       required: false,
       admin: {
-        description: 'Temna varianta logotipa, ki se uporablja na svetlih ozadjih.',
+        description: {
+          sl: 'Temna varianta logotipa, ki se uporablja na svetlih ozadjih.',
+          de: 'Dunkle Variante des Logos, die für helle Hintergründe verwendet wird.',
+          en: 'Dark variant of the logo used on light backgrounds.',
+        },
       },
     },
     {
       name: 'logoLight',
-      label: 'Logotip (Svetla varianta)',
+      label: {
+        sl: 'Logotip (Svetla varianta)',
+        de: 'Logo (Hellen Variante)',
+        en: 'Logo (Light Variant)',
+      },
       type: 'upload',
       relationTo: 'media',
       required: false,
       admin: {
-        description: 'Svetla varianta logotipa, ki se uporablja na temnih ozadjih. Če ni izbrana, se uporabi temna varianta.',
+        description: {
+          sl: 'Svetla varianta logotipa, ki se uporablja na temnih ozadjih. Če ni izbrana, se uporabi temna varianta.',
+          de: 'Helle Variante des Logos, die für dunkle Hintergründe verwendet wird. Wenn nicht ausgewählt, wird die dunkle Variante verwendet.',
+          en: 'Light variant of the logo used on dark backgrounds. If not selected, the dark variant is used.',
+        },
       },
     },
     {
       name: 'platforms',
-      label: 'Povezave do platform',
+      label: {
+        sl: 'Povezave do platform',
+        de: 'Plattform-Links',
+        en: 'Platform Links',
+      },
       type: 'array',
       fields: [
         {
           name: 'platform',
-          label: 'Ime platforme',
+          label: {
+            sl: 'Ime platforme',
+            de: 'Plattform-Name',
+            en: 'Platform Name',
+          },
           type: 'select',
           options: [
             {
@@ -133,53 +201,93 @@ export const BusinessInfoCollection: CollectionConfig = {
         },
         {
           name: 'url',
-          label: 'URL povezava do profila',
+          label: {
+            sl: 'URL povezava do profila',
+            de: 'URL-Link zum Profil',
+            en: 'URL Link to Profile',
+          },
           type: 'text',
           required: true,
         },
       ],
       admin: {
-        description: 'Dodajte povezave do vaših profilov na platformah za pridobivanje strank.',
+        description: {
+          sl: 'Dodajte povezave do vaših profilov na platformah za pridobivanje strank.',
+          de: 'Fügen Sie Links zu Ihren Profilen auf Plattformen hinzu, um Kunden zu gewinnen.',
+          en: 'Add links to your profiles on platforms to acquire customers.',
+        },
       },
     },
     // Location Fields
     {
       name: 'coordinates',
-      label: 'Koordinate sedeža',
+      label: {
+        sl: 'Koordinate sedeža',
+        de: 'Koordinaten des Standorts',
+        en: 'Coordinates of the Location',
+      },
       type: 'group',
       fields: [
         {
           name: 'latitude',
-          label: 'Latitude',
+          label: {
+            sl: 'Latitude',
+            de: 'Breitengrad',
+            en: 'Latitude',
+          },
           type: 'number',
           required: true,
           defaultValue: 46.2191697,
           admin: {
-            description: 'Geografska širina lokacije podjetja.',
+            description: {
+              sl: 'Geografska širina lokacije podjetja.',
+              de: 'Geografische Breite der Unternehmensadresse.',
+              en: 'Geographic latitude of the company location.',
+            },
           },
         },
         {
           name: 'longitude',
-          label: 'Longitude',
+          label: {
+            sl: 'Longitude',
+            de: 'Längengrad',
+            en: 'Longitude',
+          },
           type: 'number',
           required: true,
           defaultValue: 15.4705641,
           admin: {
-            description: 'Geografska dolžina lokacije podjetja.',
+              description: {
+              sl: 'Geografska dolžina lokacije podjetja.',
+              de: 'Geografische Länge der Unternehmensadresse.',
+              en: 'Geographic longitude of the company location.',
+            },
           },
         },
       ],
       admin: {
-        description: 'Koordinate lokacije podjetja za prikaz na zemljevidu.',
+        description: {
+          sl: 'Koordinate lokacije podjetja za prikaz na zemljevidu.',
+          de: 'Koordinaten der Unternehmensadresse für die Anzeige auf der Karte.',
+          en: 'Coordinates of the company location for display on the map.',
+        },
       },
     },
     {
       name: 'radius',
-      label: 'Območje storitev (v metrih)',
+      label: {
+        sl: 'Območje storitev (v metrih)',
+        de: 'Service-Radius (in Metern)',
+        en: 'Service Radius (in Meters)',
+      },
       type: 'number',
       required: false,
       admin: {
-        description: 'Radius v metrih, ki označuje območje kjer podjetje nudi svoje storitve.',
+        description: {
+          sl: 'Radius v metrih, ki označuje območje kjer podjetje nudi svoje storitve.',
+          de: 'Radius in Metern, der das Service-Bereich des Unternehmens angibt.',
+          en: 'Radius in meters indicating the area where the company provides its services.',
+        },
       },
     },
   ],

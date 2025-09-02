@@ -1,13 +1,11 @@
-import { SearchParams } from 'next/dist/server/request/search-params';
-import { Params } from 'next/dist/server/request/params';
-import DefaultContactSection from './default-contact-section';
+import ContactBlockVariant1 from './ContactBlockVariant1';
 import type { ContactBlock } from '@payload-types';
 
-const ContactBlockComponent = ({ searchParams,params, ...block }: ContactBlock & { searchParams?: SearchParams ,params?:Params}) => {
+const ContactBlockComponent = ({ ...block }: ContactBlock) => {
   switch (block?.template) {
     case 'default':
     default:
-      return <DefaultContactSection {...block} />
+      return <ContactBlockVariant1 {...block} />
   }
 };
 

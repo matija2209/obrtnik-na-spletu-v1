@@ -6,9 +6,10 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 import { en } from '@payloadcms/translations/languages/en'
 import { sl } from '@payloadcms/translations/languages/sl'
+import { de } from '@payloadcms/translations/languages/de'
 import Users from '@/collections/Users'
 import { Media } from '@/collections/Media'
-import { Projects } from '@/collections/ProjectsHighlights'
+import { Projects } from '@/collections/Projects'
 import { Testimonials } from '@/collections/Testimonials'
 import { FaqItems } from '@/collections/FaqItems'
 import { Services } from '@/collections/Services'
@@ -51,6 +52,7 @@ import SubServices from '@/collections/SubServices'
 import { Posts } from '@/collections/Posts'
 import { BusinessInfoCollection } from '@/collections/BusinessInfoCollection'
 import { seed } from '@/seed'
+import { HighQualityMedia } from '@/collections/HighQualityMedia'
 
 // Define a unified type for the hook
 type UnifiedAfterChangeHook = CollectionAfterChangeHook | GlobalAfterChangeHook;
@@ -114,8 +116,9 @@ const addDeployHook = <T extends CollectionConfig | GlobalConfig>(config: T): T 
   };
 };
 const allCollections: CollectionConfig[] = [
-    Users,
+  Users,
   Media,
+  HighQualityMedia,
   Machinery,
   Services,
   Testimonials,
@@ -247,7 +250,7 @@ export default buildConfig({
     }
   },
   i18n: {
-    supportedLanguages: { en, sl },
+    supportedLanguages: { en, sl,de },
     fallbackLanguage: 'sl',
   },
   collections: allCollections.map(addDeployHook),
@@ -324,6 +327,7 @@ export default buildConfig({
     s3Storage({
       collections: {
         [Media.slug]: true,
+        [HighQualityMedia.slug]: true,
       },
       bucket: process.env.S3_BUCKET || '',
       config: {
@@ -339,9 +343,10 @@ export default buildConfig({
     seoPlugin({ // Configure SEO Plugin
       collections: [
         Pages.slug,
-        Projects.slug,
-        Services.slug,
-        ServicePages.slug, // Add ServicePages.slug
+        ServicePages.slug, 
+        ProjectPages.slug, 
+        ProductPages.slug,
+        Posts.slug, 
       ],
       uploadsCollection: Media.slug,
       tabbedUI: true, // Enable tabbed UI
@@ -418,6 +423,7 @@ export default buildConfig({
         [Ctas.slug]: {},
         [Machinery.slug]: {},
         [Media.slug]: {},
+        [HighQualityMedia.slug]: {},
         [Pages.slug]: {},
         [SubServices.slug]: {},
         [ServicePages.slug]: {}, // Add ServicePages.slug to multi-tenant config

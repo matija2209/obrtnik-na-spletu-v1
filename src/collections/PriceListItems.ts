@@ -6,16 +6,28 @@ const anyone: Access = () => true;
 export const PriceListItems: CollectionConfig = {
   slug: 'price-list-items',
   labels: {
-    singular: 'Element Cenika',
-    plural: 'Elementi Cenika',
+    singular: {
+      en: 'Price List Item',
+      sl: 'Element Cenika',
+      de: 'Preislistenelement',
+    },
+    plural: {
+      en: 'Price List Items',
+      sl: 'Elementi Cenika',
+      de: 'Preislistenelemente',
+    },
   },
   admin: {
     useAsTitle: 'name',
+    hidden: true,
     defaultColumns: ['name', 'price', 'section', 'displayOrder', 'updatedAt'],
     description: 'Posamezne postavke na ceniku (npr. Goveja juha, Vrtanje 10cm luknje).',
-    
-    group: 'Ceniki',
-    hidden: true,
+    group: {
+      sl: 'Ceniki',
+      de: 'Preislisten',
+      en: 'Price Lists',
+    },
+
   },
   access: {
     read: anyone,
@@ -27,29 +39,45 @@ export const PriceListItems: CollectionConfig = {
     {
       name: 'name',
       type: 'text',
-      label: 'Ime Elementa/Storitve',
+      label: {
+        sl: 'Ime Elementa/Storitve',
+        de: 'Name des Elements/Dienstes',
+        en: 'Name of the Element/Service',
+      },
       required: true,
-      localized: true,
+      
     },
     {
       name: 'description',
       type: 'textarea',
-      label: 'Opis (Neobvezno)',
-      localized: true,
+      label: {
+        sl: 'Opis (Neobvezno)',
+        de: 'Beschreibung (Optional)',
+        en: 'Description (Optional)',
+      },
+      
     },
     {
       name: 'price',
       type: 'text', // Use text for flexibility (e.g., "€10", "From €50/hr", "€8 / €12")
-      label: 'Cena',
+      label: {
+        sl: 'Cena',
+        de: 'Preis',
+        en: 'Price',
+      },
       required: true,
-      localized: true,
+      
     },
     {
       name: 'section',
       type: 'relationship',
       relationTo: 'price-list-sections',
       required: true,
-      label: 'Pripadajoča Sekcija',
+      label: {
+        sl: 'Pripadajoča Sekcija',
+        de: 'Zugehörige Sektion',
+        en: 'Related Section',
+      },
       admin: {
         position: 'sidebar',
       }
@@ -69,7 +97,11 @@ export const PriceListItems: CollectionConfig = {
     {
       name: 'displayOrder',
       type: 'number',
-      label: 'Vrstni red prikaza (znotraj sekcije)',
+      label: {
+        sl: 'Vrstni red prikaza (znotraj sekcije)',
+        de: 'Anzeigereihenfolge (innerhalb der Sektion)',
+        en: 'Display Order (within section)',
+      },
       admin: {
         step: 1,
       },

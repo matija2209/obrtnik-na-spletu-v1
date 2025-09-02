@@ -1,16 +1,30 @@
 import { CollectionConfig, Access } from 'payload';
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
 
-import { revalidateMediaCache, revalidateMediaCacheDelete } from './hooks/revalidateMediaCache';
+import generateBase64Preview from './hooks/generateBase64Preview';
+import { revalidateMediaCache, revalidateMediaCacheDelete } from './hooks/revalidateCache';
+
 
 export const Media: CollectionConfig = {
     slug: 'media',
     labels:{
-        singular: 'Slika',
-        plural: 'Slike',
+        singular: {
+            en: 'Image',
+            sl: 'Slika',
+            de: 'Bild',
+        },
+        plural: {
+            en: 'Images',
+            sl: 'Slike',
+            de: 'Bilder',
+        },
     },
     admin: {
-        description: 'Naložite in upravljajte slike ter druge medijske datoteke.',
+        description: {
+            sl: 'Naložite in upravljajte slike ter druge medijske datoteke.',
+            de: 'Laden Sie Bilder und andere Medien-Dateien hoch und verwalten Sie sie.',
+            en: 'Upload and manage images and other media files.',
+        },
         // components:{
         //   views:{
         //     list: {
@@ -18,7 +32,11 @@ export const Media: CollectionConfig = {
         //     }
         //   }
         // },
-        group: 'Vsebina',
+        group: {
+          sl: 'Vsebina',
+          de: 'Inhalt',
+          en: 'Content',
+        },
     },
     access: {
       read: () => true,
@@ -27,7 +45,7 @@ export const Media: CollectionConfig = {
       delete: superAdminOrTenantAdminAccess
     },
     hooks: {
-      afterChange: [ revalidateMediaCache],
+      afterChange: [ generateBase64Preview, revalidateMediaCache],
       afterDelete: [revalidateMediaCacheDelete],
     },
     upload: {
@@ -65,7 +83,11 @@ export const Media: CollectionConfig = {
         {
             name: 'alt',
             type: 'text',
-            label: 'Nadomestno besedilo',
+            label: {
+                sl: 'Nadomestno besedilo',
+                de: 'Alternativer Text',
+                en: 'Alternative Text',
+            },
             required: false,
             // admin: {
             //   components: {
@@ -74,50 +96,104 @@ export const Media: CollectionConfig = {
             // }
         },
         {
+            name: 'base64Preview',
+            label: 'Base64 Preview',
+            type: 'text',
+            admin: {
+                readOnly: true,
+                description: 'A small, blurred Base64 representation of the image for placeholders.',
+            },
+            // You might want to hide it from the API unless specifically requested
+            // access: {
+            //   read: () => false, // Or some specific access control
+            //   update: () => false,
+            // },
+        },
+        {
             name: 'width',
             type: 'number',
-            label: 'Širina',
+              label: {
+                sl: 'Širina',
+                de: 'Breite',
+                en: 'Width',
+            },
             admin: {
-                description: 'Originalna širina slike v pikslih',
+                description: {
+                    sl: 'Originalna širina slike v pikslih',
+                    de: 'Originalbreite der Bilddatei in Pixel',
+                    en: 'Original width of the image in pixels',
+                },
                 readOnly: true,
             },
         },
         {
             name: 'height',
             type: 'number',
-            label: 'Višina',
+            label: {
+                sl: 'Višina',
+                de: 'Höhe',
+                en: 'Height',
+            },
             admin: {
-                description: 'Originalna višina slike v pikslih',
+                description: {
+                    sl: 'Originalna višina slike v pikslih',
+                    de: 'Originalhöhe der Bilddatei in Pixel',
+                    en: 'Original height of the image in pixels',
+                },
                 readOnly: true,
             },
         },
         {
             name: 'source',
             type: 'select',
-            label: 'Vir',
+            label: {
+                sl: 'Vir',
+                de: 'Quelle',
+                en: 'Source',
+            },
             options: [
                 {
-                    label: 'Manual Upload',
+                    label: {
+                        sl: 'Ročno nalaganje',
+                        de: 'Manuelles Hochladen',
+                        en: 'Manual Upload',
+                    },
                     value: 'manual',
                 },
                 {
-                    label: 'Facebook',
+                    label: {
+                        sl: 'Facebook',
+                        de: 'Facebook',
+                        en: 'Facebook',
+                    },
                     value: 'facebook',
                 },
             ],
             defaultValue: 'manual',
             admin: {
-                description: 'Vir medijske datoteke',
+                description: {
+                    sl: 'Vir medijske datoteke',
+                    de: 'Quelle der Medien-Datei',
+                    en: 'Source of the media file',
+                },
                 readOnly: true,
             },
         },
         {
             name: 'facebookId',
             type: 'text',
-            label: 'Facebook ID',
+              label: {
+                sl: 'Facebook ID',
+                de: 'Facebook-ID',
+                en: 'Facebook ID',
+            },
             required: false,
             admin: {
-                description: 'Facebook attachment ID (if imported from Facebook)',
+                description: {
+                    sl: 'Facebook attachment ID (if imported from Facebook)',
+                    de: 'Facebook-Anhäng-ID (wenn aus Facebook importiert)',
+                    en: 'Facebook attachment ID (if imported from Facebook)',
+                },
                 readOnly: true,
                 condition: (data) => data.source === 'facebook',
             },

@@ -1,13 +1,13 @@
 // --- Enhanced Image URL Helper with Next.js Optimization --- 
 
-import { Media } from "@payload-types";
+import { HighQualityMedia, Media } from "@payload-types";
 
 // Type representing one of the size objects within Media.sizes
 // This extracts the type of `thumbnail`, `card`, or `tablet` if they exist
 type MediaSize = NonNullable<Media['sizes']>[keyof NonNullable<Media['sizes']>] | undefined | null;
-
+type HighQualityMediaSize = NonNullable<HighQualityMedia['sizes']>[keyof NonNullable<HighQualityMedia['sizes']>] | undefined | null;
 // Type for the function input: Accepts the full Media object, one of its size objects, or null/undefined
-export type ImageInput = Media | MediaSize | number | null | undefined | (number | Media)[];
+export type ImageInput = Media | HighQualityMedia | HighQualityMediaSize | MediaSize | number | null | undefined | (number | Media)[];
 
 /**
  * Retrieves a relative image URL from a Payload Media object or one of its size variants.
@@ -20,7 +20,7 @@ export type ImageInput = Media | MediaSize | number | null | undefined | (number
  */
 export function getImageUrl(
   image: ImageInput,
-  preferredSizeName: keyof NonNullable<Media['sizes']> = 'card', // Default to 'card'
+  preferredSizeName: keyof NonNullable<Media['sizes']> | keyof NonNullable<HighQualityMedia['sizes']> = "hero-desktop", // Default to 'card'
   fallback: string = '/no-image.svg'
 ): string  {
   if (!image || typeof image !== 'object' || typeof image === 'number') {
@@ -38,7 +38,7 @@ export function getImageUrl(
     const currentSizes = image.sizes;   // currentSizes is NonNullable<Media['sizes']>
 
     // Define the order of preference for sizes
-    const sizePreferenceOrder: (keyof NonNullable<Media['sizes']>)[] = [
+    const sizePreferenceOrder: (keyof NonNullable<Media['sizes']> | keyof NonNullable<HighQualityMedia['sizes']>)[] = [
       preferredSizeName,
       'card',       // Fallback 1
       'tablet',     // Fallback 2
@@ -47,7 +47,7 @@ export function getImageUrl(
 
     // Attempt to find a URL from the preferred sizes
     for (const sizeKey of sizePreferenceOrder) {
-      const specificSize = currentSizes[sizeKey as keyof typeof currentSizes];
+      const specificSize : MediaSize | HighQualityMediaSize = currentSizes[sizeKey as keyof typeof currentSizes] as MediaSize | HighQualityMediaSize;
 
       if (
         specificSize &&
@@ -104,7 +104,7 @@ export function getImageUrl(
  */
 export function getImageDimensions(
   image: ImageInput,
-  preferredSizeName: keyof NonNullable<Media['sizes']> = 'card'
+  preferredSizeName: keyof NonNullable<Media['sizes']> | keyof NonNullable<HighQualityMedia['sizes']> = 'card'
 ): { width: number; height: number } | null {
   if (!image || typeof image !== 'object' || typeof image === 'number') {
     return null;
@@ -112,7 +112,7 @@ export function getImageDimensions(
 
   if ('sizes' in image && image.sizes && typeof image.sizes === 'object') {
     const currentSizes = image.sizes;
-    const specificSize = currentSizes[preferredSizeName as keyof typeof currentSizes];
+    const specificSize : MediaSize | HighQualityMediaSize = currentSizes[preferredSizeName as keyof typeof currentSizes] as MediaSize | HighQualityMediaSize;
 
     if (specificSize && typeof specificSize === 'object' && 'width' in specificSize && 'height' in specificSize) {
       const width = specificSize.width;
@@ -152,10 +152,10 @@ export function getImageSrcSet(image: ImageInput): string {
     const sizes = image.sizes;
 
     // Order sizes by width for proper srcSet
-    const sizeOrder = ['thumbnail', 'card', 'tablet'] as const;
+    const sizeOrder = ['thumbnail', 'card', 'tablet'] as (keyof NonNullable<Media['sizes']> | keyof NonNullable<HighQualityMedia['sizes']>)[] ;
     
     sizeOrder.forEach(sizeName => {
-      const sizeData = sizes[sizeName];
+      const sizeData : MediaSize | HighQualityMediaSize = sizes[sizeName as keyof typeof sizes] as MediaSize | HighQualityMediaSize;
       if (sizeData && typeof sizeData === 'object' && 'url' in sizeData && 'width' in sizeData) {
         const url = sizeData.url;
         const width = sizeData.width;

@@ -10,15 +10,24 @@ export default async function TextBlockVariant1(props: TextBlock) {
   const { 
     text,
     idHref,
-    bgColor,
+    bgc: backgroundColor,
   } = props;
 
-  const backgroundClass = getBackgroundClass(bgColor as any);
+
+
+  // Get color classes based on the selected scheme
+
+  const backgroundClass = getBackgroundClass(backgroundColor as any);
+
+
+  // Get background image for ContainedSection
+
 
   return (
     <ContainedSection
       id={idHref ?? "o-nas"}
-      overlayClassName={backgroundClass}
+
+
       verticalPadding="xl"
       padding="lg"
       maxWidth="7xl"

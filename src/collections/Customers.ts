@@ -4,13 +4,26 @@ import { CollectionConfig, Access } from 'payload';
 export const Customers: CollectionConfig = {
   slug: 'customers',
   labels: {
-    singular: 'Stranka',
-    plural: 'Stranke',
+    singular: {
+      en: 'Customer',
+      sl: 'Stranka',
+      de: 'Kunde',
+    },
+    plural: {
+      en: 'Customers',
+      sl: 'Stranke',
+      de: 'Kunden',
+    },
   },
   admin: {
     useAsTitle: 'fullName',
+    hidden: true,
     defaultColumns: ['fullName', 'email', 'phone', 'town', 'createdAt'],
-    group: 'Prodaja',
+    group: {
+      sl: 'Prodaja',
+      de: 'Verkauf',
+      en: 'Sales',
+    },
   },
   access: {
     read: isSuperAdminAccess,
@@ -23,13 +36,21 @@ export const Customers: CollectionConfig = {
       name: 'firstName',
       type: 'text',
       required: true,
-      label: 'Ime',
+      label: {
+        sl: 'Ime',
+        de: 'Vorname',
+        en: 'First Name',
+      },
     },
     {
       name: 'lastName',
       type: 'text',
       required: true,
-      label: 'Priimek',
+      label: {
+        sl: 'Priimek',
+        de: 'Nachname',
+        en: 'Last Name',
+      },
     },
     {
       name: 'fullName',
@@ -53,7 +74,11 @@ export const Customers: CollectionConfig = {
       type: 'email',
       required: true,
       unique: true,
-      label: 'E-pošta',
+      label: {
+        sl: 'E-pošta',
+        de: 'E-Mail',
+        en: 'Email',
+      },
       validate: (val: string | null | undefined) => {
         if (!val) return 'E-poštni naslov je obvezen.';
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -64,7 +89,11 @@ export const Customers: CollectionConfig = {
     {
       name: 'phone',
       type: 'text',
-      label: 'Telefon',
+      label: {
+        sl: 'Telefon',
+        de: 'Telefon',
+        en: 'Phone',
+      },
       admin: {
         placeholder: '+386 ...',
       },
@@ -72,19 +101,31 @@ export const Customers: CollectionConfig = {
     {
       name: 'address',
       type: 'group',
-      label: 'Naslov',
+      label: {
+        sl: 'Naslov',
+        de: 'Adresse',
+        en: 'Address',
+      },
       fields: [
         {
           name: 'streetAddress',
           type: 'text',
           required: true,
-          label: 'Ulica in hišna številka',
+          label: {
+            sl: 'Ulica in hišna številka',
+            de: 'Straße und Hausnummer',
+            en: 'Street and House Number',
+          },
         },
         {
           name: 'postalCode',
           type: 'text',
           required: true,
-          label: 'Poštna številka',
+          label: {
+            sl: 'Poštna številka',
+            de: 'Postleitzahl',
+            en: 'Postal Code',
+          },
           validate: (val: string | null | undefined) => {
             if (!val) return 'Poštna številka je obvezna.';
             // More flexible postal code validation - allow 3-5 digits
@@ -97,12 +138,20 @@ export const Customers: CollectionConfig = {
           name: 'town',
           type: 'text',
           required: true,
-          label: 'Kraj',
+            label: {
+            sl: 'Kraj',
+            de: 'Ort',
+            en: 'Town',
+          },
         },
         {
           name: 'country',
           type: 'text',
-          label: 'Država',
+          label: {
+            sl: 'Država',
+            de: 'Land',
+            en: 'Country',
+          },
           defaultValue: 'Slovenija',
         },
       ],
@@ -110,40 +159,76 @@ export const Customers: CollectionConfig = {
     {
       name: 'customerNotes',
       type: 'textarea',
-      label: 'Opombe stranke',
+      label: {
+        sl: 'Opombe stranke',
+        de: 'Notizen zur Kunden',
+        en: 'Customer Notes',
+      },
       admin: {
-        description: 'Dodatne informacije o stranki ali posebne zahteve',
+        description: {
+          sl: 'Dodatne informacije o stranki ali posebne zahteve',
+          de: 'Zusätzliche Informationen zur Kunden oder spezielle Anforderungen',
+          en: 'Additional information about the customer or special requirements',
+        },
       },
     },
     {
       name: 'gdprConsent',
       type: 'checkbox',
-      label: 'GDPR soglasje',
+      label: {
+        sl: 'GDPR soglasje',
+        de: 'GDPR-Zustimmung',
+        en: 'GDPR Consent',
+      },
       defaultValue: false,
       admin: {
-        description: 'Stranka je podala soglasje za obdelavo osebnih podatkov',
+        description: {
+          sl: 'Stranka je podala soglasje za obdelavo osebnih podatkov',
+          de: 'Die Kunden hat die Zustimmung zur Verarbeitung personenbezogener Daten erteilt',
+          en: 'The customer has given consent to the processing of personal data',
+        },
       },
     },
     {
       name: 'marketingConsent',
       type: 'checkbox',
-      label: 'Marketinško soglasje',
+        label: {
+        sl: 'Marketinško soglasje',
+        de: 'Marketing-Zustimmung',
+        en: 'Marketing Consent',
+      },
       defaultValue: false,
       admin: {
-        description: 'Stranka soglaša s prejemanjem marketinških sporočil',
+        description: {
+          sl: 'Stranka soglaša s prejemanjem marketinških sporočil',
+          de: 'Die Kunden stimmt der Empfang von Marketing-Nachrichten zu',
+          en: 'The customer agrees to receive marketing messages',
+        },
       },
     },
     {
       name: 'customerType',
       type: 'select',
-      label: 'Tip stranke',
+      label: {
+        sl: 'Tip stranke',
+        de: 'Kundenart',
+        en: 'Customer Type',
+      },
       options: [
         {
-          label: 'Fizična oseba',
+          label: {
+            sl: 'Fizična oseba',
+            de: 'Natürliche Person',
+            en: 'Individual',
+          },
           value: 'individual',
         },
         {
-          label: 'Podjetje',
+          label: {
+            sl: 'Podjetje',
+            de: 'Unternehmen',
+            en: 'Company',
+          },
           value: 'company',
         },
       ],
@@ -152,7 +237,11 @@ export const Customers: CollectionConfig = {
     {
       name: 'companyInfo',
       type: 'group',
-      label: 'Podatki podjetja',
+      label: {
+        sl: 'Podatki podjetja',
+        de: 'Unternehmensinformationen',
+        en: 'Company Information',
+      },
       admin: {
         condition: (data) => data.customerType === 'company',
       },
@@ -160,17 +249,29 @@ export const Customers: CollectionConfig = {
         {
           name: 'companyName',
           type: 'text',
-          label: 'Ime podjetja',
+          label: {
+            sl: 'Ime podjetja',
+            de: 'Firmenname',
+            en: 'Company Name',
+          },
         },
         {
           name: 'taxNumber',
           type: 'text',
-          label: 'Davčna številka',
+          label: {
+            sl: 'Davčna številka',
+            de: 'Steuer-ID',
+            en: 'Tax Number',
+          },
         },
         {
           name: 'registrationNumber',
           type: 'text',
-          label: 'Matična številka',
+          label: {
+            sl: 'Matična številka',
+            de: 'Registrierungsnummer',
+            en: 'Registration Number',
+          },
         },
       ],
     }

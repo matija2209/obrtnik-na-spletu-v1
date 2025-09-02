@@ -4,35 +4,34 @@ import { ContainedSection } from '@/components/layout/container-section';
 import SectionHeading from '@/components/layout/section-heading';
 
 import { Media, ServiceAreaBlock } from '@payload-types';
-import { Params } from 'next/dist/server/request/params';
 import MapWithCircleOverlay from '@/components/misc/map-with-circle-overlay';
 import { getBackgroundClass, getColorClasses, type ColorScheme } from '@/utilities/getColorClasses';
 import { cn } from '@/lib/utils';
 import { getBusinessInfo, getTenantIdBySlug } from '@/lib/payload';
+import { cookies } from 'next/headers';
 
-export default async function DefaultServiceAreaSection(props: ServiceAreaBlock & { params?: Params }) {
+export default async function DefaultServiceAreaSection(props: ServiceAreaBlock) {
   const {
     title,
-    description,
+    subtitle,
     locations,
-    colourScheme,
     showMap,
     blockType,
     idHref,
     id,
     template,
-    bgColor: backgroundColor,
-    isTransparent,
-    params
+    bgc: backgroundColor,
+    isTransparent
   } = props;
-  const { tenant } = params || {}
+  const cookieStore = await cookies()
+  const tenantId = cookieStore.get('current-tenant')?.value
+
   // Get color classes and background styling
 
   const backgroundClass = getBackgroundClass( backgroundColor as any);
   const overlayClass = isTransparent ? 'bg-transparent' : backgroundClass;
-
-  const tenantId = tenant ? await getTenantIdBySlug(typeof tenant === 'string' ? tenant : tenant[0]) : null;
-  const businessInfo = tenantId ? await getBusinessInfo(tenantId) : null;
+  const tenantIdNumber = await getTenantIdBySlug(tenantId as string)
+  const businessInfo = await getBusinessInfo(tenantIdNumber as number)
 
   // Process the image URL
   return (
@@ -50,13 +49,13 @@ export default async function DefaultServiceAreaSection(props: ServiceAreaBlock 
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start w-full mt-8">
           {/* Map Image */}
-          {/* <MapWithCircleOverlay lat={businessInfo.coordinates.latitude} lng={businessInfo.coordinates.longitude} radius={businessInfo.radius} disableDefaultUI={true}></MapWithCircleOverlay> */}
+          <MapWithCircleOverlay lat={businessInfo?.coordinates.latitude} lng={businessInfo?.coordinates.longitude} radius={businessInfo?.radius} disableDefaultUI={true}></MapWithCircleOverlay>
 
           {/* Content */}
           <div className="flex flex-col gap-6">
-              {description && (
+              {subtitle && (
             <p className={cn("text-lg leading-relaxed")}>
-              {description}
+              {subtitle}
             </p>
               )}
             <div className="grid grid-cols-2 gap-x-8 gap-y-4 mt-6">

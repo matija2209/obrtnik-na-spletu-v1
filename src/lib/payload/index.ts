@@ -58,7 +58,7 @@ export const getTenantIdBySlug = async (slug: string): Promise<number | null> =>
             },
           },
           limit: 1,
-          depth: 0, // We only need the ID
+          depth: 2, // We only need the ID
         });
 
         if (tenantQuery.docs.length > 0 && tenantQuery.docs[0].id) {
@@ -227,6 +227,26 @@ export const getServiceById = async (serviceId: number) => {
     }
   )();
 }
+
+
+export const getOpeningHours = async (openingHoursIds: number[]) => {
+  return await unstable_cache(
+    async () => {
+      const payload = await getPayloadClient()
+      const result = await payload.find({
+        collection: "opening-hours",
+        where: { id: { in: openingHoursIds } },
+      })
+      return result.docs
+    },
+    [CACHE_KEY.OPENING_HOURS(openingHoursIds)],
+    {
+      tags: [TAGS.OPENING_HOURS],
+      revalidate: false
+    }
+  )();
+}
+
 
 export const getMediaImages = async (images: number[]): Promise<PaginatedDocs<Media>> => {
   return await unstable_cache(
@@ -549,23 +569,45 @@ export const getMedia = async (query = {}) => {
   )();
 }
 
-export const getImage = async (imageId: number, collection: "media" = "media") => {
+
+export const getImage = async (image: number, collection: "media"|"highQualityMedia" = "media") => {
   return await unstable_cache(
     async () => {
       const payload = await getPayloadClient()
       const result = await payload.findByID({
         collection,
-        id: imageId,
+        id: image,
       })
       return result
     },
-    [CACHE_KEY.IMAGE_BY_ID(imageId, collection)],
+    [CACHE_KEY.IMAGE_BY_ID(image, collection)],
     {
       tags: [TAGS.MEDIA],
       revalidate: false
     }
   )();
 }
+
+
+
+export const getSubServices = async (subServiceIds: number[]) => {
+  return await unstable_cache(
+    async () => {
+      const payload = await getPayloadClient()
+      const subServices = await payload.find({
+        collection: 'sub_services',
+        where: { id: { in: subServiceIds } },
+      })
+      return subServices.docs
+    },
+    [CACHE_KEY.SUB_SERVICES(subServiceIds)],
+    {
+      tags: [TAGS.SUB_SERVICES],
+      revalidate: false
+    }
+  )();
+}
+
 
 // Global utility functions
 export const getBusinessInfo = async (tenantId: number) => {
@@ -703,7 +745,7 @@ export const queryPageBySlug = async ({
         overrideAccess: overrideAccess || draft,
         draft,
         where: whereCondition,
-        depth: 0,
+        depth: 2,
         limit: 100,
       });
       
@@ -761,7 +803,7 @@ export const queryPageBySlug = async ({
           overrideAccess: false,
           draft: false,
           where: whereCondition,
-          depth: 0,
+          depth: 2,
           limit: 100,
         });
         
@@ -888,7 +930,7 @@ export const queryServicePageBySlug = async ({
         overrideAccess: overrideAccess || draft,
         draft,
         where: whereCondition,
-        depth: 0,
+        depth: 2,
         limit: 100,
       });
       
@@ -939,7 +981,7 @@ export const queryServicePageBySlug = async ({
           overrideAccess: false,
           draft: false,
           where: whereCondition,
-          depth: 0,
+          depth: 2,
           limit: 100,
         });
         
@@ -1008,7 +1050,7 @@ export const queryProjectPageBySlug = async ({
         overrideAccess: overrideAccess || draft,
         draft,
         where: whereCondition,
-        depth: 0,
+        depth: 2,
         limit: 100,
       });
       
@@ -1059,7 +1101,7 @@ export const queryProjectPageBySlug = async ({
           overrideAccess: false,
           draft: false,
           where: whereCondition,
-          depth: 0,
+          depth: 2,
           limit: 100,
         });
         
@@ -1129,7 +1171,7 @@ export const queryProductPageBySlug = async ({
         overrideAccess: overrideAccess || draft,
         draft,
         where: whereCondition,
-        depth: 0,
+        depth: 2,
         limit: 100,
       });
       
@@ -1180,7 +1222,7 @@ export const queryProductPageBySlug = async ({
           overrideAccess: false,
           draft: false,
           where: whereCondition,
-          depth: 0,
+          depth: 2,
           limit: 100,
         });
         

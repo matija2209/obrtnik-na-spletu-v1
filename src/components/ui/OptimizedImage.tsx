@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react';
-import PayloadImage from '@/components/ui/PayloadImage';
+import PayloadImage from '@/components/PayloadImage';
 import { ImageInput, getImageUrl, getImageDimensions } from '@/utilities/images/getImageUrl';
 import getImageAlt from '@/utilities/images/getImageAlt';
 import { Media } from '@payload-types';

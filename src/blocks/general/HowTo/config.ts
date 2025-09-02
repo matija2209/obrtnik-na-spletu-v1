@@ -1,5 +1,5 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
+import textColour from '@/fields/textColour';
 import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
@@ -7,40 +7,78 @@ export const HowToBlock: Block = {
   slug: 'howto',
   interfaceName: 'HowToBlock',
   labels: {
-    singular: 'How To Section',
-    plural: 'How To Sections',
+    singular: {
+      sl: 'Kako odsek (Splošni)',
+      de: 'Wie Abschnitt (Allgemein)',
+      en: 'How To Section (General)',
+    },
+    plural: {
+      sl: 'Kako odseki (Splošni)',
+      de: 'Wie Abschnitte (Allgemein)',
+      en: 'How To Sections (General)',
+    },
   },
   fields: [
     {
+      name: 'kicker',
+      type: 'text',
+      label: {
+        sl: 'Kicker',
+        de: 'Kicker',
+        en: 'Kicker',
+      },
+      defaultValue: '',
+    },
+    {
       name: 'title',
       type: 'text',
-      label: 'Section Title',
+      label: {
+        sl: 'Naslov',
+        de: 'Titel',
+        en: 'Title',
+      },
       defaultValue: 'Unsere einzigartige Beratung',
       required: true,
     },
     {
       name: 'subtitle',
       type: 'text',
-      label: 'Subtitle',
+      label: {
+        sl: 'Podnaslov',
+        de: 'Untertitel',
+        en: 'Subtitle',
+      },
       required: false,
     },
     {
       name: 'steps',
       type: 'array',
-      label: 'Steps',
+      label: {
+        sl: 'Koraki',
+        de: 'Schritte',
+        en: 'Steps',
+      },
       minRows: 1,
       maxRows: 10,
       fields: [
         {
           name: 'useIcon',
           type: 'checkbox',
-          label: 'Use Icon Instead of Number',
+          label: {
+            sl: 'Ikona namesto številke',
+            de: 'Symbol statt Nummer',
+            en: 'Icon instead of number',
+          },
           defaultValue: false,
         },
         {
           name: 'stepNumber',
           type: 'number',
-          label: 'Step Number',
+          label: {
+            sl: 'Korak številka',
+            de: 'Schrittnummer',
+            en: 'Step Number',
+          },
           required: true,
           defaultValue: 1,
           admin: {
@@ -79,10 +117,11 @@ export const HowToBlock: Block = {
       required: false,
       type: 'relationship',
     },
-    backgroundColour(),
-    colourSchema(),
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
     isTransparent(),  
-    
     {
         name: 'template',
         label: 'Template',

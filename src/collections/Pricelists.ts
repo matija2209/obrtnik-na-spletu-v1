@@ -6,15 +6,27 @@ const anyone: Access = () => true;
 export const Pricelists: CollectionConfig = {
   slug: 'pricelists',
   labels: {
-    singular: 'Cenik',
-    plural: 'Ceniki',
+    singular: {
+      en: 'Price List',
+      sl: 'Cenik',
+      de: 'Preisliste',
+    },
+    plural: {
+      en: 'Price Lists',
+      sl: 'Ceniki',
+      de: 'Preislisten',
+    },
   },
   admin: {
     useAsTitle: 'name',
+    hidden: true,
     defaultColumns: ['name', 'updatedAt'],
     description: 'Upravljajte cenike za storitve ali izdelke.',
-    hidden: true,
-    group: 'Prodaja',
+    group: {
+      sl: 'Prodaja',
+      de: 'Verkauf',
+      en: 'Sales',
+    },
   },
   access: {
     read: anyone,
@@ -28,7 +40,7 @@ export const Pricelists: CollectionConfig = {
       type: 'text',
       label: 'Ime cenika',
       required: true,
-      localized: true,
+      
       admin: {
         description: 'Ime za celoten cenik (npr. Cenik Kosil, Cenik Vrtalnih Storitev 2024).',
       },
@@ -53,7 +65,7 @@ export const Pricelists: CollectionConfig = {
       name: 'description',
       type: 'richText',
       label: 'Uvodni Opis (Neobvezno)',
-      localized: true,
+      
       admin: {
         description: 'Opis, ki se prikaže na vrhu tega specifičnega cenika.'
       }

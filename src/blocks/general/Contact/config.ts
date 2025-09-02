@@ -1,78 +1,143 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
 import isTransparent from '@/fields/isTransperant';
+import textColour from '@/fields/textColour';
 import type { Block } from 'payload';
 
 const ContactBlock: Block = {
   slug: 'contact',
   interfaceName: 'ContactBlock',
   labels: {
-    singular: 'Kontaktni odsek (Splošni)',
-    plural: 'Kontaktni odseki (Splošni)',
+    singular: {
+      sl: 'Kontaktni odsek (Splošni)',
+      de: 'Kontakt Abschnitt (Allgemein)',
+      en: 'Contact Section (General)',
+    },
+    plural: {
+      sl: 'Kontaktni odseki (Splošni)',
+      de: 'Kontakt Abschnitte (Allgemein)',
+      en: 'Contact Sections (General)',
+    },
   },
   fields: [
     {
       name: 'template',
-      label: 'Template',
+      label: {
+        sl: 'Predloga',
+        de: 'Vorlage',
+        en: 'Template',
+      },
       type: 'select',
       required: true,
       defaultValue: 'default',
       options: [
         {
-          label: 'Default Layout',
+          label: {
+            sl: 'Privzeti način',
+            de: 'Standard-Layout',
+            en: 'Default Layout',
+          },
           value: 'default',
         },
-        {
-          label: 'Simple Layout',
-          value: 'simple',
-        },
-        // Add more template options here
       ],
+    },
+    {
+      name: 'kicker',
+      type: 'text',
+      label: {
+        sl: 'Kicker',
+        de: 'Kicker',
+        en: 'Kicker',
+      },
+      defaultValue: '',
     },
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov',
-      required: false,
-      localized: true,
+      label: {
+        sl: 'Naslov',
+        de: 'Titel',
+        en: 'Title',
+      },
       defaultValue: '',
     },
     {
-      name: 'description',
-      type: 'textarea',
-      label: 'Opis',
-      localized: true,
+      name: 'subtitle',
+      type: 'text',
+      label: {
+        sl: 'Podnaslov',
+        de: 'Untertitel',
+        en: 'Subtitle',
+      },
       defaultValue: '',
     },
     {
-      name: 'openingHoursSchedules',
+      name: 'showPhoneNumber',
+      type: 'checkbox',
+      label: {
+        sl: 'Prikaži telefonsko številko',
+        de: 'Telefonnummer anzeigen',
+        en: 'Show Phone Number',
+      },
+      defaultValue: true,
+    },
+    {
+      name:"showEmail",
+      type:"checkbox",
+      label: {
+        sl: 'Prikaži email',
+        de: 'Email anzeigen',
+        en: 'Show Email',
+      },
+      defaultValue:true,
+    },
+    {
+      name: 'showAddress',
+      type: 'checkbox',
+      label: {
+        sl: 'Prikaži naslov',
+        de: 'Adresse anzeigen',
+        en: 'Show Address',
+      },
+      defaultValue: true,
+    },
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
+    isTransparent(),
+    {
+      name: 'openingHours',
       type: 'relationship',
       relationTo: 'opening-hours',
       hasMany: true,
-      label: 'Opening Hours Schedules',
-   
+      label: {
+        sl: 'Odpirni ure',
+        de: 'Öffnungszeiten',
+        en: 'Opening Hours',
+      },
     },
     {
       name: 'form',
       type: 'relationship',
       relationTo: 'forms',
       hasMany: false,
-      label: 'Form',
+      label: {
+        sl: 'Obrazec',
+        de: 'Formular',
+        en: 'Form',
+      },
     },
     {
-      name: 'phoneNumber',
-      type: 'text',
-      label: 'Telefonska številka',
-     
+      name:"images",
+      type:"upload",
+      relationTo:"media",
+      hasMany:true,
+      label: {
+        sl: 'Slike',
+        de: 'Bilder',
+        en: 'Images',
+      },
     },
-    {
-      name: 'address',
-      type: 'text',
-      label: 'Naslov',
-    },
-    backgroundColour(),
-    colourSchema(),
-    isTransparent(),
     {
       name:"idHref",
       type:"text",

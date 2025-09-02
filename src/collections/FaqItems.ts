@@ -6,15 +6,27 @@ const anyone: Access = () => true;
 export const FaqItems: CollectionConfig = {
   slug: 'faq-items',
   labels:{
-    singular: 'Pogosta vprašanja',
-    plural: 'Vprašanja in odgovori',
+    singular: {
+      en: 'FAQ Item',
+      sl: 'Pogosta vprašanja',
+      de: 'FAQ-Element',
+    },
+    plural: {
+      en: 'FAQ Items',
+      sl: 'Pogosta vprašanja',
+      de: 'FAQ-Elemente',
+    },
   },
   
   admin: {
     useAsTitle: 'question', // Use the question as the title in Admin UI
     defaultColumns: ['question', 'updatedAt'],
     description: 'Pogosta vprašanja in odgovori.',
-    group: 'Vsebina', // Grouping in admin UI
+    group: {
+      sl: 'Vsebina',
+      de: 'Inhalt',
+      en: 'Content',
+    }, // Grouping in admin UI
   },
   access: {
     read: anyone, // Anyone can read FAQs
@@ -26,44 +38,83 @@ export const FaqItems: CollectionConfig = {
     {
       name: 'category',
       type: 'select',
-      label: 'Kategorija (Neobvezno)',
+      label: {
+        sl: 'Kategorija (Neobvezno)',
+        de: 'Kategorie (Optional)',
+        en: 'Category (Optional)',
+      },
       options: [
         // Add your predefined categories here
-        { label: 'Splošno', value: 'general' },
-        { label: 'Montaža', value: 'installation' },
-        { label: 'Vzdrževanje', value: 'maintenance' },
-        { label: 'Plačila', value: 'billing' },
-        // ... add more as needed
+        { label: {
+          sl: 'Splošno',
+          de: 'Allgemein',
+          en: 'General',
+        }, value: 'general' },
+        { label: {
+          sl: 'Montaža',
+          de: 'Montage',
+          en: 'Installation',
+        }, value: 'installation' },
+        { label: {
+          sl: 'Vzdrževanje',
+          de: 'Wartung',
+          en: 'Maintenance',
+        }, value: 'maintenance' },
+        { label: {
+          sl:   'Plačila',
+          de: 'Zahlungen',
+          en: 'Billing',
+        }, value: 'billing' },
       ],
       required: false,
       admin: {
         position: 'sidebar',
-        description: 'Izberite kategorijo za lažje filtriranje.',
+        description: {
+          sl: 'Izberite kategorijo za lažje filtriranje.',
+          de: 'Wählen Sie eine Kategorie für einfachere Filterung.',
+          en: 'Select a category for easier filtering.',
+        },
       }
     },
     {
       name: 'question',
       type: 'text',
       required: true,
-      label: 'Vprašanje',
-      localized: true, // Questions might need translation
+      label: {
+        sl: 'Vprašanje',
+        de: 'Frage',
+        en: 'Question',
+      },
+       // Questions might need translation
     },
     {
       name: 'answer',
       type: 'richText',
       required: true,
-      label: 'Odgovor',
-      localized: true,
+      label: {
+        sl: 'Odgovor',
+        de: 'Antwort',
+        en: 'Answer',
+      },
+      
     },
     {
       name: 'relatedService',
       type: 'relationship',
       relationTo: 'services',
       hasMany: false, // An FAQ usually relates to one primary service
-      label: 'Povezana storitev (Neobvezno)',
+      label: {
+        sl: 'Povezana storitev (Neobvezno)',
+        de: 'Verknüpfte Dienstleistung (Optional)',
+        en: 'Related Service (Optional)',
+      },
       required: false,
       admin: {
-        description: 'Povežite to vprašanje s specifično storitvijo, če je relevantno.'
+        description: {
+          sl: 'Povežite to vprašanje s specifično storitvijo, če je relevantno.',
+          de: 'Verknüpfen Sie diese Frage mit einer bestimmten Dienstleistung, wenn relevant.',
+          en: 'Link this question to a specific service if relevant.',
+        },
       }
     }
   ],

@@ -1,25 +1,16 @@
-import { CollectionConfig, Access, Block, CollectionSlug } from 'payload';
+import { CollectionConfig, Access, Block } from 'payload';
 import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin';
-import { formatSlug } from '@/utilities/formatSlug';
-
-// Import service-specific blocks
-
-import ServicesPresentation from '../../blocks/services/SubServices/config';
-
 
 // Import hooks from the Pages collection (or create specific ones if needed)
 import { populatePublishedAt } from '../Pages/hooks/populatePublishedAt'; // Assuming hooks can be shared
 
-import { revalidateServicePagesCache, revalidateServicePagesCacheDelete } from './hooks/revalidateServicePagesCache';
 import { generatePreviewPath } from '@/utilities/generatePreviewPath';
 import { slugField } from '@/fields/slug';
 import HeroBlock from '@/blocks/general/Hero/config';
 import {FormBlock} from '@/blocks/general/Form/index';
 import FaqBlock from '@/blocks/general/FAQ/config';
 import ContactBlock from '@/blocks/general/Contact/config';
-
 import AboutBlock from '@/blocks/general/About/config';
-
 import GalleryBlock from '@/blocks/general/Gallery/config';
 import ServiceAreaBlock from '@/blocks/general/ServiceArea/config';
 import ProjectHighlightsBlock from '@/blocks/general/ProjectHighlights/config';
@@ -28,6 +19,7 @@ import ServicesBlock from '@/blocks/general/Services/config';
 import TestimonialsBlock from '@/blocks/general/Testimonials/config';
 import CtaBlock from '@/blocks/general/Cta/config';
 import SubServiceBlock from '../../blocks/services/SubServices/config';
+import { revalidateDelete, revalidateServicePage } from './hooks/revalidateServicePage';
 
 // Define access control
 const anyone: Access = () => true;
@@ -52,17 +44,31 @@ const servicePageBlocks: Block[] = [
 export const ServicePages: CollectionConfig = {
   slug: 'service-pages',
   labels: {
-    singular: 'Stran storitve',
-    plural: 'Strani storitev',
+    singular: {
+      en: 'Service Page',
+      sl: 'Stran storitve',
+      de: 'Service-Seite',
+    },
+    plural: {
+      en: 'Service Pages',
+      sl: 'Strani storitev',
+      de: 'Service-Seiten',
+    },
   },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
-    group: 'Strani', // Or a new group like 'Storitve'
-  
+    group: {
+      sl: 'Strani',
+      de: 'Seiten',
+      en: 'Pages',
+    }, // Or a new group like 'Storitve'
+    components:{
+      beforeList:['/components/admin/CreateServicePageFromService']
+    },
     livePreview: {
       url: async ({ data, req }) => {
-        const slug = typeof data?.slug === 'string' ? `/storitve/${data.slug}` : ''
+        const slug = typeof data?.slug === 'string' ? `/leistungen/${data.slug}` : ''
         const path = await generatePreviewPath({
           slug,
           collection: 'service-pages',
@@ -73,7 +79,7 @@ export const ServicePages: CollectionConfig = {
     },
     preview: (data, { req }) => {      
       return generatePreviewPath({
-        slug: typeof data?.slug === 'string' ? `/storitve/${data.slug}` : '',
+        slug: typeof data?.slug === 'string' ? `/leistungen/${data.slug}` : '',
         collection: 'service-pages',
         req,
       }) // Ensure this returns a string
@@ -95,17 +101,25 @@ export const ServicePages: CollectionConfig = {
     delete: superAdminOrTenantAdminAccess,
   },
   hooks: {
-    afterChange: [revalidateServicePagesCache],
+    afterChange: [revalidateServicePage], // Ensure revalidatePage hook is compatible or adapted
     beforeChange: [populatePublishedAt],
-    afterDelete: [revalidateServicePagesCacheDelete],
+    afterDelete: [revalidateDelete], // Ensure revalidateDelete hook is compatible or adapted
   },
   fields: [
     slugField('title', {
-      label: 'Pot / Unikatni ID',
+      label: {
+        sl: 'Pot / Unikatni ID',
+        de: 'Pfad / Eindeutige ID',
+        en: 'Path / Unique ID',
+      },
       unique: true,
       index: true,
       admin: {
-        description: 'ID se generira samodejno iz naslova.',
+        description: {
+          sl: 'ID se generira samodejno iz naslova.',
+          de: 'ID wird automatisch aus dem Titel generiert.',
+          en: 'ID is automatically generated from the title.',
+        },
         readOnly: false,
         position: 'sidebar',
       }
@@ -113,46 +127,63 @@ export const ServicePages: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov strani storitve',
-      required: true,
-      localized: true,
-    },
-    {
-      name:"pageType",
-      type:"select",
-      label:"Tip strani",
-      options:["service"],
-      defaultValue:"service",
-      admin:{
-        position:"sidebar",
-        hidden: true,
+      label: {
+        sl: 'Naslov strani storitve',
+        de: 'Titel der Service-Seite',
+        en: 'Service Page Title',
       },
+      required: true,
+      
     },
     {
       name: 'layout',
-      label: 'Postavitev strani storitve',
+      label: {
+        sl: 'Postavitev strani storitve',
+        de: 'Seitenlayout der Service-Seite',
+        en: 'Service Page Layout',
+      },
       type: 'blocks',
       admin: {
-        description:"Dodaj odsek na strani storitve",
+        description: {
+          sl: "Dodaj odsek na strani storitve",
+          de: "Fügen Sie einen Abschnitt auf der Service-Seite hinzu",
+          en: "Add a section to the service page",
+        },
         initCollapsed: true,
       },
       minRows: 1,
       blocks: servicePageBlocks, // Static array of blocks
     },
-    
     {
       name: 'services',
       type: 'relationship',
       relationTo: 'services', // Assuming you have a 'services' collection
-      label: 'Povezana glavna storitev (iz zbirke Storitev)',
+      label: {
+        sl: 'Povezana glavna storitev (iz zbirke Storitev)',
+        de: 'Verknüpfte Hauptdienstleistung (aus der Dienstleistungssammlung)',
+        en: 'Related Main Service (from the Services collection)',
+      },
       hasMany: false,
     },
     {
       name: 'sub_services',
       type: 'relationship',
       relationTo: 'sub_services',
-      label: 'Povezane podstoritve (iz zbirke Podstoritve)',
+        label: {
+        sl: 'Povezane podstoritve (iz zbirke Podstoritve)',
+        de: 'Verknüpfte Unterdienstleistungen (aus der Unterdienstleistungssammlung)',
+        en: 'Related Sub-Services (from the Sub-Services collection)',
+      },
       hasMany: true,
+    },
+    {
+      name:"pageType",
+      type:"text",
+      defaultValue:"service",
+      admin:{
+        readOnly:true,
+        position:"sidebar"
+      }
     }
   ],
 

@@ -50,9 +50,13 @@ export const Posts: CollectionConfig = {
     },
   },
   admin: {
-    group:"Blog",
-    hidden: true,
+    group: {
+      sl: 'Blog',
+      de: 'Blog',
+      en: 'Blog',
+    },
     defaultColumns: ['title', 'slug', 'updatedAt'],
+    hidden: true,
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
@@ -72,11 +76,28 @@ export const Posts: CollectionConfig = {
       }),
     useAsTitle: 'title',
   },
+  labels:{
+    singular: {
+      en: 'Post',
+      sl: 'Objava',
+      de: 'Beitrag',
+    },
+    plural: {
+      en: 'Posts',
+      sl: 'Objave',
+      de: 'Beiträge',
+    },
+  },
   fields: [
     {
       name: 'title',
       type: 'text',
       required: true,
+      label: {
+        sl: 'Naslov',
+        de: 'Titel',
+        en: 'Title',
+      },
     },
     {
       type: 'tabs',
@@ -91,7 +112,11 @@ export const Posts: CollectionConfig = {
             {
               name: 'content',
               type: 'richText',
-              label: 'Opis podstoritve',
+              label: {
+                sl: 'Opis podstoritve',
+                de: 'Beschreibung der Dienstleistung',
+                en: 'Description of the service',
+              },
               editor: lexicalEditor({
                 features: ({ rootFeatures }) => {
                   return [
@@ -104,7 +129,7 @@ export const Posts: CollectionConfig = {
                   ]
                 },
               }),
-              // localized: true,
+              // 
             },
           ],
           label: 'Content',
@@ -133,7 +158,11 @@ export const Posts: CollectionConfig = {
         },
         {
           name: 'meta',
-          label: 'SEO',
+            label: {
+            sl: 'SEO',
+            de: 'SEO',
+            en: 'SEO',
+          },
           fields: [
             OverviewField({
               titlePath: 'meta.title',

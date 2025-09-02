@@ -1,6 +1,5 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
-import iconField from '@/fields/iconsField';
+import textColour from '@/fields/textColour';
 import isTransparent from '@/fields/isTransperant';
 import type { Block } from 'payload';
 
@@ -8,78 +7,83 @@ const ServiceBlock: Block = {
   slug: 'services',
   interfaceName: 'ServicesBlock',
   labels: {
-    singular: 'Storitve odsek (Splošni)',
-    plural: 'Storitve odseki (Splošni)',
+    singular: {
+      sl: 'Storitve odsek (Splošni)',
+      de: 'Dienst Abschnitt (Allgemein)',
+      en: 'Service Section (General)',
+    },
+    plural: {
+      sl: 'Storitve odseki (Splošni)',
+      de: 'Dienst Abschnitte (Allgemein)',
+      en: 'Service Sections (General)',
+    },
   },
   fields: [
     {
       name: 'template',
-      label: 'Template',
+      label: {
+        sl: 'Predloga',
+        de: 'Vorlage',
+        en: 'Template',
+      },
       type: 'select',
       required: true,
       options: [
         {
-          label: 'Default',
+          label: {
+            sl: 'Privzeti način',
+            de: 'Standard-Layout',
+            en: 'Default Layout',
+          },
           value: 'default',
-        },
-        {
-          label: 'Variant 1',
-          value: 'variant-1',
-        },
-        {
-          label: 'Variant 2',
-          value: 'variant-2',
-        },
-        {
-          label: 'Variant 3',
-          value: 'variant-3',
-        },
-        {
-          label: 'Variant 4',
-          value: 'variant-4',
-        },
-        {
-          label: 'Variant 5',
-          value: 'variant-5',
-        },
-        {
-          label: 'Variant 6',
-          value: 'variant-6',
-        },
-        {
-          label: 'Variant 7',
-          value: 'variant-7',
-        },
-        {
-          label: 'Variant 8',
-          value: 'variant-8',
-        },
-        {
-          label: 'Variant 9',
-          value: 'variant-9',
         },
       ],
       defaultValue: 'default',
     },
     {
+      name: 'kicker',
+      type: 'text',
+      label: {
+        sl: 'Kicker',
+        de: 'Kicker',
+        en: 'Kicker',
+      },
+      defaultValue: '',
+    },
+    {
       name: 'title',
       type: 'text',
-      label: 'Section Title',
+      label: {
+        sl: 'Naslov sekcije',
+        de: 'Titel der Sektion',
+        en: 'Section Title',
+      },
     },
     {
       name: 'description',
       type: 'textarea',
-      label: 'Section Description',
+      label: {
+        sl: 'Opis sekcije',
+        de: 'Beschreibung der Sektion',
+        en: 'Section Description',
+      },
     },
-    backgroundColour(),
-    colourSchema(),
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
+    
     isTransparent(),
     {
       name: 'selectedServices',
       type: 'relationship',
       relationTo: 'services',
       hasMany: true,
-      label: 'Select Services',
+      label: {
+        sl: 'Izberi storitve',
+        de: 'Dienste auswählen',
+        en: 'Select Services',
+      },
       admin: {
         description: 'Select the services to display in this section.',
       },

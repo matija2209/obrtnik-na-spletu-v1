@@ -6,9 +6,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Logo from '@/components/common/logo';
 import { cn } from '@/lib/utils';
-import CtaButton from '@/components/ui/cta-button';
+
 import { getEffectiveScrolled } from '@/utils/navbar-helpers';
 import type { MobileNavProps } from './types';
+import CtaButtons from '@/components/common/cta-buttons';
+import { Cta } from '@payload-types';
 
 // Updated Mobile Navigation Component with nested links
 const MobileNav = ({ 
@@ -141,7 +143,7 @@ const MobileNav = ({
                     <div className="mt-6 px-2">
                       <SheetClose asChild>
                         <div className="w-full">
-                          <CtaButton mainCta={mainCta}/>
+                          <CtaButtons ctas={[mainCta] as Cta[]}/>
                         </div>
                       </SheetClose>
                     </div>

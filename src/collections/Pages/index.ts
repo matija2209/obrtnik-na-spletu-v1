@@ -15,15 +15,17 @@ import { slugField } from '@/fields/slug';
 // Import hooks
 import { populatePublishedAt } from './hooks/populatePublishedAt';
 
-import { revalidatePagesCache, revalidatePagesCacheDelete } from './hooks/revalidatePagesCache';
+import { revalidatePageCache, revalidatePageCacheDelete } from './hooks/revalidateCache';
 import { generatePreviewPath } from '@/utilities/generatePreviewPath';
-import ProjectHighlightsBlock from '@/blocks/general/ProjectHighlights/config';
+
 import MachineryBlock from '@/blocks/general/Machinery/config';
 import { FormBlock } from '@/blocks/general/Form';
 import { HowToBlock } from '@/blocks/general/HowTo/config';
 import CtaBlock from '@/blocks/general/Cta/config';
 import FeaturedProductsBlock from '@/blocks/general/FeaturedProducts/config';
 import TextBlock from '@/blocks/general/Text/config';
+import ProjectHighlightsBlock from '@/blocks/general/ProjectHighlights/config';
+
 
 
 // Define access control - allowing anyone to read, admin to update
@@ -32,14 +34,26 @@ const anyone: Access = () => true;
 export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: {
-    singular: 'Navadna stran',
-    plural: 'Navadne strani',
+    singular: {
+      en: 'Page',
+      sl: 'Stran',
+      de: 'Seite',
+    },
+    plural: {
+      en: 'Pages',
+      sl: 'Strani',
+      de: 'Seiten',
+    },
   },
   
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],
-    group: 'Strani',
+    group: {
+      sl: 'Strani',
+      de: 'Seiten',
+      en: 'Pages',
+    },
     livePreview: {
       url: ({ data, req }) => {
         const path = generatePreviewPath({
@@ -75,18 +89,26 @@ export const Pages: CollectionConfig = {
   },
   // Add hooks
   hooks: {
-    afterChange: [ revalidatePagesCache],
+    afterChange: [ revalidatePageCache],
     beforeChange: [populatePublishedAt],
-    afterDelete: [ revalidatePagesCacheDelete],
+    afterDelete: [ revalidatePageCacheDelete],
   },
   fields: [
     slugField('title', {
       name: 'slug',
-      label: 'Pot / Unikatni ID',
+      label: {
+        sl: 'Pot / Unikatni ID',
+        de: 'Pfad / Eindeutige ID',
+        en: 'Path / Unique ID',   
+      },
       unique: true,
       index: true,
       admin: {
-        description: 'ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.',
+        description: {
+          sl: 'ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.',
+          de: 'ID wird automatisch aus dem Titel generiert, kann aber auch manuell definiert werden. Nützlich bei der Importierung von Daten.',
+          en: 'ID is automatically generated from the title, but can also be defined manually. Useful for importing data.',
+        },
         readOnly: false,
         position: 'sidebar',
       }
@@ -94,9 +116,13 @@ export const Pages: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov',
+      label: {
+        sl: 'Naslov',
+        de: 'Titel',
+        en: 'Title',
+      },
       required: true,
-      localized: true,
+      
       admin:{
         position: 'sidebar',
       }
@@ -104,12 +130,28 @@ export const Pages: CollectionConfig = {
     {
       name: 'pageType',
       type: 'select',
-      label: 'Tip strani',
+      label: {
+        sl: 'Tip strani',
+        de: 'Seitentyp',
+        en: 'Page Type',
+      },
       required: true,
       options: [
-        { label: 'Navadna stran', value: 'landing' },
-        { label: 'Kontaktna stran', value: 'contact' },
-        { label: 'Politika zasebnosti', value: 'privacyPolicy' },
+        { label: {
+          sl: 'Navadna stran',
+          de: 'Landing-Seite',
+          en: 'Landing Page',
+        }, value: 'landing' },
+        { label: {
+          sl: 'Kontaktna stran',
+          de: 'Kontaktseite',
+          en: 'Contact Page',
+        }, value: 'contact' },
+        { label: {
+          sl: 'Politika zasebnosti',
+          de: 'Datenschutzrichtlinie',
+          en: 'Privacy Policy',
+        }, value: 'privacyPolicy' },
       ],
       defaultValue: 'landing',
       admin: {
@@ -121,11 +163,19 @@ export const Pages: CollectionConfig = {
       type: 'tabs',
       tabs: [
         {
-          label: 'Vsebina',
+          label: {
+            sl: 'Vsebina',
+            de: 'Inhalt',
+            en: 'Content',
+          },
           fields: [
             {
               name: 'layout',
-              label: 'Postavitev strani',
+              label: {
+                sl: 'Postavitev strani',
+                de: 'Seitenlayout',
+                en: 'Page Layout',
+              },
               type: 'blocks',
               admin:{
                 initCollapsed: true,

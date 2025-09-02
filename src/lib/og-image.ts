@@ -59,35 +59,6 @@ export function getMediaUrl(media: Media | number | null | undefined): string | 
   return media.url || undefined;
 }
 
-/**
- * Extract the first hero block image URL from a page's layout
- */
-export async function getHeroImageUrl(page: Page | ServicePage | ProjectPage | ProductPage | Post): Promise<string | undefined> {
-  if (!('layout' in page) || !page.layout || !Array.isArray(page.layout)) {
-    return undefined;
-  }
-
-  // Find the first hero block
-  const heroBlock:HeroBlock = page.layout.find((block: any) => block.blockType === 'hero') as HeroBlock;
-  
-  if (!heroBlock || !heroBlock.image || !Array.isArray(heroBlock.image) || heroBlock.image.length === 0) {
-    return undefined;
-  }
-  console.log(heroBlock.image);
-  
-  const firstImage = await getImage(heroBlock.image[0] as number)
-
-  // Get the first image
-
-  
-  // If it's a Media object, get the URL
-  if (firstImage) {
-    return getMediaUrl(firstImage);
-  }
-  
-  // If it's just an ID, we can't get the URL without fetching
-  return undefined;
-}
 
 /**
  * Generate metadata object with OG image for Next.js generateMetadata
@@ -171,7 +142,7 @@ export async function getOgParamsFromPage(
   // }
 
   // Get background image - only from hero blocks, automatically generated
-  const image = await getHeroImageUrl(page);
+  const image = ""
 
   return {
     type,

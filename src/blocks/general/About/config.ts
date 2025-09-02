@@ -3,72 +3,107 @@
 // Removed local CtaField definition
 
 import backgroundColour from "@/fields/backgroundColour";
-import colourSchema from "@/fields/colourSchema";
+import iconField from "@/fields/iconsField";
+
 import isTransparent from "@/fields/isTransperant";
+import textColour from "@/fields/textColour";
 import { Block } from "payload";
 
 const AboutBlock: Block = {
   slug: 'about',
   interfaceName: 'AboutBlock',
   labels: {
-    singular: 'O nas odsek (Splošni)',
-    plural: 'O nas odseki (Splošni)',
+    singular: {
+      sl: 'O nas odsek (Splošni)',
+      de: 'Über uns Abschnitt (Allgemein)',
+      en: 'About Section (General)',
+    },
+    plural: {
+      sl: 'O nas odseki (Splošni)',
+      de: 'Über uns Abschnitte (Allgemein)',
+      en: 'About Sections (General)',
+    },
   },
   fields: [
     {
       name: 'template',
-      label: 'Template',
+      label: {
+        sl: 'Predloga',
+        de: 'Vorlage',
+        en: 'Template',
+      },
       type: 'select',
       required: true,
       defaultValue: 'default',
       options: [
         {
-          label: 'Default Layout',
+          label: {
+            sl: 'Privzeti način',
+            de: 'Standard-Layout',
+            en: 'Default Layout',
+          },
           value: 'default',
         },
-
         {
-          label: 'Variant 2',
-          value: 'variant-2',
-        },
-        {
-          label: 'Variant 3',
-          value: 'variant-3',
-        },
-        {
-          label: 'Variant 4',
-          value: 'variant-4',
-        },
-        {
-          label: 'Variant 5',
-          value: 'variant-5',
-        },
+          label: {
+            sl: 'Varianta 1',
+            de: 'Variante 1',
+            en: 'Variant 1',
+          },
+          value:"variant1"
+        }
       ],
+    },
+    {
+      name: 'kicker',
+      type: 'text',
+      label: {
+        sl: 'Kicker',
+        de: 'Kicker',
+        en: 'Kicker',
+      },
+      defaultValue: '',
     },
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov',
+      label: {
+        sl: 'Naslov',
+        de: 'Titel',
+        en: 'Title',
+      },
       required: false,
-      localized: true,
+      
       defaultValue: '',
     },
     {
       name: 'subtitle',
       type: 'text',
-      label: 'Podnaslov',
-      localized: true,
+      label: {
+        sl: 'Podnaslov',
+        de: 'Untertitel',
+        en: 'Subtitle',
+      },
+      
       required: false,
     },
     {
       name: 'description',
       type: 'richText',
-      label: 'Opis',
-      localized: true,
+      label: {
+        sl: 'Opis',
+        de: 'Beschreibung',
+        en: 'Description',
+      },
+      
     },
     {
       name: 'image',
-      label: 'Slika',
+      label: {
+        sl: 'Slika',
+        de: 'Bild',
+        en: 'Image',
+      },
       type: 'upload',
       relationTo: 'media', 
       hasMany: true,
@@ -76,7 +111,11 @@ const AboutBlock: Block = {
     },
     {
       name: 'isInverted',
-      label: 'Obrni postavitev',
+      label: {
+        sl: 'Obrni postavitev',
+        de: 'Invertierte Positionierung',
+        en: 'Inverted Positioning',
+      },
       type: 'checkbox',
       defaultValue: false,
     },
@@ -87,44 +126,55 @@ const AboutBlock: Block = {
     },
     {
       name: 'ctas',
-      label: 'Gumbi',
-      type: 'relationship',       // Changed type to relationship
-      relationTo: 'ctas',       // Relates to the 'ctas' collection
-      hasMany: true,             // Indicates it can have multiple CTAs
+      label: {
+        sl: 'Gumbi',
+        de: 'Buttons',
+        en: 'Buttons',
+      },
+      type: 'relationship',     
+      relationTo: 'ctas',       
+      hasMany: true,             
       required: false,
     },
+    textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
     backgroundColour(),
-    colourSchema(),
     isTransparent(),
     
     {
       name: 'benefits',
       type: 'array',
       required: false,
-      label: 'Prednosti',
+      label: {
+        sl: 'Prednosti',
+        de: 'Vorteile',
+        en: 'Benefits',
+      },
       fields: [
         {
           name: 'title',
           type: 'text',
-          label: 'Naslov prednosti',
-          localized: true,
+          label: {
+            sl: 'Naslov prednosti',
+            de: 'Titel des Vorteils',
+            en: 'Title of Benefit',
+          },
+          
           defaultValue: '',
         },
         {
           name: 'description',
           type: 'textarea',
-          label: 'Opis prednosti',
-          localized: true,
+          label: {
+            sl: 'Opis prednosti',
+            de: 'Beschreibung des Vorteils',
+            en: 'Description of Benefit',
+          },
+          
           defaultValue: '',
         },
-        {
-          name: 'icon',
-          type: 'text',
-          label: 'Ikona prednosti',
-          admin: {
-            description: 'Ime ikone (npr. Star, Trophy, Clock)',
-          },
-        },
+        iconField()
       ],
     },
   ],

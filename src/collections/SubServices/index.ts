@@ -2,6 +2,8 @@ import { superAdminOrTenantAdminAccess } from '@/access/superAdminOrTenantAdmin'
 import { CollectionConfig, Access } from 'payload';
 import { slugField } from '@/fields/slug'; // Import slugField
 import { FixedToolbarFeature, HeadingFeature, HorizontalRuleFeature, InlineToolbarFeature, lexicalEditor } from '@payloadcms/richtext-lexical';
+import iconField from '@/fields/iconsField';
+import { revalidateSubServicesCache, revalidateSubServicesCacheDelete } from './hooks/revalidateSubServicesCache';
 
 // Define access control
 const anyoneRead: Access = () => true;
@@ -9,13 +11,25 @@ const anyoneRead: Access = () => true;
 export const SubServices: CollectionConfig = {
   slug: 'sub_services',
   labels: {
-    singular: 'Podstoritev',
-    plural: 'Podstoritve',
+    singular: {
+      en: 'Sub Service',
+      sl: 'Podstoritev',
+      de: 'Unterleistung',
+    },
+    plural: {
+      en: 'Sub Services',
+      sl: 'Podstoritve',
+      de: 'Unterleistungen',
+    },
   },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'parentService', 'updatedAt', 'publishedAt'],
-    group: 'Dejavnost', // Group with main Services or a relevant group
+    group: {
+      sl: 'Dejavnost',
+      de: 'Projekte',
+      en: 'Projects',
+    }, // Group with main Services or a relevant group
   },
   versions: {
     drafts: {
@@ -30,37 +44,54 @@ export const SubServices: CollectionConfig = {
     delete: superAdminOrTenantAdminAccess,
   },
   hooks: {
-    // Consider adding hooks to revalidate parent service pages if a sub-service changes.
+    afterChange: [revalidateSubServicesCache],
+    afterDelete: [revalidateSubServicesCacheDelete],
   },
   fields: [
     slugField('title', { // Generates slug from title
       name: 'slug',
-      label: 'Pot / Unikatni ID podstoritve',
+      label: {
+        sl: 'Pot / Unikatni ID podstoritve',
+        de: 'Pfad / Eindeutige ID der Unterleistung',
+        en: 'Path / Unique ID of the sub-service',
+      },
       unique: true,
       index: true,
       admin: {
         position: 'sidebar',
-        description: 'ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.',
+        description: {
+          sl: 'ID se generira samodejno iz naslova, lahko pa ga definirate ročno. Uporabno pri uvažanju podatkov.',
+          de: 'ID wird automatisch aus dem Titel generiert, kann aber auch manuell definiert werden. Nützlich bei der Importierung von Daten.',
+          en: 'ID is automatically generated from the title, but can also be defined manually. Useful when importing data.',
+        },
       }
     }),
+    iconField(),
     {
       name: 'title',
       type: 'text',
-      label: 'Naslov podstoritve',
+      label: {
+        sl: 'Naslov podstoritve',
+        de: 'Titel der Unterleistung',
+        en: 'Sub-Service Title',
+      },
       required: true,
-      localized: true,
+      
     },
     
     {
       name: 'description',
       type: 'richText',
-      label: 'Opis podstoritve',
+      label: {
+        sl: 'Opis podstoritve',
+        de: 'Beschreibung der Unterleistung',
+        en: 'Sub-Service Description',
+      },
       editor: lexicalEditor({
         features: ({ rootFeatures }) => {
           return [
             ...rootFeatures,
             HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-            // BlocksFeature({ blocks: [Banner, Code, MediaBlock] }), // Uncomment if you have these blocks
             FixedToolbarFeature(),
             InlineToolbarFeature(),
             HorizontalRuleFeature(),
@@ -77,17 +108,25 @@ export const SubServices: CollectionConfig = {
     {
       name: 'price',
       type: 'text', // Using text for flexibility (e.g., "Na zahtevo", "Od X EUR")
-      label: 'Cena',
-      localized: true,
+      label: {
+        sl: 'Cena',
+        de: 'Preis',
+        en: 'Price',
+      },
+      
     },
     {
       name: 'parentService',
       type: 'relationship',
       relationTo: 'services', // Slug of your main Services collection
-      label: 'Nadrejena storitev',
+      label: {
+        sl: 'Nadrejena storitev',
+        de: 'Übergeordnete Dienstleistung',
+        en: 'Parent Service',
+      },
       required: false,
       admin: {
-        readOnly:true,
+        readOnly:false,
         position: 'sidebar',
       },
     }

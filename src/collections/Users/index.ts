@@ -59,24 +59,31 @@ const Users: CollectionConfig = {
     },
     {
       name: 'firstName',
-      label: 'Ime',
+      label: {
+        sl: 'Ime',
+        de: 'Vorname',
+        en: 'First Name',
+      },
       type: 'text',
       required: true,
     },
     {
       name: 'lastName',
-      label: 'Priimek',
+      label: {
+        sl: 'Priimek',
+        de: 'Nachname',
+        en: 'Last Name',
+      },
       type: 'text',
       required: true,
     },
     {
-      name: 'address',
-      label: 'Naslov',
-      type: 'text',
-    },
-    {
       name: 'phoneNumber',
-      label: 'Telefonska številka',
+      label: {
+        sl: 'Telefonska številka',
+        de: 'Telefonnummer',
+        en: 'Phone Number',
+      },
       type: 'text',
     },
     {

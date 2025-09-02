@@ -22,6 +22,9 @@ export const TAGS = {
   SUB_SERVICES: "sub-services",
   PRODUCT_VARIANTS: "product-variants",
   MENUS: "menus",
+  HIGH_QUALITY_MEDIA: "high-quality-media",
+  OPENING_HOURS: "opening-hours",
+
 } as const;
 
 // Cache key functions
@@ -33,7 +36,7 @@ export const CACHE_KEY = {
   SERVICES_BY_IDS: (ids: number[]) => `services-by-ids-${ids.sort().join('-')}`,
   
   // Sub-Services
-  SUB_SERVICES: () => "sub-services-all",
+  SUB_SERVICES: (subServiceIds: number[]) => `sub-services-${subServiceIds.sort().join('-')}`,
   SUB_SERVICE_BY_ID: (id: number) => `sub-service-by-id-${id}`,
   SUB_SERVICES_BY_IDS: (ids: number[]) => `sub-services-by-ids-${ids.sort().join('-')}`,
   
@@ -46,7 +49,9 @@ export const CACHE_KEY = {
   MEDIA: () => "media-all",
   IMAGE_BY_ID: (id: number, collection: string = "media") => `${collection}-by-id-${id}`,
   MEDIA_IMAGES: (ids: number[]) => `media-images-${ids.sort().join('-')}`,
-  
+  HIGH_QUALITY_MEDIA_IMAGES: (images: number[]) => `high-quality-media-images-${images.sort().join('-')}`,
+  OPENING_HOURS: (openingHoursIds: number[]) => `opening-hours-${openingHoursIds.sort().join('-')}`,
+
   // Pages
   PAGE_BY_SLUG: (slug?: string[]) => {
     const slugStr = slug && slug.length > 0 ? slug.join('-') : 'home'; 

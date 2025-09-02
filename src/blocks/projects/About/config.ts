@@ -1,5 +1,5 @@
 import backgroundColour from '@/fields/backgroundColour';
-import colourSchema from '@/fields/colourSchema';
+import textColour from '@/fields/textColour';
 import isTransparent from '@/fields/isTransperant';
 import { Block } from 'payload';
 
@@ -7,72 +7,63 @@ const AboutProjectBlock: Block = {
   slug: 'aboutProject',
   interfaceName: 'AboutProjectBlock',
   labels: {
-    singular: 'O projektu odsek',
-    plural: 'O projektu odseki',
+    singular: {
+      sl: 'O projektu odsek',
+      de: 'Projekt Abschnitt',
+      en: 'Project Section',
+    },
+    plural: {
+      sl: 'O projektu odseki',
+      de: 'Projekt Abschnitte',
+      en: 'Project Sections',
+    },
   },
   fields: [
     {
       name: 'template',
-      label: 'Template',
+      label: {
+        sl: 'Predloga',
+        de: 'Vorlage',
+        en: 'Template',
+      },
       type: 'select',
       required: true,
       defaultValue: 'default',
       options: [
         {
-          label: 'Default Layout',
+          label: {
+            sl: 'Privzeti način',
+            de: 'Standard-Layout',
+            en: 'Default Layout',
+          },
           value: 'default',
-        },
-        {
-          label: "Variant 1",
-          value: "variant1",
-        },        
+        },    
       ],
     },
-    backgroundColour(),
-    colourSchema(),
-    isTransparent(),
-    
     {
       name: 'project',
       type: 'relationship',
       relationTo: 'projects',
-      label: 'Izberi projekt',
+      label: {
+        sl: 'Izberi projekt',
+        de: 'Projekt auswählen',
+        en: 'Select project',
+      },
       required: true,
       admin: {
         description: 'Izberi projekt, katerega podatke želiš prikazati',
       },
     },
-    {
-      name: 'showGallery',
-      type: 'checkbox',
-      label: 'Prikaži galerijo',
-      defaultValue: true,
-      admin: {
-        description: 'Prikaži galerijo slik projekta',
-      },
-    },
-    {
-      name: 'showProjectDetails',
-      type: 'checkbox',
-      label: 'Prikaži podrobnosti projekta',
-      defaultValue: true,
-      admin: {
-        description: 'Prikaži podrobnosti kot so naročnik, datum zaključka itd.',
-      },
-    },
-    {
-      name: 'showTabs',
-      type: 'checkbox',
-      label: 'Prikaži tabe z opisom',
-      defaultValue: true,
-      admin: {
-        description: 'Prikaži tabe z opisom projekta, izzivi in značilnostmi',
-      },
-    },
+    backgroundColour(),textColour.titleColor(),
+    textColour.subtitleColor(),
+    textColour.descriptionColor(),
+
+    
+    isTransparent(),
     {
       name: 'idHref',
       type: 'text',
-      label: 'ID za sidro',
+      label: {sl:'ID za sidro', de:'ID für Anker', en:'Anchor ID'},
       defaultValue: 'o-projektu',
       admin: {
         description: 'ID za navigacijo na ta odsek',
