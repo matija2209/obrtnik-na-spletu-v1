@@ -54,23 +54,6 @@ export async function middleware(req: NextRequest) {
       console.error('Error fetching from Edge Config:', error);
     }
   }
-  
-  // Fallback to hardcoded mappings if no Edge Config result
-  if (!tenantSlug) {
-    if (
-      hostname === 'a1-instalacije.vercel.app' ||
-      hostname === 'a1-instalacije.local:3000'
-    ) {
-      tenantSlug = 'a1-instalacije';
-    } else if (hostname === 'moj-mojster-gradnje.vercel.app') {
-      tenantSlug = 'moj-mojster-gradnje';
-    } else if (hostname === "kr-hausbetreuung.vercel.app") {
-      tenantSlug = "kr-hausbetreuung";
-    } else if (hostname === "top-tla.vercel.app") {
-      tenantSlug = "top-tla";
-    }
-  }
-
 
   // 2. If no specific hostname match, check for direct tenant-slugs path access
   if (!tenantSlug) {
