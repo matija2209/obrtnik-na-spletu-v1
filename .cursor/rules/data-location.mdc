@@ -1,7 +1,0 @@
----
-description: 
-globs: 
-alwaysApply: false
----
- - Store data objects used to populate section components within the `src/data/` directory.
-- Use descriptive names for data files, e.g., `heroData.ts`, `servicesData.ts`.
