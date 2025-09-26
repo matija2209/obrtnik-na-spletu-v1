@@ -38,9 +38,9 @@ export const Services: CollectionConfig = {
       en: 'Projects',
     },
     defaultColumns: ['title', 'slug', 'updatedAt'],
-    components:{
-      beforeList:['/components/admin/CreateServicePageFromService']
-    }
+    // components:{
+    //   beforeList:['/components/admin/CreateServicePageFromService']
+    // }
     // components:{
     //   views:{
     //     list: {

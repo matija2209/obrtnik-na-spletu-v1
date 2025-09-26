@@ -51,7 +51,7 @@ import { ServicePages } from '@/collections/ServicePages'; // Import the new Ser
 import SubServices from '@/collections/SubServices'
 import { Posts } from '@/collections/Posts'
 import { BusinessInfoCollection } from '@/collections/BusinessInfoCollection'
-import { seed } from '@/seed'
+// import { seed } from '@/seed'
 import { HighQualityMedia } from '@/collections/HighQualityMedia'
 
 // Define a unified type for the hook
@@ -245,9 +245,9 @@ export default buildConfig({
   },
   editor: lexicalEditor({}),
   onInit: async (args) => {
-    await seed(args)
-    if (process.env.SEED === 'true') {
-    }
+    // await seed(args)
+    // if (process.env.SEED === 'true') {
+    // }
   },
   i18n: {
     supportedLanguages: { en, sl,de },

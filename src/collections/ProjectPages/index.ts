@@ -59,9 +59,9 @@ export const ProjectPages: CollectionConfig = {
       de: 'Seiten',
       en: 'Pages',
     },
-    components:{
-      beforeList:['/components/admin/CreateProjectPageFromProject']
-    },
+    // components:{
+    //   beforeList:['/components/admin/CreateProjectPageFromProject']
+    // },
     livePreview: {
       url: async ({ data, req }) => {
         const slug = typeof data?.slug === 'string' ? `/projekti/${data.slug}` : ''

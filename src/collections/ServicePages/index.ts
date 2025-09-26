@@ -63,9 +63,9 @@ export const ServicePages: CollectionConfig = {
       de: 'Seiten',
       en: 'Pages',
     }, // Or a new group like 'Storitve'
-    components:{
-      beforeList:['/components/admin/CreateServicePageFromService']
-    },
+    // components:{
+    //   beforeList:['/components/admin/CreateServicePageFromService']
+    // },
     livePreview: {
       url: async ({ data, req }) => {
         const slug = typeof data?.slug === 'string' ? `/leistungen/${data.slug}` : ''
