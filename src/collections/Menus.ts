@@ -41,10 +41,10 @@ export const Menus: CollectionConfig = {
     },
   
     group: {
-      sl: 'Struktura',
-      de: 'Struktur',
-      en: 'Structure',
-    }, // Grouping in admin UI
+      sl:'Struktura',
+      en:"Layout",
+      de:"Layout"
+    },
   },
   access: {
     read: anyone, // Anyone can read menus (needed for frontend)

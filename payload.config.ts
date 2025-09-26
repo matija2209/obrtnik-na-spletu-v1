@@ -294,11 +294,23 @@ export default buildConfig({
       // Add deploy hook to form and submission collections
       formOverrides: {
         labels:{
-          singular:"Obrazec",
-          plural:"Obraci",
+          singular:{
+            sl:"Obrazec",
+            en:"Submission",
+            de:"Interesse"
+          },
+          plural:{
+            sl:"Obraci",
+            en:"Submissions",
+            de:"Interessen"
+          },
         },
         admin:{
-          group:"Prodaja",
+          group:{
+            en:"Sales",
+            sl:"Prodaja",
+            de:"Verkauf"
+          },
 
         },
         hooks: {
@@ -309,11 +321,23 @@ export default buildConfig({
       },
       formSubmissionOverrides: {
         labels:{
-          singular:"Povpraševanje",
-          plural:"Povpraševanja",
+          singular:{
+            en:"Submission",
+            de:"Interesse",
+            sl:"Povpraševanje"
+          },
+          plural:{
+            sl:"Povpraševanja",
+            en:"Submissions",
+            de:"Interesse"
+          },
         },
         admin:{
-          group:"Prodaja",
+          group:{
+            en:"Sales",
+            sl:"Prodaja",
+            de:"Verkauf"
+          },
           
         }
         // Remove the deploy hook as it's not needed for submissions

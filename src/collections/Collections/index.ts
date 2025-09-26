@@ -9,13 +9,25 @@ const anyone: Access = () => true;
 export const Collections: CollectionConfig = {
   slug: 'collections',
   labels: {
-    singular: 'Kolekcija',
-    plural: 'Kolekcije',
+    singular: {
+      sl:'Kolekcija',
+      en:"Collections",
+      de:"Kategorie"
+    },
+    plural: {
+      sl:"Kolekcija",
+      en:"Collections",
+      de:"Katogorien"
+    },
   },
   admin: {
     useAsTitle: 'title',
     description: 'Upravljajte kolekcije izdelkov.',
-    group: 'Prodaja',
+    group:{
+      en:"Sales",
+      sl:"Prodaja",
+      de:"Verkauf"
+    },
     defaultColumns: ['title', 'slug', 'updatedAt'],
   },
   access: {

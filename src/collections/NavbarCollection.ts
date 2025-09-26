@@ -15,8 +15,11 @@ export const NavbarCollection: CollectionConfig = {
   },
   admin: {
     description: 'Nastavitve navigacijske vrstice za vsakega najemnika.',
-    group: 'Struktura', // Keeping original group
-
+    group: {
+      sl:'Struktura',
+      en:"Layout",
+      de:"Layout"
+    },
   },
   fields: [
    

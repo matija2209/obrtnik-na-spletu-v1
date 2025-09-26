@@ -95,9 +95,9 @@ export const Pages: CollectionConfig = {
     slugField('title', {
       name: 'slug',
       label: {
-        sl: 'Pot / Unikatni ID',
-        de: 'Pfad / Eindeutige ID',
-        en: 'Path / Unique ID',   
+        sl: 'Pot Unikatni ID',
+        de: 'Pfad Eindeutige ID',
+        en: 'Path Unique ID',   
       },
       unique: true,
       index: true,

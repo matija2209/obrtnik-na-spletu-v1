@@ -4,8 +4,16 @@ import type { CollectionConfig } from 'payload';
 export const BusinessInfoCollection: CollectionConfig = {
   slug: 'business-info', // Using the same slug for potential data migration ease
   labels: {
-    singular: 'Podatki o podjetju',
-    plural: 'Podatki o podjetju',
+    singular: {
+      sl:'Podatki o podjetju',
+      en:"Business info",
+      de:"Geschaft info"
+    },
+    plural: {
+      sl:'Podatki o podjetju',
+      en:"Business info",
+      de:"Geschaft info"
+    },
   },
   access: {
     create: superAdminOrTenantAdminAccess,
@@ -15,7 +23,11 @@ export const BusinessInfoCollection: CollectionConfig = {
   },
   admin: {
     description: 'Osnovni podatki in nastavitve podjetja za vsakega najemnika.',
-    group: 'Konfiguracija',
+    group: {
+      sl:'Konfiguracija',
+      en:"Configuration",
+      de:"Konfiguration"
+    },
     useAsTitle: 'companyName', // Makes sense if super admin views a list
   },
   fields: [

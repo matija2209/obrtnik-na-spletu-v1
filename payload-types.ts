@@ -240,7 +240,7 @@ export interface Tenant {
    */
   domain?: string | null;
   /**
-   * Used for url paths, example: /tenant-slug/page-slug
+   * Used for URL paths, example: /tenant-slug/page-slug
    */
   slug: string;
   /**

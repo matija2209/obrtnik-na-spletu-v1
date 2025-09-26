@@ -6,8 +6,15 @@ const MenuSectionBlock: Block = {
   slug: 'menuSection',
   interfaceName: 'MenuSectionItem',
   labels: {
-    singular: 'Sekcija Menija',
-    plural: 'Sekcije Menijev',
+    singular:{en:"Menu",
+      sl:"Meni",
+      de:"Menu"
+    },
+    plural: {
+      sl:"Meniji",
+      de:"Menus",
+      en:"Menus"
+    },
   },
   fields: [
     {
@@ -30,8 +37,17 @@ const MenuSectionBlock: Block = {
 export const FooterCollection: CollectionConfig = {
   slug: 'footer', // Using the same slug
   labels: {
-    singular: 'Noga',
-    plural: 'Noga',
+    singular: {
+      sl:'Noga',
+      en:"Footer",
+      de:"Footer"
+    },
+    plural: {
+      sl:'Noga',
+       en:"Footer",
+      de:"Footer"
+      
+    },
   },
   access: {
     create: superAdminOrTenantAdminAccess,
@@ -41,7 +57,11 @@ export const FooterCollection: CollectionConfig = {
   },
   admin: {
     description: 'Nastavitve podnožja strani za vsakega najemnika.',
-    group: 'Struktura',
+    group: {
+      sl:'Struktura',
+      en:"Layout",
+      de:"Layout"
+    },
 
   },
   fields: [

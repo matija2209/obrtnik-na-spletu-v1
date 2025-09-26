@@ -9,7 +9,11 @@ export const ProductVariants: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'displayName',
-    group: 'Prodaja',
+    group:{
+      en:"Sales",
+      sl:"Prodaja",
+      de:"Verkauf"
+    },
     defaultColumns: ['displayName', 'variantSku', 'inStock'],
   },
   access: {
