@@ -26,8 +26,6 @@ import FeaturedProductsBlock from '@/blocks/general/FeaturedProducts/config';
 import TextBlock from '@/blocks/general/Text/config';
 import ProjectHighlightsBlock from '@/blocks/general/ProjectHighlights/config';
 
-
-
 // Define access control - allowing anyone to read, admin to update
 const anyone: Access = () => true;
 
