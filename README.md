@@ -2,11 +2,20 @@
 
 A multi-tenant CMS platform built with Next.js and Payload CMS, designed for dynamic website management with tenant-specific customization and multi-lingual support.
 
+## DEMO for Ad Art
+
+**LOGIN LINK**
+
+https://admin.obrtniknaspletu.si/admin/login
+
+**Email:** demo@adart.com  
+**Password:** adart2025
+
 ## Architecture Overview
 
 This platform combines cutting-edge web technologies to deliver a scalable, multi-tenant solution:
 
-- **Frontend**: Next.js 14+ with App Router and React Server Components
+- **Frontend**: Next.js 15+ with App Router and React Server Components
 - **CMS**: Payload CMS with multi-tenant collection architecture
 - **Database**: Serverless Neon DB (PostgreSQL)
 - **Storage**: Cloudflare R2 for blob storage and CDN delivery
@@ -37,7 +46,7 @@ This platform combines cutting-edge web technologies to deliver a scalable, mult
 
 | Component | Technology | Purpose |
 |-----------|------------|---------|
-| **Frontend** | Next.js 14+ | React framework with App Router |
+| **Frontend** | Next.js 15+ | React framework with App Router |
 | **CMS** | Payload CMS | Headless CMS with TypeScript |
 | **Database** | Neon DB (PostgreSQL) | Serverless PostgreSQL database |
 | **Storage** | Cloudflare R2 | Object storage and CDN |
